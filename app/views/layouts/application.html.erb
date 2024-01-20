@@ -6,12 +6,12 @@
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
   
-    <%= stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
     <%= javascript_pack_tag 'client-bundle' %>
     <%= stylesheet_pack_tag 'client-bundle' %>
   </head>
 
-  <body>
+  <body class="text-white bg-slate-950">
     <main>
       <%= yield %>
     </main>

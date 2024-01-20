@@ -1,3 +1,5 @@
 class Creator < ApplicationRecord
-  has_many :pages, :posts, :products
+  has_many :page_sections
+  has_many :posts
+  has_many :products
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_01_20_203217) do
+ActiveRecord::Schema[7.1].define(version: 2024_01_20_231012) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -22,6 +22,17 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_20_203217) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "name"
+  end
+
+  create_table "page_sections", force: :cascade do |t|
+    t.bigint "creator_id", null: false
+    t.string "type"
+    t.text "text_json"
+    t.string "header"
+    t.text "shown_products_json"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["creator_id"], name: "index_page_sections_on_creator_id"
   end
 
   create_table "pages", force: :cascade do |t|
@@ -55,6 +66,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_20_203217) do
     t.index ["creator_id"], name: "index_products_on_creator_id"
   end
 
+  add_foreign_key "page_sections", "creators"
   add_foreign_key "pages", "creators"
   add_foreign_key "posts", "creators"
   add_foreign_key "products", "creators"

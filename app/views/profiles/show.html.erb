@@ -1,1 +1,2 @@
-<%= react_component("ProfileHeader", prerender: false) %>
+<%= react_component("ProfileHeader", props: {creator: @creator, productCount: @products.length, postCount: @posts.length}, prerender: false) %>
+<%= react_component("ProfileBody", props: {creator: @creator, productCount: @products.length, postCount: @posts.length}, prerender: false) %>

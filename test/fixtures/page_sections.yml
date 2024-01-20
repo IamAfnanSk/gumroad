@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  creator: one
+  type: 
+  text_json: MyText
+  header: MyString
+  shown_products_json: MyText
+
+two:
+  creator: two
+  type: 
+  text_json: MyText
+  header: MyString
+  shown_products_json: MyText

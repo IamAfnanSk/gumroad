@@ -2,12 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
-/*
-
-@layer components {
-  .btn-primary {
-    @apply py-2 px-4 bg-blue-200;
-  }
+@font-face {
+  font-family: 'Mabry';
+  font-style: normal;
+  font-weight: 400;
+  src: local(''), url('/fonts/mabry.woff2') format('woff2');
 }
 
-*/
+body,
+html {
+  @apply min-h-screen;
+}
