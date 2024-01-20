@@ -7,3 +7,11 @@
 #   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
+
+Creator.create!(
+  name: 'Afnan',
+  username: 'iamafnansk',
+  bio: 'Software engineer, selling courses online',
+  avatar_url: 'https://pbs.twimg.com/profile_images/1692545382016802816/ZbQ4NZCc_400x400.jpg',
+  twitter_handle: 'iamafnansk'
+)
