@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_01_20_195125) do
+ActiveRecord::Schema[7.1].define(version: 2024_01_20_203217) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -24,4 +24,38 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_20_195125) do
     t.string "name"
   end
 
+  create_table "pages", force: :cascade do |t|
+    t.bigint "creator_id", null: false
+    t.string "name"
+    t.string "slug"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["creator_id"], name: "index_pages_on_creator_id"
+  end
+
+  create_table "posts", force: :cascade do |t|
+    t.bigint "creator_id", null: false
+    t.text "body"
+    t.string "title"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["creator_id"], name: "index_posts_on_creator_id"
+  end
+
+  create_table "products", force: :cascade do |t|
+    t.bigint "creator_id", null: false
+    t.string "currency"
+    t.string "name"
+    t.integer "price"
+    t.text "cover_url"
+    t.string "permalink"
+    t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["creator_id"], name: "index_products_on_creator_id"
+  end
+
+  add_foreign_key "pages", "creators"
+  add_foreign_key "posts", "creators"
+  add_foreign_key "products", "creators"
 end

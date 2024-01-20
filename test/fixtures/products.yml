@@ -1,0 +1,19 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  creator: one
+  currency: MyString
+  name: MyString
+  price: 1
+  cover_url: MyText
+  permalink: MyString
+  description: MyText
+
+two:
+  creator: two
+  currency: MyString
+  name: MyString
+  price: 1
+  cover_url: MyText
+  permalink: MyString
+  description: MyText

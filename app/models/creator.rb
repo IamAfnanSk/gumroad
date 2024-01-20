@@ -1,3 +1,3 @@
 class Creator < ApplicationRecord
-  validates :title
+  has_many :pages, :posts, :products
 end
