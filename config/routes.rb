@@ -8,5 +8,5 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   # root "posts#index"
 
-  get "/profile", to: "profile#index"
+  get "/profile/:username", to: "profiles#show"
 end
