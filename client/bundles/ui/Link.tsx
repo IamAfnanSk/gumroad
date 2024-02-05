@@ -9,7 +9,7 @@ type Props = {
 const Link = (props: Props) => {
   return (
     <a
-      className={`px-3 py-3 ${
+      className={`px-3 py-3 box-border inline-block ${
         props.isSelected && 'border border-white'
       } rounded-3xl`}
       href={props.href}

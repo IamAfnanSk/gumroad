@@ -9,7 +9,6 @@ export type Post = {
 
 export type Product = {
   id: number
-  creator_id: number
   name: string
   currency: string
   price: number
@@ -29,4 +28,15 @@ export type Creator = {
   created_at: number
   updated_at: number
   name: string
+}
+
+export type PageSection = {
+  id: number
+  creator_id: number
+  section_type: 'text' | 'product' | 'featured_product'
+  text_json: string
+  header: string
+  shown_products_json: string
+  created_at: number
+  updated_at: number
 }

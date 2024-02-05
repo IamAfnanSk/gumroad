@@ -2,14 +2,14 @@
 
 one:
   creator: one
-  type: 
+  type:
   text_json: MyText
   header: MyString
   shown_products_json: MyText
 
 two:
   creator: two
-  type: 
+  type:
   text_json: MyText
   header: MyString
   shown_products_json: MyText

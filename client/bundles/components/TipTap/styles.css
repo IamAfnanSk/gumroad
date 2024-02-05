@@ -1,0 +1,67 @@
+/* Basic editor styles */
+.tiptap {
+  background-color: #373737;
+  padding: 5px 10px;
+  border-radius: 5px;
+  margin-top: 10px;
+}
+
+.tiptap > * + * {
+  margin-top: 0.75em;
+}
+.tiptap ul,
+.tiptap ol {
+  padding: 0 1rem;
+}
+.tiptap h1,
+.tiptap h2,
+.tiptap h3,
+.tiptap h4,
+.tiptap h5,
+.tiptap h6 {
+  line-height: 1.1;
+}
+.tiptap code {
+  background-color: rgba(97, 97, 97, 0.1);
+  color: #616161;
+}
+.tiptap pre {
+  background: #0d0d0d;
+  color: #fff;
+  font-family: 'JetBrainsMono', monospace;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+}
+.tiptap pre code {
+  color: inherit;
+  padding: 0;
+  background: none;
+  font-size: 0.8rem;
+}
+.tiptap img {
+  max-width: 100%;
+  height: auto;
+}
+.tiptap blockquote {
+  padding-left: 1rem;
+  border-left: 2px solid rgba(13, 13, 13, 0.1);
+}
+.tiptap hr {
+  border: none;
+  border-top: 2px solid rgba(13, 13, 13, 0.1);
+  margin: 2rem 0;
+}
+
+.tiptap-buttons button {
+  padding: 2px 8px;
+  border: #fff 1px solid;
+  opacity: 0.7;
+}
+
+.tiptap-buttons button.is-active {
+  opacity: 1;
+}
+
+.tiptap-buttons button:disabled {
+  opacity: 0.5;
+}

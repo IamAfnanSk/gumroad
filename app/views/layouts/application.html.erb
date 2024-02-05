@@ -5,14 +5,16 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-  
     <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
     <%= javascript_pack_tag 'client-bundle' %>
     <%= stylesheet_pack_tag 'client-bundle' %>
   </head>
-
+  <%# TODO: Make colors dynamic %>
   <body class="text-white bg-slate-950">
     <main>
+      <%# TODO: Style alerts/notices %>
+      <p class="notice"><%= notice %></p>
+      <p class="alert"><%= alert %></p>
       <%= yield %>
     </main>
   </body>

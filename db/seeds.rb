@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # This file should ensure the existence of records required to run the application in every environment (production,
 # development, test). The code here should be idempotent so that it can be executed at any point in every environment.
 # The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
@@ -47,3 +48,24 @@
 
 #   Pellentesque malesuada ornare quam, sit amet tincidunt nunc commodo nec. Morbi eget felis in felis pretium porttitor eu vel sem. Mauris convallis elit ac molestie porta. Aliquam erat volutpat. Donec maximus est non maximus molestie. Cras dignissim, leo euismod dapibus elementum, purus justo pretium ipsum, non tempus sem dui nec nisl. Suspendisse suscipit rhoncus erat id iaculis. Etiam et tellus non urna molestie laoreet at nec leo. Nullam ultricies massa augue, id varius est dignissim sit amet. Phasellus neque libero, vestibulum vitae arcu ut, imperdiet dictum est. Vivamus dapibus convallis viverra. Vivamus sit amet enim lectus. Morbi elementum placerat ipsum, in semper orci venenatis non.'
 # )
+
+# PageSection.create!(
+#   creator_id: 2,
+#   section_type: 'product',
+#   header: 'My products section',
+#   shown_products_json: '[\'2\']',
+#   show_filters: false
+# )
+
+# create_table "page_sections", force: :cascade do |t|
+#   t.bigint "creator_id", null: false
+#   t.text "text_json"
+#   t.string "header"
+#   t.text "shown_products_json"
+#   t.datetime "created_at", null: false
+#   t.datetime "updated_at", null: false
+#   t.text "section_type"
+#   t.boolean "show_filters"
+#   t.integer "featured_product_id"
+#   t.index ["creator_id"], name: "index_page_sections_on_creator_id"
+# end

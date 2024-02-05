@@ -10,7 +10,7 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Mabry', ...defaultTheme.fontFamily.sans]
+        sans: ['Mabry Pro', ...defaultTheme.fontFamily.sans]
       }
     }
   },

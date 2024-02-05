@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -10,64 +12,62 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_01_20_231012) do
+ActiveRecord::Schema[7.1].define(version: 20_240_205_104_006) do # rubocop:disable Metrics/BlockLength
   # These are extensions that must be enabled in order to support this database
-  enable_extension "plpgsql"
+  enable_extension 'plpgsql'
 
-  create_table "creators", force: :cascade do |t|
-    t.string "username"
-    t.string "bio"
-    t.text "avatar_url"
-    t.string "twitter_handle"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "name"
+  create_table 'creators', force: :cascade do |t|
+    t.string 'bio'
+    t.string 'twitter_handle'
+    t.datetime 'created_at', null: false
+    t.datetime 'updated_at', null: false
+    t.string 'avatar'
+    t.string 'email', default: '', null: false
+    t.string 'encrypted_password', default: '', null: false
+    t.string 'reset_password_token'
+    t.datetime 'reset_password_sent_at'
+    t.datetime 'remember_created_at'
+    t.string 'username', null: false
+    t.string 'name', null: false
+    t.index ['email'], name: 'index_creators_on_email', unique: true
+    t.index ['reset_password_token'], name: 'index_creators_on_reset_password_token', unique: true
+    t.index ['username'], name: 'index_creators_on_username', unique: true
   end
 
-  create_table "page_sections", force: :cascade do |t|
-    t.bigint "creator_id", null: false
-    t.string "type"
-    t.text "text_json"
-    t.string "header"
-    t.text "shown_products_json"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["creator_id"], name: "index_page_sections_on_creator_id"
+  create_table 'page_sections', force: :cascade do |t|
+    t.bigint 'creator_id', null: false
+    t.datetime 'created_at', null: false
+    t.datetime 'updated_at', null: false
+    t.string 'sectionable_type'
+    t.bigint 'sectionable_id'
+    t.index ['creator_id'], name: 'index_page_sections_on_creator_id'
+    t.index %w[sectionable_id sectionable_type], name: 'index_page_sections_on_sectionable_id_and_sectionable_type'
+    t.index %w[sectionable_type sectionable_id], name: 'index_page_sections_on_sectionable'
   end
 
-  create_table "pages", force: :cascade do |t|
-    t.bigint "creator_id", null: false
-    t.string "name"
-    t.string "slug"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["creator_id"], name: "index_pages_on_creator_id"
+  create_table 'posts', force: :cascade do |t|
+    t.bigint 'creator_id', null: false
+    t.datetime 'created_at', null: false
+    t.datetime 'updated_at', null: false
+    t.text 'body', null: false
+    t.string 'title', null: false
+    t.index ['creator_id'], name: 'index_posts_on_creator_id'
   end
 
-  create_table "posts", force: :cascade do |t|
-    t.bigint "creator_id", null: false
-    t.text "body"
-    t.string "title"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["creator_id"], name: "index_posts_on_creator_id"
+  create_table 'products', force: :cascade do |t|
+    t.bigint 'creator_id', null: false
+    t.datetime 'created_at', null: false
+    t.datetime 'updated_at', null: false
+    t.string 'currency', null: false
+    t.string 'name', null: false
+    t.integer 'price', null: false
+    t.string 'cover_image'
+    t.string 'permalink', null: false
+    t.text 'description', null: false
+    t.index ['creator_id'], name: 'index_products_on_creator_id'
   end
 
-  create_table "products", force: :cascade do |t|
-    t.bigint "creator_id", null: false
-    t.string "currency"
-    t.string "name"
-    t.integer "price"
-    t.text "cover_url"
-    t.string "permalink"
-    t.text "description"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["creator_id"], name: "index_products_on_creator_id"
-  end
-
-  add_foreign_key "page_sections", "creators"
-  add_foreign_key "pages", "creators"
-  add_foreign_key "posts", "creators"
-  add_foreign_key "products", "creators"
+  add_foreign_key 'page_sections', 'creators'
+  add_foreign_key 'posts', 'creators'
+  add_foreign_key 'products', 'creators'
 end
