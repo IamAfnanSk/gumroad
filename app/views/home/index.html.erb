@@ -7,3 +7,5 @@
 <% unless creator_signed_in? %>
   <%= link_to('Sign In', new_creator_session_path) %>
 <% end %>
+
+<%= react_component("Hello", props: {content: 'Hello'}, prerender: false) %>
