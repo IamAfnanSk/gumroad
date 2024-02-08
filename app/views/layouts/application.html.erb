@@ -12,6 +12,8 @@
 
   <body>
     <main>
+      <%= react_component("RailsFlashes", props: {notice: notice, alert: alert}) %>
+
       <%= yield %>
     </main>
   </body>

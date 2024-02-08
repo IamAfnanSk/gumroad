@@ -2,6 +2,7 @@ import './main.css'
 
 import ReactOnRails from 'react-on-rails'
 
-import { Hello } from './components/Hello'
+import { RailsFlashes } from './components/RailsFlashes'
+import { HomePage } from './pages/HomePage'
 
-ReactOnRails.register({ Hello })
+ReactOnRails.register({ RailsFlashes, HomePage })
