@@ -8,12 +8,13 @@ type Props = {
 
 const HomeHeader = ({ isSignedIn }: Props) => {
   return (
-    <header className="flex items-center justify-between px-6 py-4">
+    <header className="flex items-center justify-between">
       <div>
         <img className="w-40" src="/images/logo.svg" alt="Header logo" />
       </div>
 
       <div>
+        {/* TODO: Add dashboard link */}
         {isSignedIn ? (
           <SignOutButton />
         ) : (

@@ -1,1 +1,15 @@
-<%= react_component("HomePage", props: {isSignedIn: creator_signed_in?}) %>
+<div class="container-margins">
+
+  <%= react_component("HomeHeader", props: {isSignedIn: creator_signed_in?}) %>
+
+  <div class="mt-10 text-center">
+    <p class="text-xl md:text-3xl">Gumroad website builder</p>
+    <p class="mt-2">
+      by
+      <a class="border-b border-dotted" href="https://afnan.dev">
+        Afnan Shaikh
+      </a>
+    </p>
+  </div>
+
+</div>

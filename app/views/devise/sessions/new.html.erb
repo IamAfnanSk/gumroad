@@ -1,26 +1,21 @@
-<h2>Log in</h2>
+<div class="min-h-screen md:grid md:grid-cols-5">
+  <div class="col-span-3 container-margins">
+    <header class="flex items-center justify-between ">
+      <div>
+        <img class="w-36" src="/images/logo.svg" alt="Header logo" />
+      </div>
 
-<%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
-  <div class="field">
-    <%= f.label :email %><br />
-    <%= f.email_field :email, autofocus: true, autocomplete: "email" %>
+      <div>
+        <a href="/creators/sign_up" class="underline">
+          Sign Up
+        </a>
+      </div>
+    </header>
+
+    <%= react_component("AuthForm", props: {type: 'signin'}) %>
   </div>
 
-  <div class="field">
-    <%= f.label :password %><br />
-    <%= f.password_field :password, autocomplete: "current-password" %>
+  <div class="justify-center hidden max-h-screen col-span-2 align-middle bg-black md:flex">
+    <img src="/images/auth-bg.webp" alt="Auth background image" class="object-cover max-w-full min-h-full">
   </div>
-
-  <% if devise_mapping.rememberable? %>
-    <div class="field">
-      <%= f.check_box :remember_me %>
-      <%= f.label :remember_me %>
-    </div>
-  <% end %>
-
-  <div class="actions">
-    <%= f.submit "Log in" %>
-  </div>
-<% end %>
-
-<%= render "devise/shared/links" %>
+</div>

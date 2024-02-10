@@ -22,7 +22,7 @@ const RailsFlashes = ({ notice, alert }: Props) => {
     }
   }, [])
 
-  return <Toaster position="top-center" richColors />
+  return <Toaster position="bottom-center" richColors />
 }
 
 export { RailsFlashes }
