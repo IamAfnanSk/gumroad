@@ -1,34 +1,29 @@
-<h2>Sign up</h2>
+<h2 class="mt-12 text-2xl font-medium md:text-3xl">Sign up</h2>
 
-<%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+<%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { class: "mt-5 space-y-4" }) do |f| %>
   <%= render "devise/shared/error_messages", resource: resource %>
 
   <div class="field">
-    <%= f.label :email %><br />
-    <%= f.email_field :email, autofocus: true, autocomplete: "email" %>
+    <%= react_component("Label", props: {htmlFor: 'creator-email', children: 'Email'}) %>
+    <%= react_component("Input", props: {type: 'email', required: true, autoComplete: 'email', authfocus: 'true', name: "creator[email]", id: 'creator-email'}) %>
   </div>
 
   <div class="field">
-    <%= f.label :username %><br />
-    <%= f.text_field :username, autofocus: true, autocomplete: "username" %>
+    <%= react_component("Label", props: {htmlFor: 'creator-username', children: 'Username'}) %>
+    <%= react_component("Input", props: {type: 'text', required: true, autoComplete: 'username', name: "creator[username]", id: 'creator-username'}) %>
   </div>
 
   <div class="field">
-    <%= f.label :password %>
-    <% if @minimum_password_length %>
-      <em>(<%= @minimum_password_length %> characters minimum)</em>
-    <% end %><br />
-    <%= f.password_field :password, autocomplete: "new-password" %>
+    <%= react_component("Label", props: {htmlFor: 'creator-email', children: 'Password'}) %>
+    <%= react_component("Input", props: {type: 'password', required: true, autoComplete: 'new-password', name: "creator[password]", id: 'creator-password'}) %>
   </div>
 
   <div class="field">
-    <%= f.label :password_confirmation %><br />
-    <%= f.password_field :password_confirmation, autocomplete: "new-password" %>
+    <%= react_component("Label", props: {htmlFor: 'creator-email', children: 'Password confirmation'}) %>
+    <%= react_component("Input", props: {type: 'password', required: true, autoComplete: 'new-password', name: "creator[password]", id: 'creator-password-confirmation'}) %>
   </div>
 
   <div class="actions">
-    <%= f.submit "Sign up" %>
+    <%= react_component("Button", props: {variant: 'primary', children: 'Sign up', type: 'submit', className: 'w-full'}) %>
   </div>
 <% end %>
-
-<%= render "devise/shared/links" %>

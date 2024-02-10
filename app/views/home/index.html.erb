@@ -1,6 +1,22 @@
 <div class="container-margins">
 
-  <%= react_component("HomeHeader", props: {isSignedIn: creator_signed_in?}) %>
+  <header class="flex items-center justify-between">
+    <div>
+      <img class="w-40" src="<%= asset_pack_path 'static/assets/images/logo.svg' %>" alt="Header logo">
+    </div>
+
+    <div>
+      <%# TODO: Add dashboard link %>
+      <% if creator_signed_in? %>
+        <SignOutButton />
+        <%= react_component("SignOutButton") %>
+      <% else %>
+        <a href="/creators/sign_in">
+          <%= react_component("Button", props: { children: 'Sign In' }) %>
+        </a>
+      <% end %>
+    </div>
+  </header>
 
   <div class="mt-10 text-center">
     <p class="text-xl md:text-3xl">Gumroad website builder</p>

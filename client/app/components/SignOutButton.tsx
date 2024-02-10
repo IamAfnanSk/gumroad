@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Button, ButtonProps } from './ui/button'
+import { Button, ButtonProps } from '@/components/ui/button'
 
 type Props = {
   buttonVariant?: ButtonProps['variant']

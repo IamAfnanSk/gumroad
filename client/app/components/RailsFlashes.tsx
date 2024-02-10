@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { ExternalToast, toast } from 'sonner'
-import { Toaster } from './ui/sonner'
+import { Toaster } from '@/components/ui/sonner'
 
 type Props = {
   notice?: string

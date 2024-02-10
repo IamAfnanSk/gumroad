@@ -2,8 +2,17 @@ import '@/assets/styles/main.css'
 
 import ReactOnRails from 'react-on-rails'
 
-import { RailsFlashes } from '../components/RailsFlashes'
-import { HomeHeader } from '../components/HomeHeader'
-import { AuthForm } from '../components/AuthForm'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 
-ReactOnRails.register({ RailsFlashes, HomeHeader, AuthForm })
+import { SignOutButton } from '@/components/SignOutButton'
+import { RailsFlashes } from '@/components/RailsFlashes'
+
+ReactOnRails.register({
+  RailsFlashes,
+  Button,
+  SignOutButton,
+  Input,
+  Label
+})
