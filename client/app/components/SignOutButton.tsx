@@ -9,7 +9,10 @@ const SignOutButton = ({ buttonVariant }: Props) => {
   const [csrfToken, setCsrfToken] = React.useState<string>('')
 
   React.useEffect(() => {
-    setCsrfToken((document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement).content)
+    setCsrfToken(
+      (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement)
+        .content
+    )
   }, [])
 
   return (
@@ -19,7 +22,12 @@ const SignOutButton = ({ buttonVariant }: Props) => {
         <Button variant={buttonVariant} type="submit">
           Sign Out
         </Button>
-        <input type="hidden" name="authenticity_token" value={csrfToken} autoComplete="off" />
+        <input
+          type="hidden"
+          name="authenticity_token"
+          value={csrfToken}
+          autoComplete="off"
+        />
       </form>
     </div>
   )

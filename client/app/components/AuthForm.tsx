@@ -24,6 +24,7 @@ type Props = {
   type: 'signin' | 'signup' | 'password-reset'
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const AuthForm = ({ type }: Props) => {
   const authForm = useForm<z.infer<typeof authFormSchema>>({
     resolver: zodResolver(authFormSchema),
