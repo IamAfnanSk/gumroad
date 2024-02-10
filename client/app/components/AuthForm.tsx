@@ -8,7 +8,6 @@ import { Button } from '@/components/ui/button'
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -37,7 +36,10 @@ const AuthForm = ({ type }: Props) => {
   const [csrfToken, setCsrfToken] = React.useState<string>('')
 
   React.useEffect(() => {
-    setCsrfToken((document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement).content)
+    setCsrfToken(
+      (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement)
+        .content
+    )
   }, [])
 
   return (
@@ -52,7 +54,12 @@ const AuthForm = ({ type }: Props) => {
           acceptCharset="UTF-8"
           method="post"
         >
-          <input type="hidden" name="authenticity_token" value={csrfToken} autoComplete="off" />
+          <input
+            type="hidden"
+            name="authenticity_token"
+            value={csrfToken}
+            autoComplete="off"
+          />
 
           <FormField
             control={authForm.control}
