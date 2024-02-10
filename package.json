@@ -20,10 +20,7 @@
     "@tiptap/pm": "^2.1.16",
     "@tiptap/react": "^2.1.16",
     "@tiptap/starter-kit": "^2.1.16",
-    "@types/babel__core": "7",
-    "@types/react": "^18.2.48",
-    "@types/react-dom": "^18.2.18",
-    "@types/webpack": "5",
+    "@types/babel__core": "^7.20.5",
     "axios": "^1.6.7",
     "babel-loader": "8",
     "babel-plugin-macros": "^3.1.0",
@@ -67,10 +64,24 @@
   ],
   "devDependencies": {
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.11",
+    "@types/react": "^18.2.55",
+    "@types/react-dom": "^18.2.19",
+    "@types/webpack": "^5.28.5",
     "autoprefixer": "^10.4.17",
     "postcss": "^8.4.34",
-    "prettier": "^3.2.5",
     "react-refresh": "^0.14.0",
     "webpack-dev-server": "4"
+  },
+  "scripts": {
+    "lint": "eslint client",
+    "format": "cd ../.. && yarn start format",
+    "test": "yarn run build:test && yarn run lint && rspec",
+    "build:test": "rm -rf public/webpack/test && yarn build:rescript && RAILS_ENV=test NODE_ENV=test bin/shakapacker",
+    "build:dev": "rm -rf public/webpack/development && yarn build:rescript && RAILS_ENV=development NODE_ENV=development bin/shakapacker --watch",
+    "build:dev:server": "rm -rf public/webpack/development && yarn build:rescript && RAILS_ENV=development NODE_ENV=development bin/shakapacker --watch",
+    "build:dev:watch": "rescript build -w && RAILS_ENV=development NODE_ENV=development bin/shakapacker --watch",
+    "build:clean": "yarn build:rescript && rm -rf public/webpack || true",
+    "build:rescript": "rescript clean && rescript build -with-deps",
+    "build:rescript:dev": "rescript build -w"
   }
 }

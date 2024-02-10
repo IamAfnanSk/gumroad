@@ -1,0 +1,120 @@
+# This is the configuration used to check the rubocop source code.
+# Check out: https://github.com/bbatsov/rubocop
+require:
+  - rubocop-performance
+  - rubocop-rspec
+
+AllCops:
+  NewCops: enable
+  DisplayCopNames: true
+  TargetRubyVersion: 3.0.0
+
+  Include:
+    - '**/Rakefile'
+    - '**/config.ru'
+    - 'Gemfile'
+    - '**/*.rb'
+    - '**/*.rake'
+
+  Exclude:
+  <% `git status --ignored --porcelain`.lines.grep(/^!! /).each do |path| %>
+    - <%= path.sub(/^!! /, '') %>
+  <% end %>
+    - '**/*.js'
+    - '**/node_modules/**/*'
+    - '**/public/**/*'
+    - '**/tmp/**/*'
+    - 'coverage/**/*'
+    - 'gen-examples/examples/**/*'
+    - 'node_modules/**/*'
+    - 'tmp/**/*'
+    - 'vendor/**/*'
+
+Naming/FileName:
+  Exclude:
+    - '**/Gemfile'
+    - '**/Rakefile'
+
+Layout/LineLength:
+  Max: 120
+
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
+
+Style/Documentation:
+  Enabled: false
+
+Style/HashEachMethods:
+  Enabled: true
+
+Style/HashTransformKeys:
+  Enabled: true
+
+Style/HashTransformValues:
+  Enabled: true
+
+Metrics/AbcSize:
+  Max: 28
+
+Metrics/CyclomaticComplexity:
+  Max: 7
+
+Metrics/PerceivedComplexity:
+  Max: 10
+
+Metrics/ClassLength:
+  Max: 150
+
+Metrics/ParameterLists:
+  Max: 5
+  CountKeywordArgs: false
+
+Metrics/MethodLength:
+  Max: 41
+
+Metrics/ModuleLength:
+  Max: 180
+
+Naming/RescuedExceptionsVariableName:
+  Enabled: false
+
+RSpec/DescribeClass:
+  Enabled: false
+
+RSpec/ExampleLength:
+  Enabled: false
+
+RSpec/MessageSpies:
+  Enabled: false
+
+RSpec/NestedGroups:
+  Max: 4
+
+RSpec/MessageChain:
+  Enabled: false
+
+RSpec/MultipleExpectations:
+  Enabled: false
+
+RSpec/MultipleMemoizedHelpers:
+  Max: 12
+
+RSpec/NoExpectationExample:
+  AllowedPatterns:
+    - ^expect_
+    - ^assert_
+
+AllCops:
+  Exclude:
+    - 'Procfile.*'
+    - 'bin/*'
+    - 'bin/**/*'
+    - 'client/**/*'
+    - 'db/schema.rb'
+    - 'node_modules/react-on-rails'
+    - 'node_modules/**/*'
+    - 'public/webpack/**/*'
+
+Metrics/BlockLength:
+  Exclude:
+    - 'config/routes.rb'

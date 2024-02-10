@@ -1,6 +1,6 @@
 import * as React from 'react'
-import { SignOutButton } from './SignOutButton'
-import { Button } from './ui/button'
+import { SignOutButton } from '@/components/SignOutButton'
+import { Button } from '@/components/ui/button'
 
 type Props = {
   isSignedIn?: boolean

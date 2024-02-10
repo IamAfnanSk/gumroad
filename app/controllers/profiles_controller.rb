@@ -13,6 +13,6 @@ class ProfilesController < ApplicationController
 
   def load_creator
     @creator = Creator.find_by(username: params[:username])
-    redirect_to(root_path, alert: 'Creator not found') unless @creator
+    redirect_to(root_path, alert: "Creator not found") unless @creator
   end
 end

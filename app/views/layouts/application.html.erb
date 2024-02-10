@@ -6,8 +6,7 @@
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
-    <%= javascript_pack_tag 'client-bundle' %>
-    <%= stylesheet_pack_tag 'client-bundle' %>
+    <%= javascript_pack_tag('client-bundle', 'data-turbolinks-track': true) %>
   </head>
 
   <body>

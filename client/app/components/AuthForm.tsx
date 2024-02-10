@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
-import { Button } from './ui/button'
+import { Button } from '@/components/ui/button'
 import {
   Form,
   FormControl,
@@ -13,8 +13,8 @@ import {
   FormItem,
   FormLabel,
   FormMessage
-} from './ui/form'
-import { Input } from './ui/input'
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
 
 const authFormSchema = z.object({
   'creator[email]': z.string().email().min(3),
@@ -37,10 +37,7 @@ const AuthForm = ({ type }: Props) => {
   const [csrfToken, setCsrfToken] = React.useState<string>('')
 
   React.useEffect(() => {
-    setCsrfToken(
-      (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement)
-        .content
-    )
+    setCsrfToken((document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement).content)
   }, [])
 
   return (
@@ -55,12 +52,7 @@ const AuthForm = ({ type }: Props) => {
           acceptCharset="UTF-8"
           method="post"
         >
-          <input
-            type="hidden"
-            name="authenticity_token"
-            value={csrfToken}
-            autoComplete="off"
-          />
+          <input type="hidden" name="authenticity_token" value={csrfToken} autoComplete="off" />
 
           <FormField
             control={authForm.control}
