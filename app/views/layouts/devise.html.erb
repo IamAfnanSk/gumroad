@@ -17,20 +17,20 @@
         <div class="col-span-3 container-margins">
           <header class="flex items-center justify-between ">
             <div>
-              <img class="w-36" src="<%= asset_pack_path 'static/assets/images/logo.svg' %>" alt="Header logo" />
+              <img class="w-36" src="<%= asset_pack_path 'static/assets/images/logo.svg' %>" alt="Header logo">
             </div>
 
             <div>
-              <%if current_page?(new_creator_session_path) %>
-                <a href="/creators/sign_up" class="underline">
-                  Sign Up
+              <% if current_page?(new_creator_session_path) %>
+                <a href="<%= new_creator_registration_path %>" class="underline">
+                  Sign up
                 </a>
-              <%end%>
-              <%if current_page?(new_creator_registration_path) %>
-                <a href="/creators/sign_in" class="underline">
-                  Sign In
+              <% end %>
+              <% if current_page?(new_creator_registration_path) %>
+                <a href="<%= new_creator_session_path %>" class="underline">
+                  Login
                 </a>
-              <%end%>
+              <% end %>
             </div>
           </header>
 

@@ -1,11 +1,12 @@
 import * as React from 'react'
 import { Button, ButtonProps } from '@/components/ui/button'
+import { urlBuilder } from '@/lib/utils'
 
 type Props = {
   buttonVariant?: ButtonProps['variant']
 }
 
-const SignOutButton = ({ buttonVariant }: Props) => {
+const LogOutButton = ({ buttonVariant }: Props) => {
   const [csrfToken, setCsrfToken] = React.useState<string>('')
 
   React.useEffect(() => {
@@ -17,10 +18,14 @@ const SignOutButton = ({ buttonVariant }: Props) => {
 
   return (
     <div>
-      <form className="button_to" method="post" action="/creators/sign_out">
+      <form
+        className="button_to"
+        method="post"
+        action={urlBuilder(location, '/creators/logout', 'app')}
+      >
         <input type="hidden" name="_method" value="delete" autoComplete="off" />
         <Button variant={buttonVariant} type="submit">
-          Sign Out
+          Log Out
         </Button>
         <input
           type="hidden"
@@ -33,4 +38,4 @@ const SignOutButton = ({ buttonVariant }: Props) => {
   )
 }
 
-export { SignOutButton }
+export { LogOutButton }

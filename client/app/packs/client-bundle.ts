@@ -6,13 +6,16 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 
-import { SignOutButton } from '@/components/SignOutButton'
+import { LogOutButton } from '@/components/LogOutButton'
 import { RailsFlashes } from '@/components/RailsFlashes'
+
+import { HomePage } from '@/components/pages/HomePage'
 
 ReactOnRails.register({
   RailsFlashes,
   Button,
-  SignOutButton,
+  LogOutButton,
   Input,
-  Label
+  Label,
+  HomePage
 })

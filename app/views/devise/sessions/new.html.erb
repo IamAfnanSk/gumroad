@@ -1,4 +1,4 @@
-<h2 class="mt-12 text-2xl font-medium md:text-3xl">Sign in</h2>
+<h2 class="mt-12 text-2xl font-medium md:text-3xl">Login</h2>
 
 <%= form_for(resource, as: resource_name, url: session_path(resource_name), html: { class: "mt-5 space-y-4" }) do |f| %>
   <div class="field">
@@ -12,6 +12,6 @@
   </div>
 
   <div class="actions">
-    <%= react_component("Button", props: {variant: 'primary', children: 'Sign in', type: 'submit', className: 'w-full'}) %>
+    <%= react_component("Button", props: {variant: 'primary', children: 'Login', type: 'submit', className: 'w-full'}) %>
   </div>
 <% end %>
