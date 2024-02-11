@@ -42,7 +42,7 @@ const HomePage = (props: Props) => {
       <div className="mt-10 text-center">
         <p className="text-xl md:text-3xl">Gumroad website builder</p>
         <p className="mt-2">
-          by
+          by{' '}
           <a className="border-b border-dotted" href="https://afnan.dev">
             Afnan Shaikh
           </a>
