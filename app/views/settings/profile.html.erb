@@ -1,1 +1,1 @@
-<h1>Profile settings</h1>
+<%= react_component('SettingsProfile', props: { creator: @creator.attributes.merge(avatar: url_for(@creator.avatar)) }) %>

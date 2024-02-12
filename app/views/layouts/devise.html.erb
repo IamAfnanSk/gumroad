@@ -1,47 +1,47 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>Gumroad</title>
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <%= csrf_meta_tags %>
-    <%= csp_meta_tag %>
+<html lang="en">
+<head>
+  <title>Gumroad</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <%= csrf_meta_tags %>
+  <%= csp_meta_tag %>
 
-    <%= javascript_pack_tag('client-bundle', 'data-turbolinks-track': true) %>
-  </head>
+  <%= javascript_pack_tag('client-bundle', 'data-turbolinks-track': true) %>
+</head>
 
-  <body>
-    <main>
-      <%= react_component("RailsFlashes", props: {notice: notice, alert: alert}) %>
+<body>
+<main>
+  <%= react_component("RailsFlashes", props: { notice: notice, alert: alert }) %>
 
-      <div class="min-h-screen md:grid md:grid-cols-5">
-        <div class="col-span-3 container-margins">
-          <header class="flex items-center justify-between ">
-            <div>
-              <img class="w-36" src="<%= asset_pack_path 'static/assets/images/logo.svg' %>" alt="Header logo">
-            </div>
-
-            <div>
-              <% if current_page?(new_creator_session_path) %>
-                <a href="<%= new_creator_registration_path %>" class="underline">
-                  Sign up
-                </a>
-              <% end %>
-              <% if current_page?(new_creator_registration_path) %>
-                <a href="<%= new_creator_session_path %>" class="underline">
-                  Login
-                </a>
-              <% end %>
-            </div>
-          </header>
-
-          <%= yield %>
+  <div class="min-h-screen md:grid md:grid-cols-5">
+    <div class="col-span-3 container-margins">
+      <header class="flex items-center justify-between ">
+        <div>
+          <img class="w-36" src="<%= asset_pack_path 'static/assets/images/logo.svg' %>" alt="Header logo">
         </div>
 
-        <div class="justify-center hidden h-full col-span-2 align-middle bg-black mix-h-screen md:flex">
-          <img src="<%= asset_pack_path 'static/assets/images/auth-bg.webp' %>" alt="Auth background image" class="object-cover h-full max-w-full min-h-full">
+        <div>
+          <% if current_page?(new_creator_session_path) %>
+            <a href="<%= new_creator_registration_path %>" class="underline">
+              Sign up
+            </a>
+          <% end %>
+          <% if current_page?(new_creator_registration_path) %>
+            <a href="<%= new_creator_session_path %>" class="underline">
+              Login
+            </a>
+          <% end %>
         </div>
-      </div>
+      </header>
 
-    </main>
-  </body>
+      <%= yield %>
+    </div>
+
+    <div class="justify-center hidden h-full col-span-2 align-middle bg-black mix-h-screen md:flex">
+      <img src="<%= asset_pack_path 'static/assets/images/auth-bg.webp' %>" alt="Auth background image" class="object-cover h-full max-w-full min-h-full">
+    </div>
+  </div>
+
+</main>
+</body>
 </html>

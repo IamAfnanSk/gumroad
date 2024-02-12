@@ -11,4 +11,17 @@ class Creator < ApplicationRecord
   has_many :products
 
   has_one_attached :avatar
+
+  validates :bio, length: { maximum: 500 }
+  validates :twitter_handle, format: { with: /\A\w+\z/, message: "Enter valid twitter url" },
+                             allow_blank: true
+  validate :avatar_type
+
+  private
+
+  def avatar_type
+    return unless avatar.attached? && !avatar.content_type.in?(%w[image/jpeg image/png])
+
+    errors.add(:avatar, "Avatar must be a JPEG or PNG")
+  end
 end

@@ -1,17 +1,22 @@
 # frozen_string_literal: true
 
+require_relative "concerns/creator_authorization_json"
+
 class CreatorsController < ApplicationController
-  before_action :authenticate_creator!
+  include CreatorAuthorizationJSON
+
+  before_action :authenticate_creator!, only: [:update]
+  before_action :authorize_creator, only: [:update]
 
   def update
-    # TODO: fix find query
-    @creator = Creator.find(params[:id])
-
     respond_to do |format|
-      if @creator.update(creator_params)
-        format.json { render json: @creator }
-      else
-        format.json { render json: @creator.errors, status: :unprocessable_entity }
+      format.json do
+        if @creator.update(creator_params)
+          render json: { message: "Creator updated successfully" }
+        else
+          puts @creator.errors
+          render json: { errors: @creator.errors.full_messages }, status: :unprocessable_entity
+        end
       end
     end
   end
@@ -19,7 +24,6 @@ class CreatorsController < ApplicationController
   private
 
   def creator_params
-    # TODO: add permit params
-    params.require(:creator).permit(:title, :body)
+    params.require(:creator).permit(:name, :bio, :twitter_handle, :avatar, :username)
   end
 end

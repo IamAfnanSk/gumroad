@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_02_06_222514) do
+ActiveRecord::Schema[7.1].define(version: 2024_02_11_230622) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -47,7 +47,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_06_222514) do
     t.string "twitter_handle"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "avatar"
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
     t.string "reset_password_token"
@@ -87,7 +86,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_06_222514) do
     t.string "currency", null: false
     t.string "name", null: false
     t.integer "price", null: false
-    t.string "cover_image"
     t.string "permalink", null: false
     t.text "description", null: false
     t.index ["creator_id"], name: "index_products_on_creator_id"

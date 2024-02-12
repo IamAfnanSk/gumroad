@@ -1,14 +1,11 @@
 import * as React from 'react'
 import logo from '@/assets/images/logo.svg'
 import { LogOutButton } from '@/components/LogOutButton'
-import { CurrentCreator } from '@/types'
 import { urlBuilder } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 
 type Props = {
-  currentCreator?: CurrentCreator
-  profileUrl?: string
-  settingsUrl?: string
+  currentCreatorUsername?: string
 }
 
 const HomePage = (props: Props) => {
@@ -20,12 +17,12 @@ const HomePage = (props: Props) => {
         </div>
 
         <div className="flex flex-wrap items-center justify-end gap-6">
-          {props.currentCreator?.username ? (
+          {props.currentCreatorUsername ? (
             <>
               <a href={urlBuilder(location, '/settings/profile', 'app')}>
                 Settings
               </a>
-              <a href={urlBuilder(location, '', props.currentCreator.username)}>
+              <a href={urlBuilder(location, '', props.currentCreatorUsername)}>
                 Profile
               </a>
 
