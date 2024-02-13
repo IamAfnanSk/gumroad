@@ -6,6 +6,5 @@ class SettingsController < ApplicationController
   def profile
     @creator = Creator.where(username: current_creator.username).select(:name, :bio, :twitter_handle, :username,
                                                                         :id, :email).first
-    head :not_found unless current_creator == @creator
   end
 end

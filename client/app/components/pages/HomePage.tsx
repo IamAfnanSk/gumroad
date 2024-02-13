@@ -1,6 +1,5 @@
 import * as React from 'react'
 import logo from '@/assets/images/logo.svg'
-import { LogOutButton } from '@/components/LogOutButton'
 import { urlBuilder } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 
@@ -25,8 +24,6 @@ const HomePage = (props: Props) => {
               <a href={urlBuilder(location, '', props.currentCreatorUsername)}>
                 Profile
               </a>
-
-              <LogOutButton />
             </>
           ) : (
             <a href={urlBuilder(location, '/creators/login', 'app')}>

@@ -8,9 +8,18 @@ export function cn(...inputs: ClassValue[]): string {
 export const urlBuilder = (
   location: Location,
   path: string,
-  subDomain?: string
+  subDomain?: string,
+  popSubdomain?: boolean
 ) => {
   const { host, protocol } = location
+
+  if (popSubdomain) {
+    const parts = host.split('.')
+    parts.shift()
+    return subDomain
+      ? `${protocol}//${subDomain}.${parts.join('.')}${path}`
+      : path
+  }
 
   return subDomain ? `${protocol}//${subDomain}.${host}${path}` : path
 }

@@ -4,6 +4,7 @@ module CreatorAuthorizationJSON
   extend ActiveSupport::Concern
 
   included do
+    before_action :authenticate_creator!
     before_action :set_creator
   end
 
@@ -17,7 +18,7 @@ module CreatorAuthorizationJSON
     render json: { error: "Creator not found" }, status: :not_found
   end
 
-  def authorize_creator
+  def authorize_creator_for_json_requests
     render json: { error: "Not authorized" }, status: :forbidden unless current_creator == @creator
   end
 end

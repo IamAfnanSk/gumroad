@@ -5,8 +5,7 @@ require_relative "concerns/creator_authorization_json"
 class CreatorsController < ApplicationController
   include CreatorAuthorizationJSON
 
-  before_action :authenticate_creator!, only: [:update]
-  before_action :authorize_creator, only: [:update]
+  before_action :authorize_creator_for_json_requests, only: [:update]
 
   def update
     respond_to do |format|

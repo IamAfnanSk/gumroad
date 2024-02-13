@@ -12,9 +12,9 @@ Rails.application.routes.draw do
       sign_up: "signup"
     }
 
-    resources :creators, only: [:update], constraints: ->(request) { request.format == :json }
-
     get "/settings/profile", to: "settings#profile", as: :settings_profile
+
+    resources :creators, only: [:update], constraints: ->(request) { request.format == :json }
 
     root to: redirect("/settings/profile"), as: :app_root
   end

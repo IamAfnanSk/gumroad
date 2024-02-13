@@ -19,6 +19,7 @@ import { toast } from 'sonner'
 import { urlBuilder } from '@/lib/utils'
 import { Textarea } from '@/components/ui/textarea'
 import { FaCircleXmark } from 'react-icons/fa6'
+import { SettingsPageLayout } from '@/components/layouts/SettingsPageLayout'
 
 const CreatorUpdateSchema = z.object({
   bio: z.string().max(500).optional(),
@@ -44,7 +45,7 @@ const SettingsProfile = (props: Props) => {
   )
 
   const [profileUrl, setProfileUrl] = React.useState<string>(
-    urlBuilder(location, '', props.creator.username)
+    urlBuilder(location, '', props.creator.username, true)
   )
 
   const [csrfToken, setCsrfToken] = React.useState<string>('')
@@ -69,7 +70,7 @@ const SettingsProfile = (props: Props) => {
   React.useEffect(() => {
     const subscription = form.watch((value, { name }) => {
       if (name === 'username') {
-        setProfileUrl(urlBuilder(location, '', value['username']))
+        setProfileUrl(urlBuilder(location, '', value['username'], true))
       }
     })
     return () => subscription.unsubscribe()
@@ -115,90 +116,109 @@ const SettingsProfile = (props: Props) => {
   }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="w-2/3 space-y-6">
-        <FormField
-          control={form.control}
-          name="username"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Username</FormLabel>
-              <FormControl>
-                <Input type="text" {...field} />
-              </FormControl>
-              <FormDescription>
-                View your profile at: {profileUrl}
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+    <SettingsPageLayout>
+      <div className="px-12  py-16">
+        <h1 className="text-2xl mb-8">Profile</h1>
 
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Name</FormLabel>
-              <FormControl>
-                <Input type="text" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="twitter_handle"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Twitter handle</FormLabel>
-              <FormControl>
-                <Input type="text" placeholder="iamafnansk" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="bio"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Bio</FormLabel>
-              <FormControl>
-                <Textarea {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        {avatarUrl ? (
-          <div className="relative group w-max">
-            <img className="" src={avatarUrl} alt="Creator avatar" />
-            <FaCircleXmark
-              onClick={() => setAvatarUrl(null)}
-              className="absolute cursor-pointer transform hidden group-hover:block -translate-x-1/2 -translate-y-1/2 top-0 left-0 text-center rounded-full bg-white text-destructive"
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="w-2/3 space-y-6"
+          >
+            <FormField
+              control={form.control}
+              name="username"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Username</FormLabel>
+                  <FormControl>
+                    <Input type="text" {...field} />
+                  </FormControl>
+                  <FormDescription>
+                    View your profile at:{' '}
+                    <a
+                      className="underline"
+                      href={profileUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      {profileUrl}
+                    </a>
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          </div>
-        ) : (
-          <FormField
-            name="avatar"
-            render={() => (
-              <FormItem>
-                <FormLabel>Avatar</FormLabel>
-                <Input ref={avatarRef} id="avatar" type="file" />
-              </FormItem>
-            )}
-          />
-        )}
 
-        <Button type="submit">Submit</Button>
-      </form>
-    </Form>
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input type="text" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="twitter_handle"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Twitter handle</FormLabel>
+                  <FormControl>
+                    <Input type="text" placeholder="iamafnansk" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="bio"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Bio</FormLabel>
+                  <FormControl>
+                    <Textarea {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {avatarUrl ? (
+              <div className="relative group w-max">
+                <img className="" src={avatarUrl} alt="Creator avatar" />
+                <FaCircleXmark
+                  onClick={() => setAvatarUrl(null)}
+                  className="absolute cursor-pointer transform hidden group-hover:block -translate-x-1/2 -translate-y-1/2 top-0 left-0 text-center rounded-full bg-white text-destructive"
+                />
+              </div>
+            ) : (
+              <FormField
+                name="avatar"
+                render={() => (
+                  <FormItem>
+                    <FormLabel>Avatar</FormLabel>
+                    <Input ref={avatarRef} id="avatar" type="file" />
+                  </FormItem>
+                )}
+              />
+            )}
+
+            <Button variant={'primary'} type="submit">
+              Save
+            </Button>
+          </form>
+        </Form>
+      </div>
+    </SettingsPageLayout>
   )
 }
 
