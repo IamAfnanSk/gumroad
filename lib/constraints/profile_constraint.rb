@@ -2,6 +2,6 @@
 
 class ProfileConstraint
   def matches?(request)
-    Creator.where(username: request.subdomain).exists?
+    request.subdomain.present? && Creator.where(username: request.subdomain).exists?
   end
 end

@@ -73,4 +73,6 @@ gem "rubocop-rails"
 gem "rubocop-performance", "~>1.20.0", require: false
 gem "rubocop-rspec", "~>2.26", require: false
 
+gem "acts_as_list"
 gem "erb_lint", require: false
+gem "valid_url"
