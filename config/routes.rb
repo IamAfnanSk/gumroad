@@ -18,6 +18,12 @@ Rails.application.routes.draw do
     resources :posts, only: %i[create update destroy], constraints: ->(request) { request.format == :json }
     resources :products, only: %i[create update destroy], constraints: ->(request) { request.format == :json }
 
+    root to: redirect("/settings/profile"), as: :app_root
+  end
+
+  constraints(ProfileConstraint.new) do
+    root "profiles#index", as: :profile_root
+
     resources :profiles, only: [] do
       member do
         put "update_section", constraints: ->(request) { request.format == :json }
@@ -25,12 +31,6 @@ Rails.application.routes.draw do
         delete "delete_section", constraints: ->(request) { request.format == :json }
       end
     end
-
-    root to: redirect("/settings/profile"), as: :app_root
-  end
-
-  constraints(ProfileConstraint.new) do
-    root "profiles#index", as: :profile_root
   end
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.

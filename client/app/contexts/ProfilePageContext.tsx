@@ -6,6 +6,8 @@ export type ProfilePageContextProps = {
   creator?: Partial<Creator>
   posts?: Partial<Post[]>
   products?: Partial<Product[]>
+  creatorIsOwner?: boolean
+  setSections: React.Dispatch<React.SetStateAction<Section[]>>
 }
 
 export const ProfilePageContext = React.createContext<

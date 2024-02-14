@@ -17,8 +17,8 @@ class PageSection < ApplicationRecord
   has_many_attached :carousel_images
 
   validate :json_content_is_valid_json, if: -> { wysiwyg? }
-  validates :embed_url, url: true, if: -> { embed? }
-  validates :add_new_products_by_default, inclusion: { in: [true, false] }
+  validates :embed_url, url: true, if: -> { embed? }, allow_blank: true
+  validates :add_new_products_by_default, inclusion: { in: [true, false] }, allow_blank: true
   validate :carousel_images_content_type
 
   def carousel_image_urls
@@ -38,8 +38,10 @@ class PageSection < ApplicationRecord
   end
 
   def carousel_images_content_type
+    return unless image_carousel? && carousel_images.attached?
+
     carousel_images.each do |image|
-      errors.add(:carousel_images, "must be a JPEG or PNG") unless image.content_type.in?(%('image/jpeg image/png'))
+      errors.add(:carousel_images, "must be a JPEG or PNG") unless image.content_type.in?(%w[image/jpeg image/png])
     end
   end
 end

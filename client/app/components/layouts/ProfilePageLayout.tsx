@@ -3,6 +3,7 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import logo from '@/assets/images/logo.svg'
 import { ProfilePageContext } from '@/contexts/ProfilePageContext'
+import { toast } from 'sonner'
 
 type Props = {
   children?: React.ReactNode
@@ -23,12 +24,16 @@ const ProfilePageLayout = ({ children }: Props) => {
     )
   }
 
+  const fakeSubscribe = () => {
+    toast.success('Fake subscribed!')
+  }
+
   return (
     <>
-      <header className="flex flex-col md:flex-row md:items-center md:px-16 md:py-6 mx-auto max-w-7xl">
+      <header className="flex flex-col md:flex-row md:items-center !md:py-6 profile-container">
         <div className="flex items-center py-4 px-3 md:flex-1 gap-3 md:p-0">
           <img
-            className="object-contain w-8 h-8 border border-white rounded-full"
+            className="w-8 h-8 border border-border rounded-full"
             src={
               profilePageContext.creator?.avatarUrl ||
               'https://gravatar.com/avatar'
@@ -41,12 +46,12 @@ const ProfilePageLayout = ({ children }: Props) => {
         <div className="flex items-center gap-3 md:border-none border-t border-border py-4 px-3 md:p-0">
           <Input type="text" placeholder="Your email address" />
 
-          <Button>Subscribe</Button>
+          <Button onClick={fakeSubscribe}>Subscribe</Button>
         </div>
       </header>
 
       <header className="border-t border-border">
-        <div className="md:px-16 md:py-8 mx-auto max-w-7xl py-6 px-3">
+        <div className="profile-container">
           <p className="text-4xl">{profilePageContext.creator?.bio}</p>
 
           <div className="mt-4 flex items-center gap-5">
@@ -65,14 +70,10 @@ const ProfilePageLayout = ({ children }: Props) => {
         </div>
       </header>
 
-      <main className="border-t border-border">
-        <div className="md:px-16 md:py-8 mx-auto max-w-7xl py-6 px-3">
-          {children}
-        </div>
-      </main>
+      <main>{children}</main>
 
       <footer className="border-t border-border">
-        <div className="flex items-center gap-2 md:px-16 md:py-8 mx-auto max-w-7xl py-6 px-3">
+        <div className="flex items-center gap-2 profile-container">
           <p className="text-sm">Powered by</p>
           <img src={logo} alt="Gumroad" className="w-24 " />
         </div>

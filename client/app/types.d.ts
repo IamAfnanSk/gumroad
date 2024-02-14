@@ -14,6 +14,8 @@ export type Product = {
 }
 
 export type Post = {
+  created_at: string
+  body: string
   id: number
   title: string
 }
@@ -26,10 +28,13 @@ export type Section = {
   creator_id: number
   created_at: string
   updated_at: string
-  json_content: string | null
-  featured_product_id: number | null
+  json_content: string
+  featured_product_id: number
   title: string
-  embed_url: string | null
+  embed_url: string
   section_type: string
   position: number
+  show_title: boolean
+  show_filters: boolean
+  add_new_products_by_default: boolean
 }

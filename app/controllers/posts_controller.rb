@@ -1,12 +1,9 @@
 # frozen_string_literal: true
 
-require_relative "concerns/creator_authorization_json"
-
 class PostsController < ApplicationController
-  include CreatorAuthorizationJSON
-
-  before_action :set_post, only: %i[show edit update destroy]
-  before_action :authorize_creator_for_json_requests, only: %i[update destroy edit]
+  before_action :authenticate_creator!, only: %i[create update destroy]
+  before_action :set_creator, only: %i[create update destroy]
+  before_action :set_post, only: %i[create update destroy]
 
   def create
     @post = @creator.posts.build(post_params)
@@ -38,6 +35,10 @@ class PostsController < ApplicationController
   end
 
   private
+
+  def set_creator
+    @creator = current_creator
+  end
 
   # Use callbacks to share common setup or constraints between actions.
   def set_post

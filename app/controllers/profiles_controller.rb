@@ -1,13 +1,10 @@
 # frozen_string_literal: true
 
-require_relative "concerns/creator_authorization_json"
-
 class ProfilesController < ApplicationController
-  include CreatorAuthorizationJSON
+  before_action :authenticate_creator!, only: %i[update_section_positions add_section update_section delete_section]
+  before_action :set_creator, only: %i[update_section_positions add_section update_section delete_section]
 
   before_action :load_creator, only: :index
-  before_action :authorize_creator_for_json_requests,
-                only: %i[update_section_positions add_section update_section delete_section]
 
   def index
     # Prefetch posts and products for each section
@@ -30,15 +27,25 @@ class ProfilesController < ApplicationController
   end
 
   def update_section_positions
-    @section = @creator.page_sections.find(update_section_positions_params[:id])
+    @section = @creator.page_sections.find(params[:id])
 
-    if update_section_positions_params[:where_to_move] == "up"
+    if update_section_positions_params[:where_to_move] == "down"
       @section.move_lower
-    elsif update_section_positions_params[:where_to_move] == "down"
+    elsif update_section_positions_params[:where_to_move] == "up"
       @section.move_higher
     end
 
-    render json: { message: "Section position updated successfully" }
+    if @creator.page_sections.present?
+      render json: {
+        message: "Section position updated successfully",
+        data: @creator.page_sections.order(:position).pluck(:id, :position).to_h
+      }
+    else
+      render json: {
+        message: "No sections found for this creator",
+        data: {}
+      }
+    end
   rescue StandardError => e
     render json: { error: "An error occurred: #{e.message}" }, status: :internal_server_error
   end
@@ -58,8 +65,10 @@ class ProfilesController < ApplicationController
   def update_section
     @section = @creator.page_sections.find(params[:id])
 
+    puts @section
+
     if @section.update(section_params)
-      handle_section_type
+      # handle_section_type
 
       render json: { message: "Section updated successfully" }
     else
@@ -91,6 +100,8 @@ class ProfilesController < ApplicationController
       @section.post_ids = params[:section][:post_ids].map(&:to_i)
     when "image_carousel"
       handle_image_carousel
+    else
+      puts "No special handling for section type"
     end
   end
 
@@ -118,9 +129,15 @@ class ProfilesController < ApplicationController
                                     :show_title, :show_filter, :add_new_products_by_default, carousel_images: [], carousel_image_urls: [])
   end
 
+  # for subdomain requests
   def load_creator
     @creator = Creator.where(username: request.subdomain).select(:name, :bio, :twitter_handle, :username, :id,
                                                                  :email).first
+  end
+
+  # For json requests
+  def set_creator
+    @creator = current_creator
   end
 
   def creator_owns_this_profile?

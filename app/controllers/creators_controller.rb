@@ -1,13 +1,11 @@
 # frozen_string_literal: true
 
-require_relative "concerns/creator_authorization_json"
-
 class CreatorsController < ApplicationController
-  include CreatorAuthorizationJSON
-
-  before_action :authorize_creator_for_json_requests, only: [:update]
+  before_action :authenticate_creator!, only: [:update]
 
   def update
+    @creator = current_creator
+
     respond_to do |format|
       format.json do
         if @creator.update(creator_params)

@@ -20,6 +20,7 @@ import { urlBuilder } from '@/lib/utils'
 import { Textarea } from '@/components/ui/textarea'
 import { FaCircleXmark } from 'react-icons/fa6'
 import { SettingsPageLayout } from '@/components/layouts/SettingsPageLayout'
+import { useCsrfToken } from '@/hooks/useCsrfToken'
 
 const CreatorUpdateSchema = z.object({
   bio: z.string().max(500).optional(),
@@ -41,21 +42,14 @@ const SettingsProfile = (props: Props) => {
   const avatarRef = React.useRef<HTMLInputElement>(null)
 
   const [avatarUrl, setAvatarUrl] = React.useState<string | null>(
-    props.creator.avatar || null
+    props.creator.avatarUrl || null
   )
 
   const [profileUrl, setProfileUrl] = React.useState<string>(
     urlBuilder(location, '', props.creator.username, true)
   )
 
-  const [csrfToken, setCsrfToken] = React.useState<string>('')
-
-  React.useEffect(() => {
-    setCsrfToken(
-      (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement)
-        .content
-    )
-  }, [])
+  const csrfToken = useCsrfToken()
 
   const form = useForm<z.infer<typeof CreatorUpdateSchema>>({
     resolver: zodResolver(CreatorUpdateSchema),
@@ -106,7 +100,7 @@ const SettingsProfile = (props: Props) => {
           setAvatarUrl(URL.createObjectURL(avatarRef.current.files[0]))
         }
       } else {
-        console.log(response.data)
+        toast.error('Error updating creator')
         console.error('Error updating creator:', response.data)
       }
     } catch (error) {

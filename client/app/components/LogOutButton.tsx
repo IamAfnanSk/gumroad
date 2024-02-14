@@ -1,20 +1,14 @@
 import * as React from 'react'
 import { Button, ButtonProps } from '@/components/ui/button'
 import { urlBuilder } from '@/lib/utils'
+import { useCsrfToken } from '@/hooks/useCsrfToken'
 
 type Props = {
   buttonVariant?: ButtonProps['variant']
 }
 
 const LogOutButton = ({ buttonVariant }: Props) => {
-  const [csrfToken, setCsrfToken] = React.useState<string>('')
-
-  React.useEffect(() => {
-    setCsrfToken(
-      (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement)
-        .content
-    )
-  }, [])
+  const csrfToken = useCsrfToken()
 
   return (
     <div>
