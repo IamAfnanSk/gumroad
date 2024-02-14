@@ -15,6 +15,16 @@ Rails.application.routes.draw do
     get "/settings/profile", to: "settings#profile", as: :settings_profile
 
     resources :creators, only: [:update], constraints: ->(request) { request.format == :json }
+    resources :posts, only: %i[create update destroy], constraints: ->(request) { request.format == :json }
+    resources :products, only: %i[create update destroy], constraints: ->(request) { request.format == :json }
+
+    resources :profiles, only: [] do
+      member do
+        put "update_section", constraints: ->(request) { request.format == :json }
+        put "update_section_positions", constraints: ->(request) { request.format == :json }
+        delete "delete_section", constraints: ->(request) { request.format == :json }
+      end
+    end
 
     root to: redirect("/settings/profile"), as: :app_root
   end

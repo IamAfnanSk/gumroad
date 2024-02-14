@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_02_13_222131) do
+ActiveRecord::Schema[7.1].define(version: 2024_02_14_121037) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -89,6 +89,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_13_222131) do
     t.string "embed_url"
     t.integer "section_type", null: false
     t.integer "position"
+    t.boolean "show_title"
+    t.boolean "show_filters"
+    t.boolean "add_new_products_by_default"
     t.index ["creator_id"], name: "index_page_sections_on_creator_id"
   end
 

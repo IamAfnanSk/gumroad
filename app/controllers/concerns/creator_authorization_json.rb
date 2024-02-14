@@ -16,9 +16,13 @@ module CreatorAuthorizationJSON
                                                      :id, :email).first
   rescue ActiveRecord::RecordNotFound
     render json: { error: "Creator not found" }, status: :not_found
+  rescue StandardError => e
+    render json: { error: "An error occurred: #{e.message}" }, status: :internal_server_error
   end
 
   def authorize_creator_for_json_requests
     render json: { error: "Not authorized" }, status: :forbidden unless current_creator == @creator
+  rescue StandardError => e
+    render json: { error: "An error occurred: #{e.message}" }, status: :internal_server_error
   end
 end

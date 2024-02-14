@@ -10,6 +10,7 @@ import { RailsFlashes } from '@/components/RailsFlashes'
 
 import { HomePage } from '@/components/pages/HomePage'
 import { SettingsProfile } from '@/components/pages/SettingsProfile'
+import { ProfilePage } from '@/components/pages/ProfilePage'
 
 ReactOnRails.register({
   RailsFlashes,
@@ -17,5 +18,6 @@ ReactOnRails.register({
   Input,
   Label,
   HomePage,
-  SettingsProfile
+  SettingsProfile,
+  ProfilePage
 })

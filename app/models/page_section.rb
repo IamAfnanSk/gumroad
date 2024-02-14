@@ -18,6 +18,8 @@ class PageSection < ApplicationRecord
 
   validate :json_content_is_valid_json, if: -> { wysiwyg? }
   validates :embed_url, url: true, if: -> { embed? }
+  validates :add_new_products_by_default, inclusion: { in: [true, false] }
+  validate :carousel_images_content_type
 
   def carousel_image_urls
     carousel_images.map do |image|
@@ -33,5 +35,11 @@ class PageSection < ApplicationRecord
     JSON.parse(json_content)
   rescue JSON::ParserError
     errors.add(:json_content, "must be a valid JSON")
+  end
+
+  def carousel_images_content_type
+    carousel_images.each do |image|
+      errors.add(:carousel_images, "must be a JPEG or PNG") unless image.content_type.in?(%('image/jpeg image/png'))
+    end
   end
 end

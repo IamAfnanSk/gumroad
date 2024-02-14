@@ -1,5 +1,2 @@
-<h1>Hello</h1>
+<%= react_component('ProfilePage', props: { sections: @computed_sections, products: @products, posts: @posts, creator: @creator.attributes.merge(avatarUrl: @creator.avatar.attached? ? url_for(@creator.avatar) : '') }) %>
 
-
-<%# <%= current_creator&.email %>
-<%= creator_owns_this_profile? %>

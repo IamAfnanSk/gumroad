@@ -16,6 +16,8 @@ class CreatorsController < ApplicationController
           puts @creator.errors
           render json: { errors: @creator.errors.full_messages }, status: :unprocessable_entity
         end
+      rescue StandardError => e
+        render json: { error: "An error occurred: #{e.message}" }, status: :internal_server_error
       end
     end
   end
