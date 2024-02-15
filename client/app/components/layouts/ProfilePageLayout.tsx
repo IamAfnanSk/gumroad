@@ -35,7 +35,7 @@ const ProfilePageLayout = ({ children }: Props) => {
           <img
             className="w-8 h-8 border border-border rounded-full"
             src={
-              profilePageContext.creator?.avatarUrl ||
+              profilePageContext.creator?.avatar_url ||
               'https://gravatar.com/avatar'
             }
             alt={`${profilePageContext.creator?.name}'s avatar`}

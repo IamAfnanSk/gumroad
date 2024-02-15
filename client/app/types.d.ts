@@ -1,25 +1,31 @@
+type EntityCommon = {
+  created_at: string
+  updated_at: string
+}
+
 export type Creator = {
   id: string
   email: string
   username: string
-  avatarUrl: string
+  avatar_url: string
   name: string
   bio: string
   twitter_handle: string
-}
+} & EntityCommon
 
 export type Product = {
   price: number
   id: number
   name: string
-}
+  currency: string
+  cover_image_url: string
+} & EntityCommon
 
 export type Post = {
-  created_at: string
   body: string
   id: number
   title: string
-}
+} & EntityCommon
 
 export type Section = {
   products: Product[]
@@ -27,8 +33,6 @@ export type Section = {
   carousel_images: string[]
   id: number
   creator_id: number
-  created_at: string
-  updated_at: string
   json_content: string
   featured_product_id: number
   title: string
@@ -38,4 +42,5 @@ export type Section = {
   show_title: boolean
   show_filters: boolean
   add_new_products_by_default: boolean
-}
+  embed_height: string
+} & EntityCommon

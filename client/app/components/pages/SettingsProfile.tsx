@@ -42,7 +42,7 @@ const SettingsProfile = (props: Props) => {
   const avatarRef = React.useRef<HTMLInputElement>(null)
 
   const [avatarUrl, setAvatarUrl] = React.useState<string | null>(
-    props.creator.avatarUrl || null
+    props.creator.avatar_url || null
   )
 
   const [profileUrl, setProfileUrl] = React.useState<string>(

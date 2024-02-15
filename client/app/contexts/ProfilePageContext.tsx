@@ -8,6 +8,8 @@ export type ProfilePageContextProps = {
   products?: Partial<Product[]>
   creatorIsOwner?: boolean
   setSections: React.Dispatch<React.SetStateAction<Section[]>>
+  handleSectionDelete: (sectionId: number) => Promise<void>
+  handleAddSection: (sectionType: string, position: number) => Promise<void>
 }
 
 export const ProfilePageContext = React.createContext<

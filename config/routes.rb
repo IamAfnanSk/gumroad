@@ -30,6 +30,10 @@ Rails.application.routes.draw do
         put "update_section_positions", constraints: ->(request) { request.format == :json }
         delete "delete_section", constraints: ->(request) { request.format == :json }
       end
+
+      collection do
+        post "add_section", constraints: ->(request) { request.format == :json }
+      end
     end
   end
 

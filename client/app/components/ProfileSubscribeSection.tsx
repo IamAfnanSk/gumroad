@@ -1,15 +1,13 @@
 import * as React from 'react'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
 import { Section } from '@/types'
 import { toast } from 'sonner'
-import { format } from 'date-fns'
-import { FiArrowUpRight } from 'react-icons/fi'
-import { ProfileSectionPositionMover } from '@/components/ProfileSectionPositionMover'
 import {
   Popover,
   PopoverContent,
   PopoverTrigger
 } from '@/components/ui/popover'
-import { Button } from '@/components/ui/button'
 import {
   FaChevronLeft,
   FaChevronRight,
@@ -27,26 +25,24 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger
 } from '@/components/ui/alert-dialog'
-import { Input } from '@/components/ui/input'
 import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
-import { Checkbox } from '@/components/ui/checkbox'
 import { useCsrfToken } from '@/hooks/useCsrfToken'
 import { ProfilePageContext } from '@/contexts/ProfilePageContext'
 import axios from 'axios'
+import { ProfileSectionPositionMover } from '@/components/ProfileSectionPositionMover'
 import { ProfileNewSection } from '@/components/ProfileNewSection'
-import { BiNews } from 'react-icons/bi'
 
 type Props = {
   section: Section
 }
 
-const ProfilePostsSection = ({ section }: Props) => {
-  const getPostDate = (date: string) => {
-    return format(new Date(date), 'MMMM dd, yyyy')
+const ProfileSubscribeSection = ({ section }: Props) => {
+  const fakeSubscribe = () => {
+    toast.success('Fake subscribed!')
   }
 
-  const [popOverTab, setPopoverTab] = React.useState<'name' | 'posts' | 'home'>(
+  const [popOverTab, setPopoverTab] = React.useState<'description' | 'home'>(
     'home'
   )
 
@@ -57,23 +53,12 @@ const ProfilePostsSection = ({ section }: Props) => {
   const [title, setTitle] = React.useState<string>(section.title)
   const [showTitle, setShowTitle] = React.useState<boolean>(section.show_title)
 
-  const [selectedPostIds, setSelectedPostIds] = React.useState<number[]>(
-    section.posts.map((post) => post.id)
-  )
-
   const handleSectionUpdate = async (isOpened: boolean) => {
     if (isOpened) {
       return
     }
 
-    if (
-      title === section.title &&
-      showTitle === section.show_title &&
-      selectedPostIds.length === section.posts.length &&
-      selectedPostIds.every((id) =>
-        section.posts.map((post) => post.id).includes(id)
-      )
-    ) {
+    if (title === section.title && showTitle === section.show_title) {
       return
     }
 
@@ -83,8 +68,7 @@ const ProfilePostsSection = ({ section }: Props) => {
         {
           section: {
             title,
-            show_title: showTitle,
-            post_ids: selectedPostIds
+            show_title: showTitle
           }
         },
         {
@@ -104,10 +88,7 @@ const ProfilePostsSection = ({ section }: Props) => {
               return {
                 ...s,
                 title,
-                show_title: showTitle,
-                posts: profilePageContext.posts.filter((post) =>
-                  selectedPostIds.includes(post.id)
-                )
+                show_title: showTitle
               }
             }
 
@@ -116,11 +97,11 @@ const ProfilePostsSection = ({ section }: Props) => {
         })
       } else {
         toast.error('Error updating content')
-        console.error('Error updating posts:', response.data)
+        console.error('Error updating subscribe:', response.data)
       }
     } catch (error) {
       toast.error('Error updating content')
-      console.error('Error updating posts:', error)
+      console.error('Error updating subscribe:', error)
     }
   }
 
@@ -138,24 +119,13 @@ const ProfilePostsSection = ({ section }: Props) => {
               {popOverTab === 'home' && (
                 <div className="flex flex-col">
                   <div
-                    onClick={() => setPopoverTab('name')}
+                    onClick={() => setPopoverTab('description')}
                     className="flex cursor-pointer px-4 py-3 items-center justify-between"
                   >
-                    <p className="font-medium">Name</p>
+                    <p className="font-medium">Description</p>
 
                     <div className="flex items-center gap-2">
                       <p className="text-sm">{title}</p>
-                      <FaChevronRight className="text-xs" />
-                    </div>
-                  </div>
-                  <div
-                    onClick={() => setPopoverTab('posts')}
-                    className="flex cursor-pointer px-4 py-3 items-center justify-between border-t border-border"
-                  >
-                    <p className="font-medium">Posts</p>
-
-                    <div className="flex items-center gap-2">
-                      <p className="text-sm">{selectedPostIds.length} posts</p>
                       <FaChevronRight className="text-xs" />
                     </div>
                   </div>
@@ -192,7 +162,7 @@ const ProfilePostsSection = ({ section }: Props) => {
                 </div>
               )}
 
-              {popOverTab === 'name' && (
+              {popOverTab === 'description' && (
                 <div className="px-4 py-3">
                   <div className="grid grid-cols-10 pt-3 pb-5 items-center">
                     <FaChevronLeft
@@ -200,7 +170,7 @@ const ProfilePostsSection = ({ section }: Props) => {
                       className="col-span-1 cursor-pointer"
                     />
                     <h1 className="font-medium text-center w-full col-span-8">
-                      Name
+                      Description
                     </h1>
                     <span className="col-span-1 block"></span>
                   </div>
@@ -222,99 +192,33 @@ const ProfilePostsSection = ({ section }: Props) => {
                   </div>
                 </div>
               )}
-
-              {popOverTab === 'posts' && (
-                <div className="px-4 py-3">
-                  <div className="grid grid-cols-10 pt-3 pb-5 items-center">
-                    <FaChevronLeft
-                      onClick={() => setPopoverTab('home')}
-                      className="col-span-1 cursor-pointer"
-                    />
-                    <h1 className="font-medium text-center w-full col-span-8">
-                      Posts
-                    </h1>
-                    <span className="col-span-1 block"></span>
-                  </div>
-
-                  <div className="flex flex-col gap-1 mt-4">
-                    {profilePageContext.posts.map((post) => {
-                      return (
-                        <div
-                          key={post.id}
-                          className="flex items-center justify-between border border-border py-3 px-4 rounded"
-                        >
-                          <p>{post.title}</p>
-
-                          <Checkbox
-                            checked={selectedPostIds.includes(post.id)}
-                            onCheckedChange={() => {
-                              if (selectedPostIds.includes(post.id)) {
-                                setSelectedPostIds(
-                                  selectedPostIds.filter((id) => id !== post.id)
-                                )
-                              } else {
-                                setSelectedPostIds([
-                                  ...selectedPostIds,
-                                  post.id
-                                ])
-                              }
-                            }}
-                          />
-                        </div>
-                      )
-                    })}
-                  </div>
-                </div>
-              )}
             </PopoverContent>
           </Popover>
         </div>
       )}
 
-      <div
-        className={`${section.posts.length ? '!pb-0' : ''} profile-container`}
-      >
-        {showTitle && <h2 className="text-2xl">{title}</h2>}
+      <div className="profile-container">
+        {showTitle && <h2 className="text-2xl mb-5">{title}</h2>}
 
-        <div className={section.posts.length && 'mt-10'}>
-          {section.posts.map((post) => {
-            return (
-              <div
-                onClick={() => toast('Post page is WIP 🚧')}
-                className="border-t py-8 cursor-pointer w-full border-border mx-auto"
-                key={post.id}
-              >
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="font-medium text-xl">{post.title}</h3>
-                    <p className="mt-2">{getPostDate(post.created_at)}</p>
-                  </div>
+        <div className="flex items-center gap-3 md:border-none px-3 md:px-0">
+          <Input
+            className="w-full"
+            type="text"
+            placeholder="Your email address"
+          />
 
-                  <div>
-                    <FiArrowUpRight className="text-5xl" />
-                  </div>
-                </div>
-              </div>
-            )
-          })}
-
-          {section.posts.length === 0 && (
-            <div className="flex flex-col items-center justify-center">
-              <BiNews className="text-4xl" />
-              <p className="text-lg mt-2">No posts to show</p>
-            </div>
-          )}
+          <Button onClick={fakeSubscribe}>Subscribe</Button>
         </div>
+
+        <ProfileSectionPositionMover
+          sectionId={section.id}
+          position={section.position}
+        />
+
+        <ProfileNewSection position={section.position} />
       </div>
-
-      <ProfileSectionPositionMover
-        sectionId={section.id}
-        position={section.position}
-      />
-
-      <ProfileNewSection position={section.position} />
     </div>
   )
 }
 
-export { ProfilePostsSection }
+export { ProfileSubscribeSection }

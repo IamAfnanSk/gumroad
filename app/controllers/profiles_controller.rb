@@ -11,17 +11,15 @@ class ProfilesController < ApplicationController
     @sections = @creator.page_sections.includes(:page_section_products, :page_section_posts).order(:position)
 
     @computed_sections = @sections.map do |section|
-      {
-        products: section.products,
-        posts: section.posts,
-        carousel_images: section.carousel_image_urls
-      }.merge(section.attributes)
-    end.as_json
+      compute_section_data(section)
+    end
 
-    puts @computed_sections
-
-    @products = @creator.products.select(:id, :name).as_json if creator_owns_this_profile?
-    @posts = @creator.posts.select(:id, :title).as_json if creator_owns_this_profile?
+    if creator_owns_this_profile?
+      @products = @creator.products.map do |product|
+        compute_product_data(product)
+      end
+    end
+    @posts = @creator.posts if creator_owns_this_profile?
   rescue StandardError => e
     render json: { error: "An error occurred: #{e.message}" }, status: :internal_server_error
   end
@@ -38,7 +36,7 @@ class ProfilesController < ApplicationController
     if @creator.page_sections.present?
       render json: {
         message: "Section position updated successfully",
-        data: @creator.page_sections.order(:position).pluck(:id, :position).to_h
+        data: compute_position_data
       }
     else
       render json: {
@@ -54,7 +52,10 @@ class ProfilesController < ApplicationController
     @section = @creator.page_sections.new(section_params)
 
     if @section.save
-      render json: { message: "Section added successfully" }
+      render json: { message: "Section added successfully", data: {
+        section: compute_section_data(@section),
+        id_position_mapping: compute_position_data
+      } }
     else
       render json: { errors: @section.errors.full_messages }, status: :unprocessable_entity
     end
@@ -65,12 +66,11 @@ class ProfilesController < ApplicationController
   def update_section
     @section = @creator.page_sections.find(params[:id])
 
-    puts @section
-
     if @section.update(section_params)
-      # handle_section_type
+      handle_section_type
 
-      render json: { message: "Section updated successfully" }
+      render json: { message: "Section updated successfully",
+                     data: @section.image_carousel? ? @section.carousel_image_urls : {} }
     else
       render json: { errors: @section.errors.full_messages }, status: :unprocessable_entity
     end
@@ -82,7 +82,8 @@ class ProfilesController < ApplicationController
     @section = @creator.page_sections.find(params[:id])
 
     if @section.destroy
-      render json: { message: "Section deleted successfully" }
+      render json: { message: "Section deleted successfully",
+                     data: compute_position_data }
     else
       render json: { errors: @section.errors.full_messages }, status: :unprocessable_entity
     end
@@ -108,6 +109,8 @@ class ProfilesController < ApplicationController
   def handle_image_carousel
     frontend_image_urls = params[:section][:carousel_image_urls]
 
+    puts frontend_image_urls
+
     # Remove images that are not included in the frontend_image_urls
     @section.carousel_images.each do |image|
       image.purge unless frontend_image_urls.include?(rails_blob_url(image))
@@ -115,9 +118,30 @@ class ProfilesController < ApplicationController
 
     # Attach new images
     new_image_files = params[:section][:carousel_images] || []
+    puts new_image_files
     new_image_files.each do |image_file|
       @section.carousel_images.attach(image_file)
     end
+  end
+
+  def compute_section_data(section)
+    {
+      products: section.products.map do |product|
+        compute_product_data(product)
+      end,
+      posts: section.posts,
+      carousel_images: section.carousel_image_urls
+    }.merge(section.attributes)
+  end
+
+  def compute_product_data(product)
+    {
+      cover_image_url: product.cover_image.attached? ? rails_blob_url(product.cover_image) : nil
+    }.merge(product.attributes)
+  end
+
+  def compute_position_data
+    @creator.page_sections.order(:position).pluck(:id, :position).to_h
   end
 
   def update_section_positions_params
@@ -125,8 +149,10 @@ class ProfilesController < ApplicationController
   end
 
   def section_params
-    params.require(:section).permit(:section_type, :title, :json_content, :embed_url, :featured_product_id,
-                                    :show_title, :show_filter, :add_new_products_by_default, carousel_images: [], carousel_image_urls: [])
+    permitted_params = [:carousel_images, :embed_height, :product_ids, :post_ids, :section_type, :title, :json_content, :embed_url, :featured_product_id,
+                        :show_title, :show_filters, :add_new_products_by_default, { carousel_images: [], carousel_image_urls: [] }]
+    permitted_params << :position if action_name == "add_section"
+    params.require(:section).permit(permitted_params)
   end
 
   # for subdomain requests

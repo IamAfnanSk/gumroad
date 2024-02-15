@@ -55,7 +55,7 @@ const ProfileSectionPositionMover = ({ sectionId, position }: Props) => {
   }
 
   return (
-    <div className="absolute flex flex-col right-0 gap-1 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
+    <div className="absolute flex flex-col right-0 gap-1 top-2 transform -translate-x-1/2 z-10">
       {position !== 1 && (
         <Button onClick={() => handleMoveSection('up')} size={'smallIcon'}>
           <FaArrowUp className="text-xs" />
