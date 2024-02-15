@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
-require "constraints/profile_constraint"
-require "constraints/app_constraint"
+require_relative "../lib/constraints/profile_subdomain_constraint"
+require_relative "../lib/constraints/app_subdomain_constraint"
 
 Rails.application.routes.draw do
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
-  constraints(AppConstraint.new) do
+  constraints(AppSubDomainConstraint.new) do
     devise_for :creators, only: %i[sessions registrations], path_names: {
       sign_in: "login", sign_out: "logout",
       sign_up: "signup"
@@ -21,7 +21,7 @@ Rails.application.routes.draw do
     root to: redirect("/settings/profile"), as: :app_root
   end
 
-  constraints(ProfileConstraint.new) do
+  constraints(ProfileSubDomainConstraint.new) do
     root "profiles#index", as: :profile_root
 
     resources :profiles, only: [] do

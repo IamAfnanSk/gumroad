@@ -6,6 +6,7 @@ import { ProfilePageContext } from '@/contexts/ProfilePageContext'
 import { ProfileWysiwygSection } from '@/components/ProfileWysiwygSection'
 import { ProfilePostsSection } from '@/components/ProfilePostsSection'
 import { Creator, Post, Product, Section } from '@/types'
+import { ProfileProductsSection } from '@/components/ProfileProductsSection'
 
 type Props = {
   sections: Partial<Section[]>
@@ -35,15 +36,7 @@ const ProfilePage = (props: Props) => {
           }
 
           if (section.section_type === 'product_list') {
-            return (
-              <div key={section.id} className="border-t border-border w-full">
-                <div className="profile-container">
-                  {section.show_title && (
-                    <h2 className="text-2xl">{section.title}</h2>
-                  )}
-                </div>
-              </div>
-            )
+            return <ProfileProductsSection key={section.id} section={section} />
           }
 
           return null

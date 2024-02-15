@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class AppConstraint
+class AppSubDomainConstraint
   def matches?(request)
     request.subdomain == "app"
   end

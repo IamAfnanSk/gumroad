@@ -30,7 +30,7 @@ const ProfilePageLayout = ({ children }: Props) => {
 
   return (
     <>
-      <header className="flex flex-col md:flex-row md:items-center !md:py-6 profile-container">
+      <header className="flex flex-col md:flex-row md:items-center px-0 py-0 md:py-6 md:px-16 mx-auto max-w-7xl">
         <div className="flex items-center py-4 px-3 md:flex-1 gap-3 md:p-0">
           <img
             className="w-8 h-8 border border-border rounded-full"
