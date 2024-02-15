@@ -1,19 +1,20 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Gumroad</title>
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <%= csrf_meta_tags %>
-    <%= csp_meta_tag %>
+<head>
+  <title>Gumroad</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <%= csrf_meta_tags %>
+  <%= csp_meta_tag %>
 
-    <%= javascript_pack_tag('client-bundle', 'data-turbolinks-track': true) %>
-  </head>
+  <%= javascript_pack_tag('client-bundle', 'data-turbolinks-track': true) %>
+  <%= stylesheet_pack_tag('client-bundle', 'data-turbolinks-track': true) %>
+</head>
 
-  <body>
-    <main>
-      <%= react_component("RailsFlashes", props: {notice: notice, alert: alert}) %>
+<body>
+<main>
+  <%= react_component("RailsFlashes", props: { notice: notice, alert: alert }) %>
 
-      <%= yield %>
-    </main>
-  </body>
+  <%= yield %>
+</main>
+</body>
 </html>

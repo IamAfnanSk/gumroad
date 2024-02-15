@@ -79,6 +79,7 @@ test:
 #
 production:
   <<: *default
-  database: gumroad_production
-  username: gumroad
-  password: <%= ENV["GUMROAD_DATABASE_PASSWORD"] %>
+  #  database: <%#= ENV["GUMROAD_DATABASE_NAME"] %>
+  #  username: <%#= ENV["GUMROAD_DATABASE_USERNAME"] %>
+  #  password: <%#= ENV["GUMROAD_DATABASE_PASSWORD"] %>
+  url: <%= ENV["DATABASE_URL"] %>
