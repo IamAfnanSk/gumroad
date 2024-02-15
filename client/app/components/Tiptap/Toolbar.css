@@ -1,15 +1,15 @@
 .tiptap-toolbar-icon {
-    @apply p-3 hover:bg-accent hover:text-accent-foreground cursor-pointer
+  @apply p-3 hover:bg-accent hover:text-accent-foreground cursor-pointer;
 }
 
 .tiptap-toolbar-divider {
-    @apply border-l border-border h-5 block
+  @apply border-l border-border h-5 block;
 }
 
 .tiptap-toolbar-icon.is-active {
-    @apply bg-accent text-accent-foreground
+  @apply bg-accent text-accent-foreground;
 }
 
 .tiptap-toolbar-icon.disabled {
-    @apply bg-muted text-muted-foreground
+  @apply bg-muted text-muted-foreground;
 }

@@ -3,237 +3,258 @@
 @tailwind utilities;
 
 @layer base {
-    :root {
-        --background: 60 15% 95%;
-        --foreground: 0 0% 0%;
+  :root {
+    --background: 60 15% 95%;
+    --foreground: 0 0% 0%;
 
-        --muted: 210 40% 96.1%;
-        --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
 
-        --popover: 0 0% 100%;
-        --popover-foreground: 222.2 47.4% 11.2%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 47.4% 11.2%;
 
-        --border: var(--foreground);
-        --input: var(--foreground);
+    --border: var(--foreground);
+    --input: var(--foreground);
 
-        --card: 0 0% 100%;
-        --card-foreground: 222.2 47.4% 11.2%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 47.4% 11.2%;
 
-        --primary: 0 0% 0%;
-        --primary-foreground: 0 0% 100%;
+    --primary: 0 0% 0%;
+    --primary-foreground: 0 0% 100%;
 
-        --secondary: 0 0% 0%;
-        --secondary-foreground: 0 0% 100%;
+    --secondary: 0 0% 0%;
+    --secondary-foreground: 0 0% 100%;
 
-        --accent: 312 100% 78%;
-        --accent-foreground: 0 0% 0%;
+    --accent: 312 100% 78%;
+    --accent-foreground: 0 0% 0%;
 
-        --destructive: 7 76% 49%;
-        --destructive-foreground: 0 0% 100%;
+    --destructive: 7 76% 49%;
+    --destructive-foreground: 0 0% 100%;
 
-        --ring: var(--foreground);
+    --ring: var(--foreground);
 
-        --radius: 0.3rem;
+    --radius: 0.3rem;
 
-        --font-sans: 'Mabry Pro';
-    }
+    --font-sans: 'Mabry Pro';
+  }
 
-    .dark {
-        --background: 60 1% 14%;
-        --foreground: 0 0% 87%;
+  .dark {
+    --background: 60 1% 14%;
+    --foreground: 0 0% 87%;
 
-        --muted: 223 47% 11%;
-        --muted-foreground: 215.4 16.3% 56.9%;
+    --muted: 223 47% 11%;
+    --muted-foreground: 215.4 16.3% 56.9%;
 
-        --popover: 224 71% 4%;
-        --popover-foreground: 215 20.2% 65.1%;
+    --popover: 224 71% 4%;
+    --popover-foreground: 215 20.2% 65.1%;
 
-        --border: var(--foreground);
-        --input: var(--foreground);
+    --border: var(--foreground);
+    --input: var(--foreground);
 
-        --card: 224 71% 4%;
-        --card-foreground: 213 31% 91%;
+    --card: 224 71% 4%;
+    --card-foreground: 213 31% 91%;
 
-        --primary: 0 0% 87%;
-        --primary-foreground: 0 0% 0%;
+    --primary: 0 0% 87%;
+    --primary-foreground: 0 0% 0%;
 
-        --secondary: 0 0% 0%;
-        --secondary-foreground: 0 0% 87%;
+    --secondary: 0 0% 0%;
+    --secondary-foreground: 0 0% 87%;
 
-        --accent: 312 100% 78%;
-        --accent-foreground: 0 0% 0%;
+    --accent: 312 100% 78%;
+    --accent-foreground: 0 0% 0%;
 
-        --destructive: 7 76% 49%;
-        --destructive-foreground: 0 0% 100%;
+    --destructive: 7 76% 49%;
+    --destructive-foreground: 0 0% 100%;
 
-        --ring: 216 34% 17%;
+    --ring: 216 34% 17%;
 
-        --radius: 0.3rem;
+    --radius: 0.3rem;
 
-        --font-sans: 'Mabry Pro';
-    }
+    --font-sans: 'Mabry Pro';
+  }
 }
 
 @font-face {
-    font-family: 'Mabry Pro';
-    src: url('@/assets/fonts/mabry/MabryPro-Bold.eot');
-    src: local('Mabry Pro Bold'),
+  font-family: 'Mabry Pro';
+  src: url('@/assets/fonts/mabry/MabryPro-Bold.eot');
+  src:
+    local('Mabry Pro Bold'),
     local('MabryPro-Bold'),
-    url('@/assets/fonts/mabry/MabryPro-Bold.eot?#iefix') format('embedded-opentype'),
+    url('@/assets/fonts/mabry/MabryPro-Bold.eot?#iefix')
+      format('embedded-opentype'),
     url('@/assets/fonts/mabry/MabryPro-Bold.woff2') format('woff2'),
     url('@/assets/fonts/mabry/MabryPro-Bold.woff') format('woff'),
     url('@/assets/fonts/mabry/MabryPro-Bold.ttf') format('truetype');
-    font-weight: bold;
-    font-style: normal;
-    font-display: swap;
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
-    font-family: 'Mabry Pro';
-    src: url('@/assets/fonts/mabry/MabryPro-Medium.eot');
-    src: local('Mabry Pro Medium'),
+  font-family: 'Mabry Pro';
+  src: url('@/assets/fonts/mabry/MabryPro-Medium.eot');
+  src:
+    local('Mabry Pro Medium'),
     local('MabryPro-Medium'),
-    url('@/assets/fonts/mabry/MabryPro-Medium.eot?#iefix') format('embedded-opentype'),
+    url('@/assets/fonts/mabry/MabryPro-Medium.eot?#iefix')
+      format('embedded-opentype'),
     url('@/assets/fonts/mabry/MabryPro-Medium.woff2') format('woff2'),
     url('@/assets/fonts/mabry/MabryPro-Medium.woff') format('woff'),
     url('@/assets/fonts/mabry/MabryPro-Medium.ttf') format('truetype');
-    font-weight: 500;
-    font-style: normal;
-    font-display: swap;
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
-    font-family: 'Mabry Pro';
-    src: url('@/assets/fonts/mabry/MabryPro-Black.eot');
-    src: local('Mabry Pro Black'),
+  font-family: 'Mabry Pro';
+  src: url('@/assets/fonts/mabry/MabryPro-Black.eot');
+  src:
+    local('Mabry Pro Black'),
     local('MabryPro-Black'),
-    url('@/assets/fonts/mabry/MabryPro-Black.eot?#iefix') format('embedded-opentype'),
+    url('@/assets/fonts/mabry/MabryPro-Black.eot?#iefix')
+      format('embedded-opentype'),
     url('@/assets/fonts/mabry/MabryPro-Black.woff2') format('woff2'),
     url('@/assets/fonts/mabry/MabryPro-Black.woff') format('woff'),
     url('@/assets/fonts/mabry/MabryPro-Black.ttf') format('truetype');
-    font-weight: 900;
-    font-style: normal;
-    font-display: swap;
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
-    font-family: 'Mabry Pro';
-    src: url('@/assets/fonts/mabry/MabryPro-LightItalic.eot');
-    src: local('Mabry Pro Light Italic'),
+  font-family: 'Mabry Pro';
+  src: url('@/assets/fonts/mabry/MabryPro-LightItalic.eot');
+  src:
+    local('Mabry Pro Light Italic'),
     local('MabryPro-LightItalic'),
-    url('@/assets/fonts/mabry/MabryPro-LightItalic.eot?#iefix') format('embedded-opentype'),
+    url('@/assets/fonts/mabry/MabryPro-LightItalic.eot?#iefix')
+      format('embedded-opentype'),
     url('@/assets/fonts/mabry/MabryPro-LightItalic.woff2') format('woff2'),
     url('@/assets/fonts/mabry/MabryPro-LightItalic.woff') format('woff'),
     url('@/assets/fonts/mabry/MabryPro-LightItalic.ttf') format('truetype');
-    font-weight: 300;
-    font-style: italic;
-    font-display: swap;
+  font-weight: 300;
+  font-style: italic;
+  font-display: swap;
 }
 
 @font-face {
-    font-family: 'Mabry Pro';
-    src: url('@/assets/fonts/mabry/MabryPro-BoldItalic.eot');
-    src: local('Mabry Pro Bold Italic'),
+  font-family: 'Mabry Pro';
+  src: url('@/assets/fonts/mabry/MabryPro-BoldItalic.eot');
+  src:
+    local('Mabry Pro Bold Italic'),
     local('MabryPro-BoldItalic'),
-    url('@/assets/fonts/mabry/MabryPro-BoldItalic.eot?#iefix') format('embedded-opentype'),
+    url('@/assets/fonts/mabry/MabryPro-BoldItalic.eot?#iefix')
+      format('embedded-opentype'),
     url('@/assets/fonts/mabry/MabryPro-BoldItalic.woff2') format('woff2'),
     url('@/assets/fonts/mabry/MabryPro-BoldItalic.woff') format('woff'),
     url('@/assets/fonts/mabry/MabryPro-BoldItalic.ttf') format('truetype');
-    font-weight: bold;
-    font-style: italic;
-    font-display: swap;
+  font-weight: bold;
+  font-style: italic;
+  font-display: swap;
 }
 
 @font-face {
-    font-family: 'Mabry Pro';
-    src: url('@/assets/fonts/mabry/MabryPro-Light.eot');
-    src: local('Mabry Pro Light'),
+  font-family: 'Mabry Pro';
+  src: url('@/assets/fonts/mabry/MabryPro-Light.eot');
+  src:
+    local('Mabry Pro Light'),
     local('MabryPro-Light'),
-    url('@/assets/fonts/mabry/MabryPro-Light.eot?#iefix') format('embedded-opentype'),
+    url('@/assets/fonts/mabry/MabryPro-Light.eot?#iefix')
+      format('embedded-opentype'),
     url('@/assets/fonts/mabry/MabryPro-Light.woff2') format('woff2'),
     url('@/assets/fonts/mabry/MabryPro-Light.woff') format('woff'),
     url('@/assets/fonts/mabry/MabryPro-Light.ttf') format('truetype');
-    font-weight: 300;
-    font-style: normal;
-    font-display: swap;
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
-    font-family: 'Mabry Pro';
-    src: url('@/assets/fonts/mabry/MabryPro-BlackItalic.eot');
-    src: local('Mabry Pro Black Italic'),
+  font-family: 'Mabry Pro';
+  src: url('@/assets/fonts/mabry/MabryPro-BlackItalic.eot');
+  src:
+    local('Mabry Pro Black Italic'),
     local('MabryPro-BlackItalic'),
-    url('@/assets/fonts/mabry/MabryPro-BlackItalic.eot?#iefix') format('embedded-opentype'),
+    url('@/assets/fonts/mabry/MabryPro-BlackItalic.eot?#iefix')
+      format('embedded-opentype'),
     url('@/assets/fonts/mabry/MabryPro-BlackItalic.woff2') format('woff2'),
     url('@/assets/fonts/mabry/MabryPro-BlackItalic.woff') format('woff'),
     url('@/assets/fonts/mabry/MabryPro-BlackItalic.ttf') format('truetype');
-    font-weight: 900;
-    font-style: italic;
-    font-display: swap;
+  font-weight: 900;
+  font-style: italic;
+  font-display: swap;
 }
 
 @font-face {
-    font-family: 'Mabry Pro';
-    src: url('@/assets/fonts/mabry/MabryPro-MediumItalic.eot');
-    src: local('Mabry Pro Medium Italic'),
+  font-family: 'Mabry Pro';
+  src: url('@/assets/fonts/mabry/MabryPro-MediumItalic.eot');
+  src:
+    local('Mabry Pro Medium Italic'),
     local('MabryPro-MediumItalic'),
-    url('@/assets/fonts/mabry/MabryPro-MediumItalic.eot?#iefix') format('embedded-opentype'),
+    url('@/assets/fonts/mabry/MabryPro-MediumItalic.eot?#iefix')
+      format('embedded-opentype'),
     url('@/assets/fonts/mabry/MabryPro-MediumItalic.woff2') format('woff2'),
     url('@/assets/fonts/mabry/MabryPro-MediumItalic.woff') format('woff'),
     url('@/assets/fonts/mabry/MabryPro-MediumItalic.ttf') format('truetype');
-    font-weight: 500;
-    font-style: italic;
-    font-display: swap;
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
 }
 
 @font-face {
-    font-family: 'Mabry Pro';
-    src: url('@/assets/fonts/mabry/MabryPro-Italic.eot');
-    src: local('Mabry Pro Italic'),
+  font-family: 'Mabry Pro';
+  src: url('@/assets/fonts/mabry/MabryPro-Italic.eot');
+  src:
+    local('Mabry Pro Italic'),
     local('MabryPro-Italic'),
-    url('@/assets/fonts/mabry/MabryPro-Italic.eot?#iefix') format('embedded-opentype'),
+    url('@/assets/fonts/mabry/MabryPro-Italic.eot?#iefix')
+      format('embedded-opentype'),
     url('@/assets/fonts/mabry/MabryPro-Italic.woff2') format('woff2'),
     url('@/assets/fonts/mabry/MabryPro-Italic.woff') format('woff'),
     url('@/assets/fonts/mabry/MabryPro-Italic.ttf') format('truetype');
-    font-weight: normal;
-    font-style: italic;
-    font-display: swap;
+  font-weight: normal;
+  font-style: italic;
+  font-display: swap;
 }
 
 @font-face {
-    font-family: 'Mabry Pro';
-    src: url('@/assets/fonts/mabry/MabryPro-Regular.eot');
-    src: local('Mabry Pro'),
+  font-family: 'Mabry Pro';
+  src: url('@/assets/fonts/mabry/MabryPro-Regular.eot');
+  src:
+    local('Mabry Pro'),
     local('MabryPro-Regular'),
-    url('@/assets/fonts/mabry/MabryPro-Regular.eot?#iefix') format('embedded-opentype'),
+    url('@/assets/fonts/mabry/MabryPro-Regular.eot?#iefix')
+      format('embedded-opentype'),
     url('@/assets/fonts/mabry/MabryPro-Regular.woff2') format('woff2'),
     url('@/assets/fonts/mabry/MabryPro-Regular.woff') format('woff'),
     url('@/assets/fonts/mabry/MabryPro-Regular.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
 }
 
 @layer base {
-    * {
-        @apply border-border box-border;
-    }
+  * {
+    @apply border-border box-border;
+  }
 
-    body {
-        @apply bg-background text-foreground;
-        font-feature-settings: 'rlig' 1,
-        'calt' 1;
-    }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings:
+      'rlig' 1,
+      'calt' 1;
+  }
 
-    .container-margins {
-        @apply mx-6 md:mx-10 lg:mx-16 my-12 md:my-20;
-    }
+  .container-margins {
+    @apply mx-6 md:mx-10 lg:mx-16 my-12 md:my-20;
+  }
 
-    .container-paddings {
-        @apply px-6 md:px-10 lg:px-16 py-12 md:py-20;
-    }
+  .container-paddings {
+    @apply px-6 md:px-10 lg:px-16 py-12 md:py-20;
+  }
 
-    .profile-container {
-        @apply md:px-16 md:py-8 mx-auto max-w-7xl py-6 px-3
-    }
+  .profile-container {
+    @apply md:px-16 md:py-8 mx-auto max-w-7xl py-6 px-3;
+  }
 }
