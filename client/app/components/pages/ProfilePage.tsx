@@ -73,7 +73,8 @@ const ProfilePage = (props: Props) => {
         {
           section: {
             section_type: sectionType,
-            position
+            position,
+            json_content: JSON.stringify({})
           }
         },
         {

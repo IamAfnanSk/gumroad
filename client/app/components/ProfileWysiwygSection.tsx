@@ -81,6 +81,10 @@ const ProfileWysiwygSection = ({ section }: Props) => {
     2000
   )
 
+  if (!content) {
+    return null
+  }
+
   return (
     <div className="relative w-full border-t border-border">
       {profilePageContext.creatorIsOwner && (
@@ -129,13 +133,11 @@ const ProfileWysiwygSection = ({ section }: Props) => {
       )}
 
       <div className="profile-container">
-        {content && (
-          <Tiptap
-            content={content}
-            onUpdate={debouncedHandleOnUpdate}
-            editable={profilePageContext.creatorIsOwner}
-          />
-        )}
+        <Tiptap
+          content={content}
+          onUpdate={debouncedHandleOnUpdate}
+          editable={profilePageContext.creatorIsOwner}
+        />
       </div>
 
       <ProfileSectionPositionMover
