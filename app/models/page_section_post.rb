@@ -4,7 +4,7 @@ class PageSectionPost < ApplicationRecord
   acts_as_list scope: :page_section
 
   belongs_to :post
-  belongs_to :page_section, dependent: :destroy
+  belongs_to :page_section
 
   validate :section_type_matches
 

@@ -3,7 +3,7 @@
 class PageSectionProduct < ApplicationRecord
   acts_as_list scope: :page_section
 
-  belongs_to :page_section, dependent: :destroy
+  belongs_to :page_section
   belongs_to :product
 
   validate :section_type_matches

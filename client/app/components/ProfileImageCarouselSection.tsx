@@ -79,20 +79,16 @@ const ProfileImageCarouselSection = ({ section }: Props) => {
     try {
       const formData = new FormData()
 
-      if (fileInputRef.current?.files) {
-        Array.from(fileInputRef.current.files).forEach((file) => {
-          formData.append('section[carousel_images][]', file)
-        })
-      }
+      Array.from(fileInputRef.current?.files || []).forEach((file) => {
+        formData.append('section[carousel_images][]', file)
+      })
 
-      if (typeof showTitle === 'boolean') {
-        formData.append('section[show_title]', showTitle ? 'true' : 'false')
-      }
+      formData.append('section[show_title]', showTitle ? 'true' : 'false')
 
       formData.append('section[title]', title || '')
 
       formData.append(
-        'section[carousel_image_urls]',
+        'section[existing_carousel_image_urls]',
         carouselImageUrls.join(',')
       )
 
@@ -135,7 +131,7 @@ const ProfileImageCarouselSection = ({ section }: Props) => {
   }
 
   return (
-    <div key={section.id} className="border-t relative border-border w-full">
+    <div key={section.id} className="relative w-full border-t border-border">
       {profilePageContext.creatorIsOwner && (
         <div className="absolute z-10 left-4 top-2">
           <Popover onOpenChange={handleSectionUpdate}>
@@ -144,12 +140,12 @@ const ProfileImageCarouselSection = ({ section }: Props) => {
                 <FaPencil />
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-72 p-0">
+            <PopoverContent className="p-0 w-72">
               {popOverTab === 'home' && (
                 <div className="flex flex-col">
                   <div
                     onClick={() => setPopoverTab('name')}
-                    className="flex cursor-pointer px-4 py-3 items-center justify-between"
+                    className="flex items-center justify-between px-4 py-3 cursor-pointer"
                   >
                     <p className="font-medium">Name</p>
 
@@ -161,7 +157,7 @@ const ProfileImageCarouselSection = ({ section }: Props) => {
 
                   <div
                     onClick={() => setPopoverTab('images')}
-                    className="flex cursor-pointer px-4 py-3 items-center justify-between border-t border-border"
+                    className="flex items-center justify-between px-4 py-3 border-t cursor-pointer border-border"
                   >
                     <p className="font-medium">Images</p>
 
@@ -171,7 +167,7 @@ const ProfileImageCarouselSection = ({ section }: Props) => {
                   </div>
 
                   <AlertDialog>
-                    <AlertDialogTrigger className="flex cursor-pointer px-4 text-destructive py-3 items-center justify-between border-t border-border">
+                    <AlertDialogTrigger className="flex items-center justify-between px-4 py-3 border-t cursor-pointer text-destructive border-border">
                       <p className="font-medium">Delete</p>
 
                       <div className="flex items-center gap-2">
@@ -204,15 +200,15 @@ const ProfileImageCarouselSection = ({ section }: Props) => {
 
               {popOverTab === 'name' && (
                 <div className="px-4 py-3">
-                  <div className="grid grid-cols-10 pt-3 pb-5 items-center">
+                  <div className="grid items-center grid-cols-10 pt-3 pb-5">
                     <FaChevronLeft
                       onClick={() => setPopoverTab('home')}
                       className="col-span-1 cursor-pointer"
                     />
-                    <h1 className="font-medium text-center w-full col-span-8">
+                    <h1 className="w-full col-span-8 font-medium text-center">
                       Name
                     </h1>
-                    <span className="col-span-1 block"></span>
+                    <span className="block col-span-1"></span>
                   </div>
 
                   <Input
@@ -235,15 +231,15 @@ const ProfileImageCarouselSection = ({ section }: Props) => {
 
               {popOverTab === 'images' && (
                 <div className="px-4 py-3">
-                  <div className="grid grid-cols-10 pt-3 pb-5 items-center">
+                  <div className="grid items-center grid-cols-10 pt-3 pb-5">
                     <FaChevronLeft
                       onClick={() => setPopoverTab('home')}
                       className="col-span-1 cursor-pointer"
                     />
-                    <h1 className="font-medium text-center w-full col-span-8">
+                    <h1 className="w-full col-span-8 font-medium text-center">
                       Images
                     </h1>
-                    <span className="col-span-1 block"></span>
+                    <span className="block col-span-1"></span>
                   </div>
 
                   {carouselImageUrls.map((imageUrl, index) => (
@@ -251,7 +247,7 @@ const ProfileImageCarouselSection = ({ section }: Props) => {
                       <img
                         src={imageUrl}
                         alt="Image"
-                        className="flex-1 h-20 rounded-md border border-border object-contain"
+                        className="flex-1 object-contain h-20 border rounded-md border-border"
                       />
                       <Button
                         className="shrink-0"
@@ -282,9 +278,9 @@ const ProfileImageCarouselSection = ({ section }: Props) => {
       )}
 
       <div className="profile-container">
-        {showTitle && <h2 className="text-2xl mb-5">{title}</h2>}
+        {showTitle && <h2 className="mb-5 text-2xl">{title}</h2>}
 
-        <div className="flex items-center justify-center gap-3 md:border-none px-3 md:px-0">
+        <div className="flex items-center justify-center gap-3 px-3 md:border-none md:px-0">
           {carouselImageUrls.length ? (
             <Carousel>
               <CarouselContent>
@@ -293,7 +289,7 @@ const ProfileImageCarouselSection = ({ section }: Props) => {
                     <img
                       src={imageUrl}
                       alt="Image"
-                      className="w-full h-full object-cover rounded-md"
+                      className="object-cover w-full h-full rounded-md"
                     />
                   </CarouselItem>
                 ))}
@@ -304,7 +300,7 @@ const ProfileImageCarouselSection = ({ section }: Props) => {
           ) : (
             <div className="flex flex-col items-center justify-center">
               <FaImages className="text-4xl" />
-              <p className="text-lg mt-2">No images to show</p>
+              <p className="mt-2 text-lg">No images to show</p>
             </div>
           )}
         </div>

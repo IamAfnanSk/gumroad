@@ -31,10 +31,10 @@ const ProfilePageLayout = ({ children }: Props) => {
 
   return (
     <>
-      <header className="flex flex-col md:flex-row md:items-center px-0 py-0 md:py-6 md:px-16 mx-auto max-w-7xl">
-        <div className="flex items-center py-4 px-3 md:flex-1 gap-3 md:p-0">
+      <header className="flex flex-col px-0 py-0 mx-auto md:flex-row md:items-center md:py-6 md:px-16 max-w-7xl">
+        <div className="flex items-center gap-3 px-3 py-4 md:flex-1 md:p-0">
           <img
-            className="w-8 h-8 border border-border rounded-full"
+            className="w-8 h-8 border rounded-full border-border"
             src={
               profilePageContext.creator?.avatar_url ||
               'https://gravatar.com/avatar'
@@ -44,7 +44,7 @@ const ProfilePageLayout = ({ children }: Props) => {
           <p className="text-lg">{profilePageContext.creator.name || 'User'}</p>
         </div>
 
-        <div className="flex items-center gap-3 md:border-none border-t border-border py-4 px-3 md:p-0">
+        <div className="flex items-center gap-3 px-3 py-4 border-t md:border-none border-border md:p-0">
           <Input type="text" placeholder="Your email address" />
 
           <Button onClick={fakeSubscribe}>Subscribe</Button>
@@ -55,7 +55,7 @@ const ProfilePageLayout = ({ children }: Props) => {
         <div className="profile-container">
           <p className="text-4xl">{profilePageContext.creator?.bio}</p>
 
-          <div className="mt-4 flex items-center gap-5">
+          <div className="flex items-center gap-5 mt-4">
             {links.map((link) => (
               <a
                 key={link.label}
@@ -72,8 +72,8 @@ const ProfilePageLayout = ({ children }: Props) => {
       </header>
 
       <main className="relative">
+        <ProfileNewSection position={profilePageContext.sections.length} />{' '}
         {children}
-        <ProfileNewSection position={1} />
       </main>
 
       <footer className="border-t border-border">

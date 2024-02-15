@@ -16,8 +16,6 @@ class PageSection < ApplicationRecord
 
   has_many_attached :carousel_images
 
-  validate :json_content_is_valid_json, if: -> { wysiwyg? }
-  validates :embed_url, url: true, if: -> { embed? }, allow_blank: true
   validates :add_new_products_by_default, inclusion: { in: [true, false] }, allow_blank: true
   validate :carousel_images_content_type
 

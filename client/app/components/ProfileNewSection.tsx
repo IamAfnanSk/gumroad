@@ -65,26 +65,26 @@ const ProfileNewSection = ({ position }: Props) => {
   }
 
   return (
-    <div className="absolute left-1/2 -bottom-5 bg-background z-10 transform -translate-x-1/2">
+    <div className="absolute z-10 transform -translate-x-1/2 left-1/2 -bottom-5 bg-background">
       <Popover>
         <PopoverTrigger>
           <Button size={'icon'}>
             <FaPlus />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-72 p-0">
+        <PopoverContent className="p-0 w-72">
           <div className="flex flex-col">
             {profileSectionItems.map((item, index) => (
               <div
                 key={item.type}
-                onClick={() =>
+                onClick={() => {
                   !item.isWIP
                     ? profilePageContext.handleAddSection(
                         item.type,
                         position + 1
                       )
                     : toast('This feature is WIP 🚧')
-                }
+                }}
                 className={`flex cursor-pointer px-4 py-3 items-center gap-3 ${index === 0 ? '' : 'border-t border-border'}`}
               >
                 {item.icon}

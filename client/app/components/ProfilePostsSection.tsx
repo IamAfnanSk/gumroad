@@ -125,7 +125,7 @@ const ProfilePostsSection = ({ section }: Props) => {
   }
 
   return (
-    <div key={section.id} className="border-t relative border-border w-full">
+    <div key={section.id} className="relative w-full border-t border-border">
       {profilePageContext.creatorIsOwner && (
         <div className="absolute z-10 left-4 top-2">
           <Popover onOpenChange={handleSectionUpdate}>
@@ -134,12 +134,12 @@ const ProfilePostsSection = ({ section }: Props) => {
                 <FaPencil />
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-72 p-0">
+            <PopoverContent className="p-0 w-72">
               {popOverTab === 'home' && (
                 <div className="flex flex-col">
                   <div
                     onClick={() => setPopoverTab('name')}
-                    className="flex cursor-pointer px-4 py-3 items-center justify-between"
+                    className="flex items-center justify-between px-4 py-3 cursor-pointer"
                   >
                     <p className="font-medium">Name</p>
 
@@ -150,7 +150,7 @@ const ProfilePostsSection = ({ section }: Props) => {
                   </div>
                   <div
                     onClick={() => setPopoverTab('posts')}
-                    className="flex cursor-pointer px-4 py-3 items-center justify-between border-t border-border"
+                    className="flex items-center justify-between px-4 py-3 border-t cursor-pointer border-border"
                   >
                     <p className="font-medium">Posts</p>
 
@@ -161,7 +161,7 @@ const ProfilePostsSection = ({ section }: Props) => {
                   </div>
 
                   <AlertDialog>
-                    <AlertDialogTrigger className="flex cursor-pointer px-4 text-destructive py-3 items-center justify-between border-t border-border">
+                    <AlertDialogTrigger className="flex items-center justify-between px-4 py-3 border-t cursor-pointer text-destructive border-border">
                       <p className="font-medium">Delete</p>
 
                       <div className="flex items-center gap-2">
@@ -194,15 +194,15 @@ const ProfilePostsSection = ({ section }: Props) => {
 
               {popOverTab === 'name' && (
                 <div className="px-4 py-3">
-                  <div className="grid grid-cols-10 pt-3 pb-5 items-center">
+                  <div className="grid items-center grid-cols-10 pt-3 pb-5">
                     <FaChevronLeft
                       onClick={() => setPopoverTab('home')}
                       className="col-span-1 cursor-pointer"
                     />
-                    <h1 className="font-medium text-center w-full col-span-8">
+                    <h1 className="w-full col-span-8 font-medium text-center">
                       Name
                     </h1>
-                    <span className="col-span-1 block"></span>
+                    <span className="block col-span-1"></span>
                   </div>
 
                   <Input
@@ -225,15 +225,15 @@ const ProfilePostsSection = ({ section }: Props) => {
 
               {popOverTab === 'posts' && (
                 <div className="px-4 py-3">
-                  <div className="grid grid-cols-10 pt-3 pb-5 items-center">
+                  <div className="grid items-center grid-cols-10 pt-3 pb-5">
                     <FaChevronLeft
                       onClick={() => setPopoverTab('home')}
                       className="col-span-1 cursor-pointer"
                     />
-                    <h1 className="font-medium text-center w-full col-span-8">
+                    <h1 className="w-full col-span-8 font-medium text-center">
                       Posts
                     </h1>
-                    <span className="col-span-1 block"></span>
+                    <span className="block col-span-1"></span>
                   </div>
 
                   <div className="flex flex-col gap-1 mt-4">
@@ -241,7 +241,7 @@ const ProfilePostsSection = ({ section }: Props) => {
                       return (
                         <div
                           key={post.id}
-                          className="flex items-center justify-between border border-border py-3 px-4 rounded"
+                          className="flex items-center justify-between px-4 py-3 border rounded border-border"
                         >
                           <p>{post.title}</p>
 
@@ -281,12 +281,12 @@ const ProfilePostsSection = ({ section }: Props) => {
             return (
               <div
                 onClick={() => toast('Post page is WIP 🚧')}
-                className="border-t py-8 cursor-pointer w-full border-border mx-auto"
+                className="w-full py-8 mx-auto border-t cursor-pointer border-border"
                 key={post.id}
               >
                 <div className="flex items-center justify-between">
                   <div>
-                    <h3 className="font-medium text-xl">{post.title}</h3>
+                    <h3 className="text-xl font-medium">{post.title}</h3>
                     <p className="mt-2">{getPostDate(post.created_at)}</p>
                   </div>
 
@@ -301,7 +301,7 @@ const ProfilePostsSection = ({ section }: Props) => {
           {section.posts.length === 0 && (
             <div className="flex flex-col items-center justify-center">
               <BiNews className="text-4xl" />
-              <p className="text-lg mt-2">No posts to show</p>
+              <p className="mt-2 text-lg">No posts to show</p>
             </div>
           )}
         </div>

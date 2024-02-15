@@ -81,12 +81,8 @@ const ProfileWysiwygSection = ({ section }: Props) => {
     2000
   )
 
-  if (!content) {
-    return null
-  }
-
   return (
-    <div className="border-t border-border w-full relative">
+    <div className="relative w-full border-t border-border">
       {profilePageContext.creatorIsOwner && (
         <div className="absolute z-10 left-4 top-2">
           <Popover>
@@ -95,10 +91,10 @@ const ProfileWysiwygSection = ({ section }: Props) => {
                 <FaPencil />
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-72 p-0">
+            <PopoverContent className="p-0 w-72">
               <div className="flex flex-col">
                 <AlertDialog>
-                  <AlertDialogTrigger className="flex cursor-pointer px-4 text-destructive py-3 items-center justify-between">
+                  <AlertDialogTrigger className="flex items-center justify-between px-4 py-3 cursor-pointer text-destructive">
                     <p className="font-medium">Delete</p>
 
                     <div className="flex items-center gap-2">
@@ -133,11 +129,13 @@ const ProfileWysiwygSection = ({ section }: Props) => {
       )}
 
       <div className="profile-container">
-        <Tiptap
-          content={content}
-          onUpdate={debouncedHandleOnUpdate}
-          editable={profilePageContext.creatorIsOwner}
-        />
+        {content && (
+          <Tiptap
+            content={content}
+            onUpdate={debouncedHandleOnUpdate}
+            editable={profilePageContext.creatorIsOwner}
+          />
+        )}
       </div>
 
       <ProfileSectionPositionMover

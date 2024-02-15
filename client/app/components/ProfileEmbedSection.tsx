@@ -116,7 +116,7 @@ const ProfileEmbedSection = ({ section }: Props) => {
   }
 
   return (
-    <div key={section.id} className="border-t relative border-border w-full">
+    <div key={section.id} className="relative w-full border-t border-border">
       {profilePageContext.creatorIsOwner && (
         <div className="absolute z-10 left-4 top-2">
           <Popover onOpenChange={handleSectionUpdate}>
@@ -125,12 +125,12 @@ const ProfileEmbedSection = ({ section }: Props) => {
                 <FaPencil />
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-72 p-0">
+            <PopoverContent className="p-0 w-72">
               {popOverTab === 'home' && (
                 <div className="flex flex-col">
                   <div
                     onClick={() => setPopoverTab('name')}
-                    className="flex cursor-pointer px-4 py-3 items-center justify-between"
+                    className="flex items-center justify-between px-4 py-3 cursor-pointer"
                   >
                     <p className="font-medium">Name</p>
 
@@ -142,7 +142,7 @@ const ProfileEmbedSection = ({ section }: Props) => {
 
                   <div
                     onClick={() => setPopoverTab('embed')}
-                    className="flex cursor-pointer px-4 py-3 items-center justify-between border-t border-border"
+                    className="flex items-center justify-between px-4 py-3 border-t cursor-pointer border-border"
                   >
                     <p className="font-medium">Embed</p>
 
@@ -152,7 +152,7 @@ const ProfileEmbedSection = ({ section }: Props) => {
                   </div>
 
                   <AlertDialog>
-                    <AlertDialogTrigger className="flex cursor-pointer px-4 text-destructive py-3 items-center justify-between border-t border-border">
+                    <AlertDialogTrigger className="flex items-center justify-between px-4 py-3 border-t cursor-pointer text-destructive border-border">
                       <p className="font-medium">Delete</p>
 
                       <div className="flex items-center gap-2">
@@ -185,15 +185,15 @@ const ProfileEmbedSection = ({ section }: Props) => {
 
               {popOverTab === 'name' && (
                 <div className="px-4 py-3">
-                  <div className="grid grid-cols-10 pt-3 pb-5 items-center">
+                  <div className="grid items-center grid-cols-10 pt-3 pb-5">
                     <FaChevronLeft
                       onClick={() => setPopoverTab('home')}
                       className="col-span-1 cursor-pointer"
                     />
-                    <h1 className="font-medium text-center w-full col-span-8">
+                    <h1 className="w-full col-span-8 font-medium text-center">
                       Name
                     </h1>
-                    <span className="col-span-1 block"></span>
+                    <span className="block col-span-1"></span>
                   </div>
 
                   <Input
@@ -216,20 +216,20 @@ const ProfileEmbedSection = ({ section }: Props) => {
 
               {popOverTab === 'embed' && (
                 <div className="px-4 py-3">
-                  <div className="grid grid-cols-10 pt-3 pb-5 items-center">
+                  <div className="grid items-center grid-cols-10 pt-3 pb-5">
                     <FaChevronLeft
                       onClick={() => setPopoverTab('home')}
                       className="col-span-1 cursor-pointer"
                     />
-                    <h1 className="font-medium text-center w-full col-span-8">
+                    <h1 className="w-full col-span-8 font-medium text-center">
                       Embed
                     </h1>
-                    <span className="col-span-1 block"></span>
+                    <span className="block col-span-1"></span>
                   </div>
 
                   <div>
                     <Label htmlFor="embedHeight">Embed url</Label>
-                    <p className="text-xs mt-1">
+                    <p className="mt-1 text-xs">
                       Any valid embed url, e.g. youtube, vimeo, etc
                     </p>
                     <Input
@@ -243,7 +243,7 @@ const ProfileEmbedSection = ({ section }: Props) => {
 
                   <div className="mt-5">
                     <Label htmlFor="embedHeight">Embed height</Label>
-                    <p className="text-xs mt-1">
+                    <p className="mt-1 text-xs">
                       Any valid css height string, defaults to 500px
                     </p>
 
@@ -263,9 +263,9 @@ const ProfileEmbedSection = ({ section }: Props) => {
       )}
 
       <div className="profile-container">
-        {showTitle && <h2 className="text-2xl mb-5">{title}</h2>}
+        {showTitle && <h2 className="mb-5 text-2xl">{title}</h2>}
 
-        <div className="flex items-center justify-center gap-3 md:border-none px-3 md:px-0">
+        <div className="flex items-center justify-center gap-3 px-3 md:border-none md:px-0">
           {embedUrl && (
             <iframe
               src={embedUrl}
@@ -282,7 +282,7 @@ const ProfileEmbedSection = ({ section }: Props) => {
           {!embedUrl && (
             <div className="flex flex-col items-center justify-center">
               <FaLink className="text-4xl" />
-              <p className="text-lg mt-2">No embed url to show</p>
+              <p className="mt-2 text-lg">No embed url to show</p>
             </div>
           )}
         </div>
