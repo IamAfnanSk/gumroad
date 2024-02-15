@@ -16,9 +16,7 @@ export const urlBuilder = (
   if (popSubdomain) {
     const parts = host.split('.')
     parts.shift()
-    return subDomain
-      ? `${protocol}//${subDomain}.${parts.join('.')}${path}`
-      : path
+    return `${protocol}//${subDomain}.${parts.join('.')}${path}`
   }
 
   return subDomain ? `${protocol}//${subDomain}.${host}${path}` : path

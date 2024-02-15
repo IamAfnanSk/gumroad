@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button'
 import logo from '@/assets/images/logo.svg'
 import { ProfilePageContext } from '@/contexts/ProfilePageContext'
 import { toast } from 'sonner'
+import { ProfileNewSection } from '@/components/ProfileNewSection'
 
 type Props = {
   children?: React.ReactNode
@@ -70,7 +71,10 @@ const ProfilePageLayout = ({ children }: Props) => {
         </div>
       </header>
 
-      <main>{children}</main>
+      <main className="relative">
+        {children}
+        <ProfileNewSection position={1} />
+      </main>
 
       <footer className="border-t border-border">
         <div className="flex items-center gap-2 profile-container">

@@ -76,3 +76,4 @@ gem "rubocop-rspec", "~>2.26", require: false
 gem "acts_as_list"
 gem "erb_lint", require: false
 gem "valid_url"
+gem "aws-sdk-s3", require: false

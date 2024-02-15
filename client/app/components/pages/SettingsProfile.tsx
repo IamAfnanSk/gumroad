@@ -117,7 +117,7 @@ const SettingsProfile = (props: Props) => {
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="w-2/3 space-y-6"
+            className="w-full md:w-2/3 space-y-6"
           >
             <FormField
               control={form.control}
@@ -188,7 +188,11 @@ const SettingsProfile = (props: Props) => {
 
             {avatarUrl ? (
               <div className="relative group w-max">
-                <img className="" src={avatarUrl} alt="Creator avatar" />
+                <img
+                  className="w-20 h-20 object-contain"
+                  src={avatarUrl}
+                  alt="Creator avatar"
+                />
                 <FaCircleXmark
                   onClick={() => setAvatarUrl(null)}
                   className="absolute cursor-pointer transform hidden group-hover:block -translate-x-1/2 -translate-y-1/2 top-0 left-0 text-center rounded-full bg-white text-destructive"
