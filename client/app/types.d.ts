@@ -42,13 +42,22 @@ export type ProfileSection = {
   featured_product_id: number
   title: string
   embed_url: string
-  section_type: string
+  section_type:
+    | 'wysiwyg'
+    | 'product_list'
+    | 'featured_product'
+    | 'post_list'
+    | 'image_carousel'
+    | 'embed'
+    | 'subscribe'
+    | 'custom_html'
   position: number
   show_title: boolean
   show_filters: boolean
   add_new_products_by_default: boolean
   embed_height: string
   featured_product: Partial<Product>
+  raw_html: string
 } & EntityCommon
 
 export type NavLink = {

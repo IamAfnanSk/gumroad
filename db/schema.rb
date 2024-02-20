@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_02_16_145741) do
+ActiveRecord::Schema[7.1].define(version: 2024_02_20_183755) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -83,16 +83,17 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_16_145741) do
     t.bigint "creator_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.json "json_content"
+    t.json "json_content", default: "{}"
     t.integer "featured_product_id"
-    t.string "title"
-    t.string "embed_url"
+    t.string "title", default: ""
+    t.string "embed_url", default: ""
     t.integer "section_type", null: false
     t.integer "position"
-    t.boolean "show_title"
-    t.boolean "show_filters"
-    t.boolean "add_new_products_by_default"
-    t.string "embed_height"
+    t.boolean "show_title", default: true
+    t.boolean "show_filters", default: false
+    t.boolean "add_new_products_by_default", default: false
+    t.string "embed_height", default: "400px"
+    t.text "raw_html", default: "", null: false
     t.index ["creator_id"], name: "index_page_sections_on_creator_id"
   end
 

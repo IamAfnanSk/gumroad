@@ -145,6 +145,7 @@ class ProfilesController < ApplicationController
       :show_title,
       :show_filters,
       :add_new_products_by_default,
+      :raw_html,
       { carousel_images: [] },
 
       # non active record fields

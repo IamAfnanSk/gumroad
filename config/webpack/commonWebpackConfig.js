@@ -6,7 +6,10 @@ const baseClientWebpackConfig = generateWebpackConfig()
 
 const commonOptions = {
   resolve: {
-    extensions: ['.css', '.ts', '.tsx']
+    extensions: ['.css', '.ts', '.tsx'],
+    fallback: {
+      buffer: require.resolve('buffer/')
+    }
   }
 }
 

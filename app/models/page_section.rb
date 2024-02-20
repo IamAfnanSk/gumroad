@@ -6,7 +6,7 @@ class PageSection < ApplicationRecord
   belongs_to :creator
 
   enum section_type: { wysiwyg: 0, product_list: 1, featured_product: 2, embed: 3, post_list: 4, subscribe: 5,
-                       image_carousel: 6 }
+                       image_carousel: 6, custom_html: 7 }
 
   has_many :page_section_products, dependent: :destroy
   has_many :products, through: :page_section_products

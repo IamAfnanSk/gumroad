@@ -1,7 +1,7 @@
 class ChangeDefaultsOfPageSection < ActiveRecord::Migration[7.1]
   def change
     def change
-      change_column_default :page_sections, :json_content, {}
+      change_column_default :page_sections, :json_content, "{}"
       change_column_default :page_sections, :title, ""
       change_column_default :page_sections, :embed_url, ""
       change_column_default :page_sections, :show_title, true

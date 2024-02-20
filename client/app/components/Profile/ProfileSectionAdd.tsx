@@ -4,7 +4,13 @@ import {
   PopoverTrigger
 } from '@/components/ui/popover'
 import { Button } from '@/components/ui/button'
-import { FaBoxOpen, FaImages, FaPlus, FaRegNewspaper } from 'react-icons/fa6'
+import {
+  FaBoxOpen,
+  FaHtml5,
+  FaImages,
+  FaPlus,
+  FaRegNewspaper
+} from 'react-icons/fa6'
 import * as React from 'react'
 import { ProfilePageContext } from '@/contexts/ProfilePageContext'
 import { FaBoxes } from 'react-icons/fa'
@@ -54,6 +60,11 @@ const profileSectionItems = [
     icon: <LuMails className="text-md" />,
     title: 'Subscribe',
     type: 'subscribe'
+  },
+  {
+    icon: <FaHtml5 className="text-md" />,
+    title: 'Custom HTML',
+    type: 'custom_html'
   }
 ]
 

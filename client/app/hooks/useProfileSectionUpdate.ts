@@ -24,6 +24,7 @@ type UpdateProfileSectionProps = Pick<
   | 'json_content'
   | 'add_new_products_by_default'
   | 'featured_product_id'
+  | 'raw_html'
 > &
   Partial<{
     product_ids: number[]
@@ -51,7 +52,8 @@ const useProfileSectionUpdate = () => {
     product_ids,
     post_ids,
     formData,
-    featured_product_id
+    featured_product_id,
+    raw_html
   }: UpdateProfileSectionProps) => {
     const errorMessage = `Error updating section`
     const responseErrors: string[] = []
@@ -74,7 +76,8 @@ const useProfileSectionUpdate = () => {
                 add_new_products_by_default,
                 product_ids,
                 post_ids,
-                featured_product_id
+                featured_product_id,
+                raw_html
               }
             },
         {

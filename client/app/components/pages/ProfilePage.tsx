@@ -15,6 +15,7 @@ import { ProfileSectionAdd } from '@/components/Profile/ProfileSectionAdd'
 import { ProfileSectionPositionMover } from '@/components/Profile/ProfileSectionPositionMover'
 import { ProfileImageCarouselSection } from '@/components/Profile/ProfileImageCarouselSection'
 import { ProfileFeaturedProductsSection } from '@/components/Profile/ProfileFeaturedProductSection'
+import { ProfileCustomHtmlSection } from '@/components/Profile/ProfileCustomHtmlSection'
 
 type Props = {
   profileSections?: Partial<ProfileSection>[]
@@ -199,6 +200,17 @@ const ProfilePage = (props: Props) => {
               >
                 {CommonSectionChildren}
               </ProfileFeaturedProductsSection>
+            )
+          }
+
+          if (profileSection.section_type === 'custom_html') {
+            Section = (
+              <ProfileCustomHtmlSection
+                key={profileSection.id}
+                section={profileSection}
+              >
+                {CommonSectionChildren}
+              </ProfileCustomHtmlSection>
             )
           }
 
