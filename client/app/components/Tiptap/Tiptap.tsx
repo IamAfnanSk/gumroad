@@ -11,26 +11,25 @@ import Placeholder from '@tiptap/extension-placeholder'
 
 import type { Extensions } from '@tiptap/react'
 
-// Load all highlight.js supported languages
 import { common, createLowlight } from 'lowlight'
 
 import { Toolbar } from './TiptapToolbar'
 
 import './Tiptap.css'
 
-type TiptapProps = {
+type Props = {
   content?: string
   editable?: boolean
   placeholder?: string
   onUpdate?: (editor: Editor) => void
 }
 
-function Tiptap({
+const Tiptap = ({
   content = '',
   editable = true,
   placeholder = 'Start typing...',
   onUpdate
-}: TiptapProps) {
+}: Props) => {
   const extensions: Extensions = [
     StarterKit.configure({
       codeBlock: false
@@ -59,7 +58,7 @@ function Tiptap({
     },
     editorProps: {
       attributes: {
-        class: 'prose'
+        class: 'prose max-w-none'
       }
     }
   })

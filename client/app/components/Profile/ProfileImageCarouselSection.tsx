@@ -1,8 +1,6 @@
 import * as React from 'react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import { Section } from '@/types'
-import { toast } from 'sonner'
 import {
   Popover,
   PopoverContent,
@@ -15,24 +13,9 @@ import {
   FaPencil,
   FaTrash
 } from 'react-icons/fa6'
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger
-} from '@/components/ui/alert-dialog'
 import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
-import { useCsrfToken } from '@/hooks/useCsrfToken'
 import { ProfilePageContext } from '@/contexts/ProfilePageContext'
-import axios from 'axios'
-import { ProfileSectionPositionMover } from '@/components/ProfileSectionPositionMover'
-import { ProfileNewSection } from '@/components/ProfileNewSection'
 import {
   Carousel,
   CarouselContent,
@@ -40,24 +23,40 @@ import {
   CarouselNext,
   CarouselPrevious
 } from '@/components/ui/carousel'
+import { ProfileSectionProps } from '@/components/Profile/types'
+import { useProfileSectionUpdate } from '@/hooks/useProfileSectionUpdate'
+import { ProfileDeleteDialog } from '@/components/Profile/ProfileDeleteDialog'
+import { CarouselImage } from '@/types'
 
-type Props = {
-  section: Section
-}
+const ProfileImageCarouselSection = ({
+  section,
+  children
+}: ProfileSectionProps) => {
+  const profilePageContext = React.useContext(ProfilePageContext)
 
-const ProfileImageCarouselSection = ({ section }: Props) => {
+  const {
+    updateProfileSection,
+    data: updateProfileSectionData,
+    errors: updateProfileSectionErrors,
+    loading: updateProfileSectionLoading
+  } = useProfileSectionUpdate()
+
+  if (!profilePageContext) {
+    throw new Error(
+      'ProfilePageContext should be used inside ProfilePageContext.Provider'
+    )
+  }
+
   const [popOverTab, setPopoverTab] = React.useState<
     'name' | 'home' | 'images'
   >('home')
 
-  const csrfToken = useCsrfToken()
-
-  const profilePageContext = React.useContext(ProfilePageContext)
-
-  const [title, setTitle] = React.useState<string>(section.title)
-  const [showTitle, setShowTitle] = React.useState<boolean>(section.show_title)
-  const [carouselImageUrls, setCarouselImageUrls] = React.useState<string[]>(
-    section.carousel_images
+  const [title, setTitle] = React.useState<string>(section.title || '')
+  const [showTitle, setShowTitle] = React.useState<boolean>(
+    section.show_title || false
+  )
+  const [carouselImages, setCarouselImages] = React.useState<CarouselImage[]>(
+    section.carousel_images || []
   )
 
   const fileInputRef = React.useRef<HTMLInputElement>(null)
@@ -70,73 +69,86 @@ const ProfileImageCarouselSection = ({ section }: Props) => {
     if (
       title === section.title &&
       showTitle === section.show_title &&
-      carouselImageUrls.join(',') === section.carousel_images.join(',') &&
-      fileInputRef.current?.files === null
+      section.carousel_images?.every(({ id }) =>
+        carouselImages.some(({ id: compareId }) => compareId === id)
+      ) &&
+      !fileInputRef.current?.files?.length
     ) {
       return
     }
 
-    try {
-      const formData = new FormData()
+    const formData = new FormData()
 
-      Array.from(fileInputRef.current?.files || []).forEach((file) => {
-        formData.append('section[carousel_images][]', file)
-      })
+    formData.append('section[title]', title)
+    formData.append('section[show_title]', showTitle.toString())
 
-      formData.append('section[show_title]', showTitle ? 'true' : 'false')
+    Array.from(carouselImages).forEach(({ id }) => {
+      formData.append('section[existing_carousel_image_ids][]', id.toString())
+    })
 
-      formData.append('section[title]', title || '')
+    Array.from(fileInputRef.current?.files || []).forEach((file) => {
+      formData.append('section[carousel_images][]', file)
+    })
 
-      formData.append(
-        'section[existing_carousel_image_urls]',
-        carouselImageUrls.join(',')
-      )
-
-      const response = await axios.put(
-        `/profiles/${section.id}/update_section.json`,
-        formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-            'X-Csrf-Token': csrfToken
-          }
-        }
-      )
-
-      if (response.status === 200) {
-        toast.success(response.data.message)
-
-        profilePageContext.setSections((sections) => {
-          return sections.map((s) => {
-            if (s.id === section.id) {
-              return {
-                ...s,
-                title,
-                show_title: showTitle,
-                carousel_images: response.data.data
-              }
-            }
-
-            return s
-          })
-        })
-      } else {
-        toast.error('Error updating content')
-        console.error('Error updating image carousel:', response.data)
-      }
-    } catch (error) {
-      toast.error('Error updating content')
-      console.error('Error updating image carousel:', error)
-    }
+    await updateProfileSection({
+      id: section.id,
+      formData
+    })
   }
 
+  React.useEffect(() => {
+    if (
+      !updateProfileSectionLoading &&
+      updateProfileSectionData &&
+      !updateProfileSectionErrors
+    ) {
+      const newCarouselImages =
+        updateProfileSectionData.data?.carouselImages || []
+
+      profilePageContext.setProfileSections((profileSections) => {
+        return profileSections.map((profileSection) => {
+          if (profileSection.id === section.id) {
+            return {
+              ...profileSection,
+              title,
+              show_title: showTitle,
+              carousel_images: newCarouselImages
+            }
+          }
+
+          return profileSection
+        })
+      })
+
+      setCarouselImages(newCarouselImages)
+
+      if (fileInputRef.current) {
+        fileInputRef.current.value = ''
+      }
+    }
+
+    if (
+      !updateProfileSectionLoading &&
+      updateProfileSectionErrors &&
+      !updateProfileSectionData
+    ) {
+      setTitle(section.title || '')
+      setShowTitle(section.show_title || false)
+      setCarouselImages(section.carousel_images || [])
+    }
+  }, [
+    updateProfileSectionData,
+    updateProfileSectionErrors,
+    updateProfileSectionLoading
+  ])
+
   return (
-    <div key={section.id} className="relative w-full border-t border-border">
+    <div className="relative w-full border-t border-border">
       {profilePageContext.creatorIsOwner && (
         <div className="absolute z-10 left-4 top-2">
           <Popover onOpenChange={handleSectionUpdate}>
             <PopoverTrigger>
-              <Button size={'icon'}>
+              <Button className="p-3" asChild size={'icon'}>
                 <FaPencil />
               </Button>
             </PopoverTrigger>
@@ -162,39 +174,15 @@ const ProfileImageCarouselSection = ({ section }: Props) => {
                     <p className="font-medium">Images</p>
 
                     <div className="flex items-center gap-2">
+                      <p className="text-sm">{carouselImages.length}</p>
                       <FaChevronRight className="text-xs" />
                     </div>
                   </div>
 
-                  <AlertDialog>
-                    <AlertDialogTrigger className="flex items-center justify-between px-4 py-3 border-t cursor-pointer text-destructive border-border">
-                      <p className="font-medium">Delete</p>
-
-                      <div className="flex items-center gap-2">
-                        <FaTrash className="text-xs" />
-                      </div>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>
-                          Are you absolutely sure?
-                        </AlertDialogTitle>
-                        <AlertDialogDescription>
-                          This action cannot be undone.
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction
-                          onClick={() =>
-                            profilePageContext.handleSectionDelete(section.id)
-                          }
-                        >
-                          Continue
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
+                  <ProfileDeleteDialog
+                    sectionId={section.id || 0}
+                    alertDialogTriggerClassName={'border-t border-border'}
+                  />
                 </div>
               )}
 
@@ -213,7 +201,7 @@ const ProfileImageCarouselSection = ({ section }: Props) => {
 
                   <Input
                     name="title"
-                    value={title || ''}
+                    value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     type={'text'}
                   />
@@ -242,10 +230,10 @@ const ProfileImageCarouselSection = ({ section }: Props) => {
                     <span className="block col-span-1"></span>
                   </div>
 
-                  {carouselImageUrls.map((imageUrl, index) => (
-                    <div key={index} className="flex items-center gap-3">
+                  {carouselImages.map(({ url, id }) => (
+                    <div key={id} className="flex items-center gap-3">
                       <img
-                        src={imageUrl}
+                        src={url}
                         alt="Image"
                         className="flex-1 object-contain h-20 border rounded-md border-border"
                       />
@@ -253,8 +241,10 @@ const ProfileImageCarouselSection = ({ section }: Props) => {
                         className="shrink-0"
                         size={'smallIcon'}
                         onClick={() => {
-                          setCarouselImageUrls((urls) => {
-                            return urls.filter((url) => url !== imageUrl)
+                          setCarouselImages((carouselImage) => {
+                            return carouselImage.filter(
+                              ({ id: compareId }) => compareId !== id
+                            )
                           })
                         }}
                       >
@@ -269,6 +259,7 @@ const ProfileImageCarouselSection = ({ section }: Props) => {
                     type={'file'}
                     multiple
                     className="mt-5"
+                    accept="image/png, image/jpeg, image/jpg"
                   />
                 </div>
               )}
@@ -281,21 +272,23 @@ const ProfileImageCarouselSection = ({ section }: Props) => {
         {showTitle && <h2 className="mb-5 text-2xl">{title}</h2>}
 
         <div className="flex items-center justify-center gap-3 px-3 md:border-none md:px-0">
-          {carouselImageUrls.length ? (
-            <Carousel>
+          {carouselImages.length ? (
+            <Carousel className={'w-full'}>
               <CarouselContent>
-                {carouselImageUrls.map((imageUrl, index) => (
-                  <CarouselItem key={index}>
-                    <img
-                      src={imageUrl}
-                      alt="Image"
-                      className="object-cover w-full h-full rounded-md"
-                    />
+                {carouselImages.map(({ url }, index) => (
+                  <CarouselItem className={'w-full pl-8'} key={index}>
+                    <div className={'aspect-w-16 aspect-h-9'}>
+                      <img
+                        src={url}
+                        alt="Image"
+                        className="object-contain w-full h-full rounded-md"
+                      />
+                    </div>
                   </CarouselItem>
                 ))}
               </CarouselContent>
-              <CarouselPrevious className="transform-none" />
-              <CarouselNext className="transform-none" />
+              <CarouselPrevious className="transform-none left-0" />
+              <CarouselNext className="transform-none right-0" />
             </Carousel>
           ) : (
             <div className="flex flex-col items-center justify-center">
@@ -305,12 +298,7 @@ const ProfileImageCarouselSection = ({ section }: Props) => {
           )}
         </div>
 
-        <ProfileSectionPositionMover
-          sectionId={section.id}
-          position={section.position}
-        />
-
-        <ProfileNewSection position={section.position} />
+        {children}
       </div>
     </div>
   )

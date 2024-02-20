@@ -1,64 +1,51 @@
 import * as React from 'react'
-import { Section } from '@/types'
 import { toast } from 'sonner'
 import { format } from 'date-fns'
 import { FiArrowUpRight } from 'react-icons/fi'
-import { ProfileSectionPositionMover } from '@/components/ProfileSectionPositionMover'
 import {
   Popover,
   PopoverContent,
   PopoverTrigger
 } from '@/components/ui/popover'
 import { Button } from '@/components/ui/button'
-import {
-  FaChevronLeft,
-  FaChevronRight,
-  FaPencil,
-  FaTrash
-} from 'react-icons/fa6'
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger
-} from '@/components/ui/alert-dialog'
+import { FaChevronLeft, FaChevronRight, FaPencil } from 'react-icons/fa6'
 import { Input } from '@/components/ui/input'
 import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
 import { Checkbox } from '@/components/ui/checkbox'
-import { useCsrfToken } from '@/hooks/useCsrfToken'
 import { ProfilePageContext } from '@/contexts/ProfilePageContext'
-import axios from 'axios'
-import { ProfileNewSection } from '@/components/ProfileNewSection'
 import { BiNews } from 'react-icons/bi'
+import { ProfileSectionProps } from '@/components/Profile/types'
+import { ProfileDeleteDialog } from '@/components/Profile/ProfileDeleteDialog'
+import { useProfileSectionUpdate } from '@/hooks/useProfileSectionUpdate'
 
-type Props = {
-  section: Section
-}
+const ProfilePostsSection = ({ section, children }: ProfileSectionProps) => {
+  const profilePageContext = React.useContext(ProfilePageContext)
 
-const ProfilePostsSection = ({ section }: Props) => {
-  const getPostDate = (date: string) => {
-    return format(new Date(date), 'MMMM dd, yyyy')
+  const {
+    updateProfileSection,
+    data: updateProfileSectionData,
+    errors: updateProfileSectionErrors,
+    loading: updateProfileSectionLoading
+  } = useProfileSectionUpdate()
+
+  if (!profilePageContext) {
+    throw new Error(
+      'ProfilePageContext should be used inside ProfilePageContext.Provider'
+    )
   }
 
   const [popOverTab, setPopoverTab] = React.useState<'name' | 'posts' | 'home'>(
     'home'
   )
 
-  const csrfToken = useCsrfToken()
-
-  const profilePageContext = React.useContext(ProfilePageContext)
-
-  const [title, setTitle] = React.useState<string>(section.title)
-  const [showTitle, setShowTitle] = React.useState<boolean>(section.show_title)
+  const [title, setTitle] = React.useState<string>(section.title || '')
+  const [showTitle, setShowTitle] = React.useState<boolean>(
+    section.show_title || false
+  )
 
   const [selectedPostIds, setSelectedPostIds] = React.useState<number[]>(
-    section.posts.map((post) => post.id)
+    section.posts?.map((post) => post.id || 0) || []
   )
 
   const handleSectionUpdate = async (isOpened: boolean) => {
@@ -69,68 +56,72 @@ const ProfilePostsSection = ({ section }: Props) => {
     if (
       title === section.title &&
       showTitle === section.show_title &&
-      selectedPostIds.length === section.posts.length &&
+      selectedPostIds.length === section.posts?.length &&
       selectedPostIds.every((id) =>
-        section.posts.map((post) => post.id).includes(id)
+        section.posts?.map((post) => post.id).includes(id)
       )
     ) {
       return
     }
 
-    try {
-      const response = await axios.put(
-        `/profiles/${section.id}/update_section.json`,
-        {
-          section: {
-            title,
-            show_title: showTitle,
-            post_ids: selectedPostIds
-          }
-        },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Csrf-Token': csrfToken
-          }
-        }
-      )
+    await updateProfileSection({
+      id: section.id,
+      title,
+      show_title: showTitle,
+      post_ids: selectedPostIds
+    })
+  }
 
-      if (response.status === 200) {
-        toast.success(response.data.message)
-
-        profilePageContext.setSections((sections) => {
-          return sections.map((s) => {
-            if (s.id === section.id) {
-              return {
-                ...s,
-                title,
-                show_title: showTitle,
-                posts: profilePageContext.posts.filter((post) =>
-                  selectedPostIds.includes(post.id)
-                )
-              }
+  React.useEffect(() => {
+    if (
+      !updateProfileSectionLoading &&
+      !updateProfileSectionErrors &&
+      updateProfileSectionData
+    ) {
+      profilePageContext.setProfileSections((profileSections) => {
+        return profileSections.map((oldSection) => {
+          if (oldSection.id === section.id) {
+            return {
+              ...oldSection,
+              title,
+              show_title: showTitle,
+              posts: profilePageContext.posts?.filter((post) =>
+                selectedPostIds.includes(post.id || 0)
+              )
             }
+          }
 
-            return s
-          })
+          return oldSection
         })
-      } else {
-        toast.error('Error updating content')
-        console.error('Error updating posts:', response.data)
-      }
-    } catch (error) {
-      toast.error('Error updating content')
-      console.error('Error updating posts:', error)
+      })
     }
+
+    if (
+      !updateProfileSectionLoading &&
+      updateProfileSectionErrors &&
+      !updateProfileSectionData
+    ) {
+      setTitle(section.title || '')
+      setShowTitle(section.show_title || false)
+      setSelectedPostIds(section.posts?.map((post) => post.id || 0) || [])
+    }
+  }, [
+    updateProfileSectionData,
+    updateProfileSectionErrors,
+    updateProfileSectionLoading
+  ])
+
+  const getFormattedPostDate = (date: string) => {
+    return format(new Date(date), 'MMMM dd, yyyy')
   }
 
   return (
-    <div key={section.id} className="relative w-full border-t border-border">
+    <div className="relative w-full border-t border-border">
       {profilePageContext.creatorIsOwner && (
         <div className="absolute z-10 left-4 top-2">
           <Popover onOpenChange={handleSectionUpdate}>
             <PopoverTrigger>
-              <Button size={'icon'}>
+              <Button className="p-3" asChild size={'icon'}>
                 <FaPencil />
               </Button>
             </PopoverTrigger>
@@ -160,35 +151,10 @@ const ProfilePostsSection = ({ section }: Props) => {
                     </div>
                   </div>
 
-                  <AlertDialog>
-                    <AlertDialogTrigger className="flex items-center justify-between px-4 py-3 border-t cursor-pointer text-destructive border-border">
-                      <p className="font-medium">Delete</p>
-
-                      <div className="flex items-center gap-2">
-                        <FaTrash className="text-xs" />
-                      </div>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>
-                          Are you absolutely sure?
-                        </AlertDialogTitle>
-                        <AlertDialogDescription>
-                          This action cannot be undone.
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction
-                          onClick={() =>
-                            profilePageContext.handleSectionDelete(section.id)
-                          }
-                        >
-                          Continue
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
+                  <ProfileDeleteDialog
+                    sectionId={section.id || 0}
+                    alertDialogTriggerClassName={'border-t border-border'}
+                  />
                 </div>
               )}
 
@@ -207,9 +173,9 @@ const ProfilePostsSection = ({ section }: Props) => {
 
                   <Input
                     name="title"
-                    value={title || ''}
+                    value={title}
                     onChange={(e) => setTitle(e.target.value)}
-                    type={'text'}
+                    type="text"
                   />
 
                   <div className="flex items-center gap-4 mt-4">
@@ -237,25 +203,28 @@ const ProfilePostsSection = ({ section }: Props) => {
                   </div>
 
                   <div className="flex flex-col gap-1 mt-4">
-                    {profilePageContext.posts.map((post) => {
+                    {profilePageContext.posts?.map((post) => {
                       return (
                         <div
                           key={post.id}
                           className="flex items-center justify-between px-4 py-3 border rounded border-border"
                         >
-                          <p>{post.title}</p>
+                          <Label htmlFor={`post-${post.id}`}>
+                            {post.title}
+                          </Label>
 
                           <Checkbox
-                            checked={selectedPostIds.includes(post.id)}
+                            id={`post-${post.id}`}
+                            checked={selectedPostIds.includes(post.id || 0)}
                             onCheckedChange={() => {
-                              if (selectedPostIds.includes(post.id)) {
+                              if (selectedPostIds.includes(post.id || 0)) {
                                 setSelectedPostIds(
                                   selectedPostIds.filter((id) => id !== post.id)
                                 )
                               } else {
                                 setSelectedPostIds([
-                                  ...selectedPostIds,
-                                  post.id
+                                  ...(selectedPostIds || []),
+                                  post.id || 0
                                 ])
                               }
                             }}
@@ -272,12 +241,12 @@ const ProfilePostsSection = ({ section }: Props) => {
       )}
 
       <div
-        className={`${section.posts.length ? '!pb-0' : ''} profile-container`}
+        className={`${section.posts?.length ? '!pb-0' : ''} profile-container`}
       >
         {showTitle && <h2 className="text-2xl">{title}</h2>}
 
-        <div className={section.posts.length && 'mt-10'}>
-          {section.posts.map((post) => {
+        <div className={section.posts?.length ? 'mt-10' : ''}>
+          {section.posts?.map((post) => {
             return (
               <div
                 onClick={() => toast('Post page is WIP 🚧')}
@@ -287,7 +256,9 @@ const ProfilePostsSection = ({ section }: Props) => {
                 <div className="flex items-center justify-between">
                   <div>
                     <h3 className="text-xl font-medium">{post.title}</h3>
-                    <p className="mt-2">{getPostDate(post.created_at)}</p>
+                    <p className="mt-2">
+                      {getFormattedPostDate(post.created_at || '')}
+                    </p>
                   </div>
 
                   <div>
@@ -298,7 +269,7 @@ const ProfilePostsSection = ({ section }: Props) => {
             )
           })}
 
-          {section.posts.length === 0 && (
+          {section.posts?.length === 0 && (
             <div className="flex flex-col items-center justify-center">
               <BiNews className="text-4xl" />
               <p className="mt-2 text-lg">No posts to show</p>
@@ -307,12 +278,7 @@ const ProfilePostsSection = ({ section }: Props) => {
         </div>
       </div>
 
-      <ProfileSectionPositionMover
-        sectionId={section.id}
-        position={section.position}
-      />
-
-      <ProfileNewSection position={section.position} />
+      {children}
     </div>
   )
 }

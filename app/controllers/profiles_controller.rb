@@ -8,20 +8,19 @@ class ProfilesController < ApplicationController
 
   def index
     # Prefetch posts and products for each section
-    @sections = @creator.page_sections.includes(:page_section_products, :page_section_posts).order(:position)
+    @sections = @creator.page_sections.includes(:page_section_products, :page_section_posts,
+                                                :featured_product).order(:position)
 
     @computed_sections = @sections.map do |section|
       compute_section_data(section)
     end
 
-    if creator_owns_this_profile?
-      @products = @creator.products.map do |product|
-        compute_product_data(product)
-      end
+    return unless creator_owns_this_profile?
+
+    @products = @creator.products.map do |product|
+      compute_product_data(product)
     end
-    @posts = @creator.posts if creator_owns_this_profile?
-  rescue StandardError => e
-    render_error(e)
+    @posts = @creator.posts
   end
 
   def update_section_positions
@@ -33,76 +32,72 @@ class ProfilesController < ApplicationController
       @section.move_higher
     end
 
-    render_section_positions_updated
-  rescue StandardError => e
-    render_error(e)
+    render json: { message: "Section position updated successfully",
+                   data: { idPositionMapping: compute_position_data } }
   end
 
   def add_section
-    @section = @creator.page_sections.new(section_params)
+    @section = @creator.page_sections.new(section_params_for_db)
 
     if @section.save
-      render_section_added
+      render json: { message: "Section added successfully",
+                     data: { profileSection: compute_section_data(@section),
+                             idPositionMapping: compute_position_data } }
     else
-      render_error(@section.errors.full_messages)
+      render_errors(@section.errors.full_messages)
     end
-  rescue StandardError => e
-    render_error(e)
   end
 
   def update_section
     @section = @creator.page_sections.find(params[:id])
 
-    if @section.update(section_params)
-      handle_section_type
+    if @section.update(section_params_for_db)
+      handle_each_section_type_on_update
 
-      render_section_updated
+      @section.reload
+
+      render json: { message: "Section updated successfully",
+                     data: { carouselImages: @section.image_carousel? ? @section.carousel_images_data : [],
+                             featuredProduct: @section.featured_product.present? ? compute_product_data(@section.featured_product) : nil } }
     else
-      render_error(@section.errors.full_messages)
+      render_errors(@section.errors.full_messages)
     end
-  rescue StandardError => e
-    render_error(e)
   end
 
   def delete_section
     @section = @creator.page_sections.find(params[:id])
 
     if @section.destroy
-      render_section_deleted
+      render json: { message: "Section deleted successfully",
+                     data: { idPositionMapping: compute_position_data, deletedSectionId: params[:id].to_i } }
     else
-      render_error(@section.errors.full_messages)
+      render_errors(@section.errors.full_messages)
     end
-  rescue StandardError => e
-    render_error(e)
   end
 
   private
 
-  def handle_section_type
+  def handle_each_section_type_on_update
     case @section.section_type
     when "product_list"
       @section.product_ids = params[:section][:product_ids].map(&:to_i)
     when "post_list"
       @section.post_ids = params[:section][:post_ids].map(&:to_i)
     when "image_carousel"
-      handle_image_carousel
+      handle_image_carousel_update
     else
       puts "No special handling for section type"
     end
   end
 
-  def handle_image_carousel
-    frontend_image_urls = params[:section][:existing_carousel_image_urls]
-
-    purge_unused_images(frontend_image_urls)
+  def handle_image_carousel_update
+    purge_unused_images(params[:section][:existing_carousel_image_ids] || [])
     attach_new_images(params[:section][:carousel_images])
   end
 
-  def purge_unused_images(frontend_image_urls)
+  def purge_unused_images(existing_carousel_image_ids)
     @section.carousel_images.each do |image|
-      puts rails_blob_url(image)
-      puts "Hello #{frontend_image_urls}"
-      image.purge unless frontend_image_urls.include?(rails_blob_url(image))
+      existing_carousel_image_ids.include?(image.id.to_s) ? next : image.purge
     end
   end
 
@@ -116,40 +111,19 @@ class ProfilesController < ApplicationController
     {
       products: section.products.map { |product| compute_product_data(product) },
       posts: section.posts,
-      carousel_images: section.carousel_image_urls
+      carousel_images: section.carousel_images_data,
+      featured_product: section.featured_product.present? ? compute_product_data(section.featured_product) : nil
     }.merge(section.attributes)
   end
 
   def compute_product_data(product)
     {
-      cover_image_url: product.cover_image.attached? ? rails_blob_url(product.cover_image) : nil
+      cover_image_url: product.cover_image.attached? ? rails_blob_url(product.cover_image, only_path: true) : nil
     }.merge(product.attributes)
   end
 
-  def render_section_positions_updated
-    if @creator.page_sections.present?
-      render json: { message: "Section position updated successfully", data: compute_position_data }
-    else
-      render json: { message: "No sections found for this creator", data: {} }
-    end
-  end
-
-  def render_section_added
-    render json: { message: "Section added successfully",
-                   data: { section: compute_section_data(@section), id_position_mapping: compute_position_data } }
-  end
-
-  def render_section_updated
-    render json: { message: "Section updated successfully",
-                   data: @section.image_carousel? ? @section.carousel_image_urls : {} }
-  end
-
-  def render_section_deleted
-    render json: { message: "Section deleted successfully", data: compute_position_data }
-  end
-
-  def render_error(message)
-    render json: { error: message }, status: :unprocessable_entity
+  def render_errors(messages)
+    render json: { errors: messages }, status: :unprocessable_entity
   end
 
   def compute_position_data
@@ -161,10 +135,31 @@ class ProfilesController < ApplicationController
   end
 
   def section_params
-    permitted_params = %i[carousel_images embed_height product_ids post_ids section_type title json_content embed_url featured_product_id
-                          show_title show_filters add_new_products_by_default existing_carousel_image_urls]
+    permitted_params = [
+      :embed_height,
+      :section_type,
+      :title,
+      :json_content,
+      :embed_url,
+      :featured_product_id,
+      :show_title,
+      :show_filters,
+      :add_new_products_by_default,
+      { carousel_images: [] },
+
+      # non active record fields
+      { existing_carousel_image_ids: [] },
+      :product_ids,
+      :post_ids
+    ]
+
     permitted_params << :position if action_name == "add_section"
+
     params.require(:section).permit(permitted_params)
+  end
+
+  def section_params_for_db
+    section_params.except(:existing_carousel_image_ids, :carousel_images)
   end
 
   # for subdomain requests

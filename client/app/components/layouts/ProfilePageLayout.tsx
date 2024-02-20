@@ -3,31 +3,43 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import logo from '@/assets/images/logo.svg'
 import { ProfilePageContext } from '@/contexts/ProfilePageContext'
-import { toast } from 'sonner'
-import { ProfileNewSection } from '@/components/ProfileNewSection'
+import { ProfileSectionAdd } from '@/components/Profile/ProfileSectionAdd'
+import { NavLink } from '@/types'
+import { NavLinkItem } from '@/components/ui/nav-link'
+import { useEmailSubscriber } from '@/hooks/useEmailSubscriber'
 
 type Props = {
   children?: React.ReactNode
-}
+} & React.HTMLAttributes<HTMLDivElement>
 
-const links = [
-  { href: '#', label: 'Products', isActive: false },
-  { href: '#', label: 'Posts', isActive: false },
-  { href: '#', label: 'About', isActive: true }
+const links: NavLink[] = [
+  { path: '/products', label: 'Products' },
+  { path: '/posts', label: 'Posts' },
+  { path: '/', label: 'About' }
 ]
 
 const ProfilePageLayout = ({ children }: Props) => {
   const profilePageContext = React.useContext(ProfilePageContext)
+  const { subscribeEmail } = useEmailSubscriber()
 
   if (!profilePageContext) {
     throw new Error(
-      'ProfilePageLayout is not within a ProfilePageContext.Provider'
+      'ProfilePageContext should be used inside ProfilePageContext.Provider'
     )
   }
 
-  const fakeSubscribe = () => {
-    toast.success('Fake subscribed!')
+  const [email, setEmail] = React.useState<string>('')
+
+  const handleSubscribe = async () => {
+    await subscribeEmail(email)
   }
+
+  const creatorAvatarUrl =
+    profilePageContext.creator?.avatar_url || 'https://gravatar.com/avatar'
+  const creatorName = profilePageContext.creator?.name || 'User'
+
+  // TODO: use route from backend
+  const isImplemented = location.pathname === '/'
 
   return (
     <>
@@ -35,51 +47,53 @@ const ProfilePageLayout = ({ children }: Props) => {
         <div className="flex items-center gap-3 px-3 py-4 md:flex-1 md:p-0">
           <img
             className="w-8 h-8 border rounded-full border-border"
-            src={
-              profilePageContext.creator?.avatar_url ||
-              'https://gravatar.com/avatar'
-            }
-            alt={`${profilePageContext.creator?.name}'s avatar`}
+            src={creatorAvatarUrl}
+            alt={`${creatorName}'s avatar`}
           />
-          <p className="text-lg">{profilePageContext.creator.name || 'User'}</p>
+          <p className="text-lg">{creatorName}</p>
         </div>
 
         <div className="flex items-center gap-3 px-3 py-4 border-t md:border-none border-border md:p-0">
-          <Input type="text" placeholder="Your email address" />
+          <Input
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            type="text"
+            placeholder="Your email address"
+          />
 
-          <Button onClick={fakeSubscribe}>Subscribe</Button>
+          <Button className="shrink-0" onClick={handleSubscribe}>
+            Subscribe
+          </Button>
         </div>
       </header>
 
-      <header className="border-t border-border">
+      <header className="border-t border-border relative">
         <div className="profile-container">
           <p className="text-4xl">{profilePageContext.creator?.bio}</p>
 
           <div className="flex items-center gap-5 mt-4">
-            {links.map((link) => (
-              <a
-                key={link.label}
-                className={`box-border inline-block ${
-                  link.isActive && 'border px-3.5 py-2 border-border'
-                } rounded-3xl`}
-                href={link.href}
-              >
-                {link.label}
-              </a>
+            {links.map((link, index) => (
+              <NavLinkItem key={index} link={link} />
             ))}
           </div>
         </div>
+
+        {isImplemented && <ProfileSectionAdd position={0} />}
       </header>
 
-      <main className="relative">
-        <ProfileNewSection position={profilePageContext.sections.length} />{' '}
-        {children}
-      </main>
+      {isImplemented ? (
+        <main className="relative">{children}</main>
+      ) : (
+        <p className="text-center mb-10">Not implemented</p>
+      )}
 
       <footer className="border-t border-border">
         <div className="flex items-center gap-2 profile-container">
           <p className="text-sm">Powered by</p>
           <img src={logo} alt="Gumroad" className="w-24 " />
+          <p className="text-sm">
+            or maybe <a href="https://afnan.dev">Afnan Shaikh</a> 😁
+          </p>
         </div>
       </footer>
     </>

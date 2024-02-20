@@ -16,7 +16,16 @@ const ProfileSectionPositionMover = ({ sectionId, position }: Props) => {
   const csrfToken = useCsrfToken()
   const profilePageContext = React.useContext(ProfilePageContext)
 
+  if (!profilePageContext) {
+    throw new Error(
+      'ProfilePageContext should be used inside ProfilePageContext.Provider'
+    )
+  }
+
   const handleMoveSection = async (direction: 'up' | 'down') => {
+    const errorMessage = `Error updating position`
+    const responseErrors: string[] = []
+
     try {
       const response = await axios.put(
         `/profiles/${sectionId}/update_section_positions.json`,
@@ -34,19 +43,32 @@ const ProfileSectionPositionMover = ({ sectionId, position }: Props) => {
       )
 
       if (response.status === 200) {
-        profilePageContext.setSections((sections) => {
-          return sections.map((section) => {
-            return { ...section, position: response.data.data[section.id] }
+        profilePageContext.setProfileSections((profileSections) => {
+          return profileSections.map((profileSection) => {
+            const idPositionMapping = response.data.data.idPositionMapping
+
+            return {
+              ...profileSection,
+              position: idPositionMapping[profileSection.id || 0]
+            }
           })
         })
         toast.success(response.data.message)
       } else {
-        toast.error('Error updating position')
-        console.error('Error updating position:', response.data)
+        responseErrors.push(...(response.data.errors || [errorMessage]))
       }
     } catch (error) {
-      toast.error('Error updating position')
-      console.error('Error updating position:', error)
+      // @ts-expect-error error is unknown
+      if (error.response?.data?.errors?.length) {
+        // @ts-expect-error error is unknown
+        responseErrors.push(...error.response.data.errors)
+      } else {
+        responseErrors.push(errorMessage)
+      }
+    } finally {
+      if (responseErrors.length) {
+        toast.error(responseErrors.join(', '))
+      }
     }
   }
 
@@ -61,7 +83,7 @@ const ProfileSectionPositionMover = ({ sectionId, position }: Props) => {
           <FaArrowUp className="text-xs" />
         </Button>
       )}
-      {position !== profilePageContext.sections.length && (
+      {position !== profilePageContext.profileSections.length && (
         <Button onClick={() => handleMoveSection('down')} size={'smallIcon'}>
           <FaArrowDown className="text-xs" />
         </Button>

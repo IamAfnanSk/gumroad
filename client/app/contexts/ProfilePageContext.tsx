@@ -1,15 +1,17 @@
 import * as React from 'react'
-import { Creator, Post, Product, Section } from '@/types'
+import { Creator, Post, Product, ProfileSection } from '@/types'
 
 export type ProfilePageContextProps = {
-  sections: Partial<Section[]>
+  profileSections: Partial<ProfileSection>[]
+  setProfileSections: React.Dispatch<
+    React.SetStateAction<Partial<ProfileSection>[]>
+  >
   creator?: Partial<Creator>
-  posts?: Partial<Post[]>
-  products?: Partial<Product[]>
+  posts?: Partial<Post>[]
+  products?: Partial<Product>[]
   creatorIsOwner?: boolean
-  setSections: React.Dispatch<React.SetStateAction<Section[]>>
-  handleSectionDelete: (sectionId: number) => Promise<void>
-  handleAddSection: (sectionType: string, position: number) => Promise<void>
+  handleDeleteProfileSection: (sectionId: number) => void
+  handleAddProfileSection: (sectionType: string, position: number) => void
 }
 
 export const ProfilePageContext = React.createContext<

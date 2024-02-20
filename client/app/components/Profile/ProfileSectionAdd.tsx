@@ -32,7 +32,7 @@ const profileSectionItems = [
     icon: <FaBoxOpen className="text-md" />,
     title: 'Featured product',
     type: 'featured_product',
-    isWIP: true
+    isWIP: false
   },
   {
     icon: <FaRegNewspaper className="text-md" />,
@@ -43,7 +43,7 @@ const profileSectionItems = [
     icon: <FaImages className="text-md" />,
     title: 'Image carousel',
     type: 'image_carousel',
-    isWIP: true
+    isWIP: false
   },
   {
     icon: <ImEmbed className="text-md" />,
@@ -57,8 +57,14 @@ const profileSectionItems = [
   }
 ]
 
-const ProfileNewSection = ({ position }: Props) => {
+const ProfileSectionAdd = ({ position }: Props) => {
   const profilePageContext = React.useContext(ProfilePageContext)
+
+  if (!profilePageContext) {
+    throw new Error(
+      'ProfilePageContext should be used inside ProfilePageContext.Provider'
+    )
+  }
 
   if (!profilePageContext.creatorIsOwner) {
     return null
@@ -68,7 +74,7 @@ const ProfileNewSection = ({ position }: Props) => {
     <div className="absolute z-10 transform -translate-x-1/2 left-1/2 -bottom-5 bg-background">
       <Popover>
         <PopoverTrigger>
-          <Button size={'icon'}>
+          <Button className="p-3" asChild size={'icon'}>
             <FaPlus />
           </Button>
         </PopoverTrigger>
@@ -76,10 +82,10 @@ const ProfileNewSection = ({ position }: Props) => {
           <div className="flex flex-col">
             {profileSectionItems.map((item, index) => (
               <div
-                key={item.type}
+                key={index}
                 onClick={() => {
                   !item.isWIP
-                    ? profilePageContext.handleAddSection(
+                    ? profilePageContext?.handleAddProfileSection(
                         item.type,
                         position + 1
                       )
@@ -98,4 +104,4 @@ const ProfileNewSection = ({ position }: Props) => {
   )
 }
 
-export { ProfileNewSection }
+export { ProfileSectionAdd }

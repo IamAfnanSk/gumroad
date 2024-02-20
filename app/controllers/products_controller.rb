@@ -9,29 +9,23 @@ class ProductsController < ApplicationController
     @product = @creator.products.build(product_params)
 
     if @product.save
-      render json: { message: "Product was successfully created.", product: @product }, status: :created
+      render json: { message: "Product was successfully created.", data: { product: @product } }, status: :created
     else
       render json: { errors: @product.errors.full_messages }, status: :unprocessable_entity
     end
-  rescue StandardError => e
-    render json: { error: "An error occurred: #{e.message}" }, status: :internal_server_error
   end
 
   def update
     if @product.update(product_params)
-      render json: { message: "Product was successfully updated.", product: @product }
+      render json: { message: "Product was successfully updated.", data: { product: @product } }
     else
       render json: { errors: @product.errors.full_messages }, status: :unprocessable_entity
     end
-  rescue StandardError => e
-    render json: { error: "An error occurred: #{e.message}" }, status: :internal_server_error
   end
 
   def destroy
     @product.destroy
     render json: { message: "Product was successfully destroyed." }
-  rescue StandardError => e
-    render json: { error: "An error occurred: #{e.message}" }, status: :internal_server_error
   end
 
   private
@@ -47,6 +41,6 @@ class ProductsController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def product_params
-    params.require(:product).permit(:name, :description, :price)
+    params.require(:product).permit(:name, :description, :price, :cover_image)
   end
 end

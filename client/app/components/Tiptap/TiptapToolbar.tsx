@@ -24,7 +24,8 @@ import {
   RiTextWrap,
   RiFormatClear,
   RiArrowGoBackLine,
-  RiArrowGoForwardLine
+  RiArrowGoForwardLine,
+  RiTaskLine
 } from 'react-icons/ri'
 
 import { setLink } from '@/lib/tiptapHelpers'
@@ -148,7 +149,7 @@ function Toolbar({ editor }: ToolbarProps) {
           })}
           onClick={() => editor.chain().focus().toggleBulletList().run()}
         >
-          <RiListOrdered />
+          <RiListUnordered />
         </div>
         <div
           className={classNames('tiptap-toolbar-icon', {
@@ -156,7 +157,15 @@ function Toolbar({ editor }: ToolbarProps) {
           })}
           onClick={() => editor.chain().focus().toggleOrderedList().run()}
         >
-          <RiListUnordered />
+          <RiListOrdered />
+        </div>
+        <div
+          className={classNames('tiptap-toolbar-icon', {
+            'is-active': editor.isActive('taskList')
+          })}
+          onClick={() => editor.chain().focus().toggleTaskList().run()}
+        >
+          <RiTaskLine />
         </div>
         <div
           className={classNames('tiptap-toolbar-icon', {

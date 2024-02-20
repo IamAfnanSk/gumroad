@@ -3,166 +3,211 @@ import * as React from 'react'
 import { ProfilePageLayout } from '@/components/layouts/ProfilePageLayout'
 
 import { ProfilePageContext } from '@/contexts/ProfilePageContext'
-import { ProfileWysiwygSection } from '@/components/ProfileWysiwygSection'
-import { ProfilePostsSection } from '@/components/ProfilePostsSection'
-import { Creator, Post, Product, Section } from '@/types'
-import { ProfileProductsSection } from '@/components/ProfileProductsSection'
-import axios from 'axios'
-import { toast } from 'sonner'
-import { useCsrfToken } from '@/hooks/useCsrfToken'
-import { ProfileSubscribeSection } from '@/components/ProfileSubscribeSection'
-import { ProfileEmbedSection } from '@/components/ProfileEmbedSection'
-import { ProfileImageCarouselSection } from '@/components/ProfileImageCarouselSection'
+import { ProfileWysiwygSection } from '@/components/Profile/ProfileWysiwygSection'
+import { ProfilePostsSection } from '@/components/Profile/ProfilePostsSection'
+import { Creator, Post, Product, ProfileSection } from '@/types'
+import { ProfileProductsSection } from '@/components/Profile/ProfileProductsSection'
+import { ProfileSubscribeSection } from '@/components/Profile/ProfileSubscribeSection'
+import { ProfileEmbedSection } from '@/components/Profile/ProfileEmbedSection'
+import { useProfileSectionAdd } from '@/hooks/useProfileSectionAdd'
+import { useProfileSectionDelete } from '@/hooks/useProfileSectionDelete'
+import { ProfileSectionAdd } from '@/components/Profile/ProfileSectionAdd'
+import { ProfileSectionPositionMover } from '@/components/Profile/ProfileSectionPositionMover'
+import { ProfileImageCarouselSection } from '@/components/Profile/ProfileImageCarouselSection'
+import { ProfileFeaturedProductsSection } from '@/components/Profile/ProfileFeaturedProductSection'
 
 type Props = {
-  sections: Partial<Section[]>
+  profileSections?: Partial<ProfileSection>[]
   creator?: Partial<Creator>
-  posts?: Partial<Post[]>
-  products?: Partial<Product[]>
+  posts?: Partial<Post>[]
+  products?: Partial<Product>[]
   creatorIsOwner?: boolean
-}
+} & React.HTMLAttributes<HTMLDivElement>
 
 const ProfilePage = (props: Props) => {
-  const [sections, setSections] = React.useState<Partial<Section[]>>(
-    props.sections
-  )
+  const {
+    addProfileSection,
+    errors: addProfileErrors,
+    data: addProfileData,
+    loading: addProfileLoading
+  } = useProfileSectionAdd()
 
-  const csrfToken = useCsrfToken()
+  const {
+    deleteProfileSection,
+    errors: deleteProfileErrors,
+    data: deleteProfileData,
+    loading: deleteProfileLoading
+  } = useProfileSectionDelete()
 
-  const sortedSections = sections.sort((a, b) => a.position - b.position)
+  const [profileSections, setProfileSections] = React.useState<
+    Partial<ProfileSection>[]
+  >(props.profileSections || [])
 
-  const handleSectionDelete = async (sectionId: number) => {
-    try {
-      const response = await axios.delete(
-        `/profiles/${sectionId}/delete_section.json`,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Csrf-Token': csrfToken
-          }
-        }
-      )
-
-      if (response.status === 200) {
-        toast.success(response.data.message)
-
-        setSections((sections) => {
-          return sections
-            .filter((section) => section.id !== sectionId)
-            .map((section) => {
-              return {
-                ...section,
-                position: response.data.data[section.id]
-              }
-            })
-        })
-      } else {
-        toast.error('Error deleting section')
-        console.error('Error deleting section:', response.data)
-      }
-    } catch (error) {
-      toast.error('Error deleting section')
-      console.error('Error deleting section:', error)
-    }
+  const handleDeleteProfileSection = async (sectionId: number) => {
+    await deleteProfileSection({ sectionId })
   }
 
-  const handleAddSection = async (sectionType: string, position: number) => {
-    try {
-      const response = await axios.post(
-        `/profiles/add_section.json`,
-        {
-          section: {
-            section_type: sectionType,
-            position,
-            json_content: JSON.stringify({})
-          }
-        },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Csrf-Token': csrfToken
-          }
-        }
-      )
+  const handleAddProfileSection = async (
+    sectionType: string,
+    position: number
+  ) => {
+    await addProfileSection({ sectionType, position })
+  }
 
-      if (response.status === 200) {
-        toast.success(response.data.message)
+  React.useEffect(() => {
+    if (!deleteProfileLoading && !deleteProfileErrors && deleteProfileData) {
+      const sectionIdPositionMap =
+        deleteProfileData.data?.idPositionMapping || {}
 
-        setSections((sections) => {
-          const updatedSections = sections.map((section) => {
+      const sectionId = deleteProfileData.data?.deletedSectionId || 0
+
+      setProfileSections((sections) => {
+        return sections
+          .filter((section) => section.id !== sectionId)
+          .map((section) => {
             return {
               ...section,
-              position: response.data.data.id_position_mapping[section.id]
+              position: sectionIdPositionMap[section.id || 0]
             }
           })
-
-          updatedSections.push(response.data.data.section as Section)
-
-          console.log(updatedSections)
-
-          return updatedSections
-        })
-      } else {
-        toast.error('Error adding section')
-        console.error('Error adding section:', response.data)
-      }
-    } catch (error) {
-      toast.error('Error adding section')
-      console.error('Error adding section:', error)
+      })
     }
-  }
+  }, [deleteProfileData, deleteProfileErrors, deleteProfileLoading])
+
+  React.useEffect(() => {
+    if (!addProfileLoading && !addProfileErrors && addProfileData) {
+      const sectionIdPositionMap = addProfileData.data?.idPositionMapping || {}
+      const newSection = addProfileData.data?.profileSection || {}
+
+      setProfileSections((sections) => {
+        const updatedSections = sections.map<Partial<ProfileSection>>(
+          (section) => {
+            return {
+              ...section,
+              position: sectionIdPositionMap[section.id || 0]
+            }
+          }
+        )
+
+        updatedSections.push(newSection)
+
+        return updatedSections
+      })
+    }
+  }, [addProfileData, addProfileErrors, addProfileLoading])
+
+  const sortedProfileSections = profileSections.sort(
+    (a, b) => (a.position || 0) - (b.position || 0)
+  )
 
   return (
     <ProfilePageContext.Provider
       value={{
-        ...props,
-        setSections,
-        sections,
-        handleSectionDelete,
-        handleAddSection
+        profileSections,
+        setProfileSections,
+        handleAddProfileSection,
+        handleDeleteProfileSection,
+        ...props
       }}
     >
       <ProfilePageLayout>
-        {sortedSections.map((section) => {
-          if (section.section_type === 'wysiwyg') {
-            return <ProfileWysiwygSection key={section.id} section={section} />
-          }
+        {sortedProfileSections.map((profileSection) => {
+          let Section = null
 
-          if (section.section_type === 'post_list') {
-            return <ProfilePostsSection section={section} key={section.id} />
-          }
+          const CommonSectionChildren = (
+            <>
+              <ProfileSectionPositionMover
+                sectionId={profileSection.id || 0}
+                position={profileSection.position || 0}
+              />
 
-          if (section.section_type === 'product_list') {
-            return <ProfileProductsSection key={section.id} section={section} />
-          }
+              <ProfileSectionAdd position={profileSection.position || 0} />
+            </>
+          )
 
-          // if (section.section_type === 'featured_product') {
-          //   return (
-          //     <ProfileFeaturedProductSection
-          //       key={section.id}
-          //       section={section}
-          //     />
-          //   )
-          // }
-          //
-          if (section.section_type === 'image_carousel') {
-            return (
-              <ProfileImageCarouselSection key={section.id} section={section} />
+          if (profileSection.section_type === 'wysiwyg') {
+            Section = (
+              <ProfileWysiwygSection
+                key={profileSection.id}
+                section={profileSection}
+              >
+                {CommonSectionChildren}
+              </ProfileWysiwygSection>
             )
           }
 
-          if (section.section_type === 'embed') {
-            return <ProfileEmbedSection key={section.id} section={section} />
-          }
-
-          if (section.section_type === 'subscribe') {
-            return (
-              <ProfileSubscribeSection key={section.id} section={section} />
+          if (profileSection.section_type === 'post_list') {
+            Section = (
+              <ProfilePostsSection
+                key={profileSection.id}
+                section={profileSection}
+              >
+                {CommonSectionChildren}
+              </ProfilePostsSection>
             )
           }
 
-          return null
+          if (profileSection.section_type === 'product_list') {
+            Section = (
+              <ProfileProductsSection
+                key={profileSection.id}
+                section={profileSection}
+              >
+                {CommonSectionChildren}
+              </ProfileProductsSection>
+            )
+          }
+
+          if (profileSection.section_type === 'embed') {
+            Section = (
+              <ProfileEmbedSection
+                key={profileSection.id}
+                section={profileSection}
+              >
+                {CommonSectionChildren}
+              </ProfileEmbedSection>
+            )
+          }
+
+          if (profileSection.section_type === 'subscribe') {
+            Section = (
+              <ProfileSubscribeSection
+                key={profileSection.id}
+                section={profileSection}
+              >
+                {CommonSectionChildren}
+              </ProfileSubscribeSection>
+            )
+          }
+
+          if (profileSection.section_type === 'image_carousel') {
+            Section = (
+              <ProfileImageCarouselSection
+                key={profileSection.id}
+                section={profileSection}
+              >
+                {CommonSectionChildren}
+              </ProfileImageCarouselSection>
+            )
+          }
+
+          if (profileSection.section_type === 'featured_product') {
+            Section = (
+              <ProfileFeaturedProductsSection
+                key={profileSection.id}
+                section={profileSection}
+              >
+                {CommonSectionChildren}
+              </ProfileFeaturedProductsSection>
+            )
+          }
+
+          return Section
         })}
+
+        {profileSections.length > 0 && (
+          <ProfileSectionAdd position={profileSections.length} />
+        )}
       </ProfilePageLayout>
     </ProfilePageContext.Provider>
   )

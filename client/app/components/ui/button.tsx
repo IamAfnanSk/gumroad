@@ -12,7 +12,8 @@ const buttonVariants = cva(
         default: 'border-foreground bg-background text-foreground',
         primary:
           'bg-primary text-primary-foreground hover:bg-accent hover:shadow-primary hover:text-primary dark:hover:text-primary-foreground',
-        primaryOutline: 'border-foreground bg-transparent text-foreground'
+        primaryOutline: 'border-foreground bg-transparent text-foreground',
+        accent: 'bg-accent text-accent-foreground'
       },
       size: {
         default: 'px-4 py-3',

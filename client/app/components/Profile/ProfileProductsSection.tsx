@@ -1,12 +1,9 @@
 import * as React from 'react'
-import { ProfileSectionPositionMover } from '@/components/ProfileSectionPositionMover'
-import { Section } from '@/types'
 import {
   FaBoxArchive,
   FaChevronLeft,
   FaChevronRight,
-  FaPencil,
-  FaTrash
+  FaPencil
 } from 'react-icons/fa6'
 import {
   Popover,
@@ -18,47 +15,44 @@ import { Button } from '@/components/ui/button'
 import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
 import { Checkbox } from '@/components/ui/checkbox'
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger
-} from '@/components/ui/alert-dialog'
-import axios from 'axios'
-import { toast } from 'sonner'
-import { useCsrfToken } from '@/hooks/useCsrfToken'
 import { ProfilePageContext } from '@/contexts/ProfilePageContext'
 import { ProductCard } from '@/components/ProductCard'
-import { ProfileNewSection } from '@/components/ProfileNewSection'
+import { ProfileSectionProps } from '@/components/Profile/types'
+import { useProfileSectionUpdate } from '@/hooks/useProfileSectionUpdate'
+import { ProfileDeleteDialog } from '@/components/Profile/ProfileDeleteDialog'
 
-type Props = {
-  section: Section
-}
+const ProfileProductsSection = ({ section, children }: ProfileSectionProps) => {
+  const profilePageContext = React.useContext(ProfilePageContext)
 
-const ProfileProductsSection = ({ section }: Props) => {
+  const {
+    updateProfileSection,
+    data: updateProfileSectionData,
+    errors: updateProfileSectionErrors,
+    loading: updateProfileSectionLoading
+  } = useProfileSectionUpdate()
+
+  if (!profilePageContext) {
+    throw new Error(
+      'ProfilePageContext should be used inside ProfilePageContext.Provider'
+    )
+  }
+
   const [popOverTab, setPopoverTab] = React.useState<
     'name' | 'products' | 'home'
   >('home')
 
-  const csrfToken = useCsrfToken()
-
-  const profilePageContext = React.useContext(ProfilePageContext)
-
-  const [title, setTitle] = React.useState<string>(section.title)
-  const [showTitle, setShowTitle] = React.useState<boolean>(section.show_title)
+  const [title, setTitle] = React.useState<string>(section.title || '')
+  const [showTitle, setShowTitle] = React.useState<boolean>(
+    section.show_title || false
+  )
   const [showFilters, setShowFilters] = React.useState<boolean>(
-    section.show_filters
+    section.show_filters || false
   )
   const [addNewProductsByDefault, setAddNewProductsByDefault] =
-    React.useState<boolean>(section.add_new_products_by_default)
+    React.useState<boolean>(section.add_new_products_by_default || false)
 
   const [selectedProductIds, setSelectedProductIds] = React.useState<number[]>(
-    section.products.map((product) => product.id)
+    section.products?.map((product) => product.id || 0) || []
   )
 
   const handleSectionUpdate = async (isOpened: boolean) => {
@@ -71,64 +65,68 @@ const ProfileProductsSection = ({ section }: Props) => {
       showTitle === section.show_title &&
       showFilters === section.show_filters &&
       addNewProductsByDefault === section.add_new_products_by_default &&
-      selectedProductIds.length === section.products.length &&
+      selectedProductIds.length === section.products?.length &&
       selectedProductIds.every((id) =>
-        section.products.map((product) => product.id).includes(id)
+        section.products?.map((product) => product.id).includes(id)
       )
     ) {
       return
     }
 
-    try {
-      const response = await axios.put(
-        `/profiles/${section.id}/update_section.json`,
-        {
-          section: {
-            title,
-            show_title: showTitle,
-            show_filters: showFilters,
-            add_new_products_by_default: addNewProductsByDefault,
-            product_ids: selectedProductIds
-          }
-        },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Csrf-Token': csrfToken
-          }
-        }
-      )
-
-      if (response.status === 200) {
-        toast.success(response.data.message)
-
-        profilePageContext.setSections((sections) => {
-          return sections.map((s) => {
-            if (s.id === section.id) {
-              return {
-                ...s,
-                title,
-                show_title: showTitle,
-                show_filters: showFilters,
-                add_new_products_by_default: addNewProductsByDefault,
-                products: profilePageContext.products.filter((product) =>
-                  selectedProductIds.includes(product.id)
-                )
-              }
-            }
-
-            return s
-          })
-        })
-      } else {
-        toast.error('Error updating content')
-        console.error('Error updating products:', response.data)
-      }
-    } catch (error) {
-      toast.error('Error updating content')
-      console.error('Error updating products:', error)
-    }
+    await updateProfileSection({
+      id: section.id,
+      title,
+      show_title: showTitle,
+      show_filters: showFilters,
+      add_new_products_by_default: addNewProductsByDefault,
+      product_ids: selectedProductIds
+    })
   }
+
+  React.useEffect(() => {
+    if (
+      !updateProfileSectionLoading &&
+      !updateProfileSectionErrors &&
+      updateProfileSectionData
+    ) {
+      profilePageContext.setProfileSections((profileSections) => {
+        return profileSections.map((oldSection) => {
+          if (oldSection.id === section.id) {
+            return {
+              ...oldSection,
+              title,
+              show_title: showTitle,
+              show_filters: showFilters,
+              add_new_products_by_default: addNewProductsByDefault,
+              products: profilePageContext.products?.filter((product) =>
+                selectedProductIds.includes(product.id || 0)
+              )
+            }
+          }
+
+          return oldSection
+        })
+      })
+    }
+
+    if (
+      !updateProfileSectionLoading &&
+      updateProfileSectionErrors &&
+      !updateProfileSectionData
+    ) {
+      setTitle(section.title || '')
+      setShowTitle(section.show_title || false)
+      setShowFilters(section.show_filters || false)
+      setAddNewProductsByDefault(section.add_new_products_by_default || false)
+      setSelectedProductIds(
+        section.products?.map((product) => product.id || 0) || []
+      )
+    }
+  }, [
+    updateProfileSectionData,
+    updateProfileSectionErrors,
+    updateProfileSectionLoading
+  ])
 
   return (
     <div className="border-t border-border w-full relative">
@@ -136,7 +134,7 @@ const ProfileProductsSection = ({ section }: Props) => {
         <div className="absolute z-10 left-4 top-2">
           <Popover onOpenChange={handleSectionUpdate}>
             <PopoverTrigger>
-              <Button size={'icon'}>
+              <Button className="p-3" asChild size={'icon'}>
                 <FaPencil />
               </Button>
             </PopoverTrigger>
@@ -168,35 +166,10 @@ const ProfileProductsSection = ({ section }: Props) => {
                     </div>
                   </div>
 
-                  <AlertDialog>
-                    <AlertDialogTrigger className="flex cursor-pointer px-4 text-destructive py-3 items-center justify-between border-t border-border">
-                      <p className="font-medium">Delete</p>
-
-                      <div className="flex items-center gap-2">
-                        <FaTrash className="text-xs" />
-                      </div>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>
-                          Are you absolutely sure?
-                        </AlertDialogTitle>
-                        <AlertDialogDescription>
-                          This action cannot be undone.
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction
-                          onClick={() =>
-                            profilePageContext.handleSectionDelete(section.id)
-                          }
-                        >
-                          Continue
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
+                  <ProfileDeleteDialog
+                    sectionId={section.id || 0}
+                    alertDialogTriggerClassName={'border-t border-border'}
+                  />
                 </div>
               )}
 
@@ -215,9 +188,9 @@ const ProfileProductsSection = ({ section }: Props) => {
 
                   <Input
                     name="title"
-                    value={title || ''}
+                    value={title}
                     onChange={(e) => setTitle(e.target.value)}
-                    type={'text'}
+                    type="text"
                   />
 
                   <div className="flex items-center gap-4 mt-4">
@@ -267,18 +240,25 @@ const ProfileProductsSection = ({ section }: Props) => {
                   </div>
 
                   <div className="flex flex-col gap-1 mt-4">
-                    {profilePageContext.products.map((product) => {
+                    {profilePageContext.products?.map((product) => {
                       return (
                         <div
                           key={product.id}
                           className="flex items-center justify-between border border-border py-3 px-4 rounded"
                         >
-                          <p>{product.name}</p>
+                          <Label htmlFor={`product-${product.id}`}>
+                            {product.name}
+                          </Label>
 
                           <Checkbox
-                            checked={selectedProductIds.includes(product.id)}
+                            id={`product-${product.id}`}
+                            checked={selectedProductIds.includes(
+                              product.id || 0
+                            )}
                             onCheckedChange={() => {
-                              if (selectedProductIds.includes(product.id)) {
+                              if (
+                                selectedProductIds.includes(product.id || 0)
+                              ) {
                                 setSelectedProductIds(
                                   selectedProductIds.filter(
                                     (id) => id !== product.id
@@ -286,8 +266,8 @@ const ProfileProductsSection = ({ section }: Props) => {
                                 )
                               } else {
                                 setSelectedProductIds([
-                                  ...selectedProductIds,
-                                  product.id
+                                  ...(selectedProductIds || []),
+                                  product.id || 0
                                 ])
                               }
                             }}
@@ -304,7 +284,7 @@ const ProfileProductsSection = ({ section }: Props) => {
       )}
 
       <div className="profile-container">
-        {showTitle && <h2 className="text-2xl">{title}</h2>}
+        {showTitle && <h2 className="text-2xl mb-4">{title}</h2>}
 
         <div className="flex flex-col">
           {showFilters && (
@@ -314,11 +294,11 @@ const ProfileProductsSection = ({ section }: Props) => {
           )}
 
           <div className="grid gap-4 flex-1 grid-cols-1 md:grid-cols-3">
-            {section.products.map((product) => {
+            {section.products?.map((product) => {
               return <ProductCard key={product.id} product={product} />
             })}
 
-            {section.products.length === 0 && (
+            {section.products?.length === 0 && (
               <div className="flex col-span-3 flex-col items-center justify-center">
                 <FaBoxArchive className="text-4xl" />
                 <p className="text-lg mt-2">No products to show</p>
@@ -328,12 +308,7 @@ const ProfileProductsSection = ({ section }: Props) => {
         </div>
       </div>
 
-      <ProfileSectionPositionMover
-        sectionId={section.id}
-        position={section.position}
-      />
-
-      <ProfileNewSection position={section.position} />
+      {children}
     </div>
   )
 }

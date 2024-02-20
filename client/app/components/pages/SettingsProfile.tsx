@@ -1,8 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
-import axios from 'axios'
-import { Button } from '@/components/ui/button'
 import {
   Form,
   FormControl,
@@ -14,111 +12,118 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import * as React from 'react'
-import { Creator } from '@/types'
-import { toast } from 'sonner'
+import { Creator, NavLink } from '@/types'
 import { urlBuilder } from '@/lib/utils'
 import { Textarea } from '@/components/ui/textarea'
 import { FaCircleXmark } from 'react-icons/fa6'
-import { SettingsPageLayout } from '@/components/layouts/SettingsPageLayout'
-import { useCsrfToken } from '@/hooks/useCsrfToken'
+import { DashboardPageLayout } from '@/components/layouts/DashboardPageLayout'
+import { useCreatorUpdate } from '@/hooks/useCreatorUpdate'
+import { MdOutlineSystemUpdateAlt } from 'react-icons/md'
+
+const navLinks: NavLink[] = [
+  { label: 'Settings', path: '' },
+  { label: 'Profile', path: '/settings/profile' },
+  { label: 'Team', path: '' },
+  { label: 'Payments', path: '' }
+]
 
 const CreatorUpdateSchema = z.object({
-  bio: z.string().max(500).optional(),
-  twitter_handle: z
-    .string()
-    .regex(/^[a-zA-Z0-9_]{1,15}$/)
-    .optional(),
-  name: z.string().optional(),
-  username: z.string().min(3)
+  bio: z.optional(z.string().max(500, { message: 'Bio is too long' })),
+  twitter_handle: z.string().refine(
+    (value) => {
+      // Check if the value is empty or a valid Twitter username without the "@" symbol
+      return value === '' || /^[a-zA-Z0-9_]+$/.test(value)
+    },
+    {
+      message: 'Invalid Twitter username'
+    }
+  ),
+  name: z.optional(z.string().max(50, { message: 'Name is too long' })),
+  username: z.string().min(3, { message: 'Username is too short' })
 })
 
 type Props = {
   creator: Creator
 }
 
-const SettingsProfile = (props: Props) => {
-  console.log(props)
+const SettingsProfile = ({ creator }: Props) => {
+  const {
+    updateCreator,
+    data: updateCreatorData,
+    errors: updateCreatorErrors,
+    loading: updateCreatorLoading
+  } = useCreatorUpdate()
 
   const avatarRef = React.useRef<HTMLInputElement>(null)
 
   const [avatarUrl, setAvatarUrl] = React.useState<string | null>(
-    props.creator.avatar_url || null
+    creator.avatar_url || null
   )
 
   const [profileUrl, setProfileUrl] = React.useState<string>(
-    urlBuilder(location, '', props.creator.username, true)
+    urlBuilder('', creator.username)
   )
-
-  const csrfToken = useCsrfToken()
 
   const form = useForm<z.infer<typeof CreatorUpdateSchema>>({
     resolver: zodResolver(CreatorUpdateSchema),
     defaultValues: {
-      bio: props.creator.bio || '',
-      twitter_handle: props.creator.twitter_handle || '',
-      name: props.creator.name || '',
-      username: props.creator.username || ''
+      bio: creator.bio || '',
+      twitter_handle: creator.twitter_handle || '',
+      name: creator.name || '',
+      username: creator.username || ''
     }
   })
 
   React.useEffect(() => {
     const subscription = form.watch((value, { name }) => {
       if (name === 'username') {
-        setProfileUrl(urlBuilder(location, '', value['username'], true))
+        setProfileUrl(urlBuilder('', value['username']))
       }
     })
     return () => subscription.unsubscribe()
   }, [form.watch])
 
-  const onSubmit = async (data: z.infer<typeof CreatorUpdateSchema>) => {
-    try {
-      const formData = new FormData()
+  const handleCreatorUpdate = async (
+    data: z.infer<typeof CreatorUpdateSchema>
+  ) => {
+    if (
+      !form.formState.isDirty ||
+      !Object.keys(form.formState.touchedFields).length
+    )
+      return
 
-      formData.append('creator[bio]', data.bio)
-      formData.append('creator[twitter_handle]', data.twitter_handle)
-      formData.append('creator[name]', data.name)
-      formData.append('creator[username]', data.username)
-
-      if (avatarRef.current?.files?.[0]) {
-        formData.append('creator[avatar]', avatarRef.current.files[0])
-      }
-
-      const response = await axios.put(
-        `/creators/${props.creator.id}.json`,
-        formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-            'X-Csrf-Token': csrfToken
-          }
-        }
-      )
-
-      if (response.status === 200) {
-        toast.success(response.data.message)
-        if (avatarRef.current?.files?.[0]) {
-          setAvatarUrl(URL.createObjectURL(avatarRef.current.files[0]))
-        }
-      } else {
-        toast.error('Error updating creator')
-        console.error('Error updating creator:', response.data)
-      }
-    } catch (error) {
-      toast.error('Error updating creator')
-      console.error('Error updating creator:', error)
-    }
+    await updateCreator({
+      ...data,
+      creatorId: creator.id,
+      avatar: avatarRef.current?.files?.[0]
+    })
   }
 
+  React.useEffect(() => {
+    if (!updateCreatorLoading && !updateCreatorErrors && updateCreatorData) {
+      if (avatarRef.current?.files?.[0]) {
+        setAvatarUrl(URL.createObjectURL(avatarRef.current.files[0]))
+      }
+
+      form.reset({ ...form.getValues() })
+    }
+  }, [updateCreatorData, updateCreatorErrors, updateCreatorLoading])
+
   return (
-    <SettingsPageLayout>
-      <div className="px-12  py-16">
+    <DashboardPageLayout
+      navLinks={navLinks}
+      headerCta={{
+        label: 'Update settings',
+        icon: MdOutlineSystemUpdateAlt,
+        onClick: () => form.handleSubmit(handleCreatorUpdate)()
+      }}
+      title="Settings"
+    >
+      <div className="dashboard-container">
         <h1 className="text-2xl mb-8">Profile</h1>
 
         <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="w-full md:w-2/3 space-y-6"
-          >
+          <form className="w-full md:w-2/3 space-y-6">
             <FormField
               control={form.control}
               name="username"
@@ -187,15 +192,15 @@ const SettingsProfile = (props: Props) => {
             />
 
             {avatarUrl ? (
-              <div className="relative group w-max">
+              <div className="relative h-36 group w-max">
                 <img
-                  className="w-20 h-20 object-contain"
+                  className="w-full h-full object-contain"
                   src={avatarUrl}
                   alt="Creator avatar"
                 />
                 <FaCircleXmark
                   onClick={() => setAvatarUrl(null)}
-                  className="absolute cursor-pointer transform hidden group-hover:block -translate-x-1/2 -translate-y-1/2 top-0 left-0 text-center rounded-full bg-white text-destructive"
+                  className="absolute block cursor-pointer transform md:hidden group-hover:block -translate-x-1/2 -translate-y-1/2 top-0 left-full text-center rounded-full bg-white text-destructive"
                 />
               </div>
             ) : (
@@ -209,14 +214,10 @@ const SettingsProfile = (props: Props) => {
                 )}
               />
             )}
-
-            <Button variant={'primary'} type="submit">
-              Save
-            </Button>
           </form>
         </Form>
       </div>
-    </SettingsPageLayout>
+    </DashboardPageLayout>
   )
 }
 

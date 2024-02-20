@@ -5,9 +5,9 @@ import { Button } from '@/components/ui/button'
 
 type Props = {
   currentCreatorUsername?: string
-}
+} & React.HTMLProps<HTMLDivElement>
 
-const HomePage = (props: Props) => {
+const HomePage = ({ currentCreatorUsername }: Props) => {
   return (
     <div className="container-margins">
       <header className="flex items-center justify-between">
@@ -16,17 +16,13 @@ const HomePage = (props: Props) => {
         </div>
 
         <div className="flex flex-wrap items-center justify-end gap-6">
-          {props.currentCreatorUsername ? (
+          {currentCreatorUsername ? (
             <>
-              <a href={urlBuilder(location, '/settings/profile', 'app')}>
-                Settings
-              </a>
-              <a href={urlBuilder(location, '', props.currentCreatorUsername)}>
-                Profile
-              </a>
+              <a href={urlBuilder('/settings/profile', 'app')}>Settings</a>
+              <a href={urlBuilder('', currentCreatorUsername)}>Profile</a>
             </>
           ) : (
-            <a href={urlBuilder(location, '/creators/login', 'app')}>
+            <a href={urlBuilder('/creators/login', 'app')}>
               <Button>Login</Button>
             </a>
           )}

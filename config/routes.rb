@@ -23,6 +23,8 @@ Rails.application.routes.draw do
 
   constraints(ProfileSubDomainConstraint.new) do
     root "profiles#index", as: :profile_root
+    get "/posts", to: "profiles#index"
+    get "/products", to: "profiles#index"
 
     resources :profiles, only: [] do
       member do

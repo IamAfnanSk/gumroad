@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 
 class Creator < ApplicationRecord
-  # Include default devise modules. Others available are:
-  # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
+  include LowercaseAttributes
+
+  lowercase_attribute :username
+
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
@@ -24,7 +26,7 @@ class Creator < ApplicationRecord
   def avatar_format
     return unless avatar.attached?
 
-    acceptable_types = %w[image/jpeg image/png]
+    acceptable_types = %w[image/jpeg image/png image/jpg]
     return if acceptable_types.include?(avatar.blob.content_type)
 
     errors.add(:avatar, "must be a JPEG or PNG")

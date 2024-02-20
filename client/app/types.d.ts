@@ -4,7 +4,7 @@ type EntityCommon = {
 }
 
 export type Creator = {
-  id: string
+  id: number
   email: string
   username: string
   avatar_url: string
@@ -27,10 +27,15 @@ export type Post = {
   title: string
 } & EntityCommon
 
-export type Section = {
-  products: Product[]
-  posts: Post[]
-  carousel_images: string[]
+export type CarouselImage = {
+  id: number
+  url: string
+}
+
+export type ProfileSection = {
+  products: Partial<Product>[]
+  posts: Partial<Post>[]
+  carousel_images: CarouselImage[]
   id: number
   creator_id: number
   json_content: string
@@ -43,4 +48,11 @@ export type Section = {
   show_filters: boolean
   add_new_products_by_default: boolean
   embed_height: string
+  featured_product: Partial<Product>
 } & EntityCommon
+
+export type NavLink = {
+  path: string
+  label: string
+  activePaths?: string[]
+}

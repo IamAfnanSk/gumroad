@@ -15,7 +15,7 @@ const LogOutButton = ({ buttonVariant }: Props) => {
       <form
         className="button_to"
         method="post"
-        action={urlBuilder(location, '/creators/logout', 'app')}
+        action={urlBuilder('/creators/logout', 'app')}
       >
         <input type="hidden" name="_method" value="delete" autoComplete="off" />
         <Button variant={buttonVariant} type="submit">
