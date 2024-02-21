@@ -78,7 +78,7 @@ const ProfilePageLayout = ({ children }: Props) => {
           </div>
         </div>
 
-        {isImplemented && <ProfileSectionAdd position={0} />}
+        {isImplemented && <ProfileSectionAdd position={1} />}
       </header>
 
       {isImplemented ? (

@@ -81,8 +81,8 @@ const ProfileEmbedSection = ({ section, children }: ProfileSectionProps) => {
       !updateProfileSectionErrors &&
       updateProfileSectionData
     ) {
-      profilePageContext.setProfileSections((sections) => {
-        return sections.map((oldSection) => {
+      profilePageContext.setProfileSections((profileSections) => {
+        return profileSections.map((oldSection) => {
           if (oldSection.id === section.id) {
             return {
               ...oldSection,

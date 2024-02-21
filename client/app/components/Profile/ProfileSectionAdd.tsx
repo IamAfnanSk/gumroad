@@ -98,7 +98,7 @@ const ProfileSectionAdd = ({ position }: Props) => {
                   !item.isWIP
                     ? profilePageContext?.handleAddProfileSection(
                         item.type,
-                        position + 1
+                        position
                       )
                     : toast('This feature is WIP 🚧')
                 }}

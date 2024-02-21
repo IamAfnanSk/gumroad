@@ -62,13 +62,13 @@ const ProfilePage = (props: Props) => {
 
       const sectionId = deleteProfileData.data?.deletedSectionId || 0
 
-      setProfileSections((sections) => {
-        return sections
-          .filter((section) => section.id !== sectionId)
-          .map((section) => {
+      setProfileSections((profileSections) => {
+        return profileSections
+          .filter((profileSection) => profileSection.id !== sectionId)
+          .map((profileSection) => {
             return {
-              ...section,
-              position: sectionIdPositionMap[section.id || 0]
+              ...profileSection,
+              position: sectionIdPositionMap[profileSection.id || 0]
             }
           })
       })
@@ -80,12 +80,12 @@ const ProfilePage = (props: Props) => {
       const sectionIdPositionMap = addProfileData.data?.idPositionMapping || {}
       const newSection = addProfileData.data?.profileSection || {}
 
-      setProfileSections((sections) => {
-        const updatedSections = sections.map<Partial<ProfileSection>>(
-          (section) => {
+      setProfileSections((profileSections) => {
+        const updatedSections = profileSections.map<Partial<ProfileSection>>(
+          (profileSection) => {
             return {
-              ...section,
-              position: sectionIdPositionMap[section.id || 0]
+              ...profileSection,
+              position: sectionIdPositionMap[profileSection.id || 0]
             }
           }
         )
@@ -104,17 +104,15 @@ const ProfilePage = (props: Props) => {
   return (
     <ProfilePageContext.Provider
       value={{
+        ...props,
         profileSections,
         setProfileSections,
         handleAddProfileSection,
-        handleDeleteProfileSection,
-        ...props
+        handleDeleteProfileSection
       }}
     >
       <ProfilePageLayout>
         {sortedProfileSections.map((profileSection) => {
-          let Section = null
-
           const CommonSectionChildren = (
             <>
               <ProfileSectionPositionMover
@@ -122,12 +120,14 @@ const ProfilePage = (props: Props) => {
                 position={profileSection.position || 0}
               />
 
-              <ProfileSectionAdd position={profileSection.position || 0} />
+              <ProfileSectionAdd
+                position={(profileSection.position || 0) + 1}
+              />
             </>
           )
 
           if (profileSection.section_type === 'wysiwyg') {
-            Section = (
+            return (
               <ProfileWysiwygSection
                 key={profileSection.id}
                 section={profileSection}
@@ -138,7 +138,7 @@ const ProfilePage = (props: Props) => {
           }
 
           if (profileSection.section_type === 'post_list') {
-            Section = (
+            return (
               <ProfilePostsSection
                 key={profileSection.id}
                 section={profileSection}
@@ -149,7 +149,7 @@ const ProfilePage = (props: Props) => {
           }
 
           if (profileSection.section_type === 'product_list') {
-            Section = (
+            return (
               <ProfileProductsSection
                 key={profileSection.id}
                 section={profileSection}
@@ -160,7 +160,7 @@ const ProfilePage = (props: Props) => {
           }
 
           if (profileSection.section_type === 'embed') {
-            Section = (
+            return (
               <ProfileEmbedSection
                 key={profileSection.id}
                 section={profileSection}
@@ -171,7 +171,7 @@ const ProfilePage = (props: Props) => {
           }
 
           if (profileSection.section_type === 'subscribe') {
-            Section = (
+            return (
               <ProfileSubscribeSection
                 key={profileSection.id}
                 section={profileSection}
@@ -182,7 +182,7 @@ const ProfilePage = (props: Props) => {
           }
 
           if (profileSection.section_type === 'image_carousel') {
-            Section = (
+            return (
               <ProfileImageCarouselSection
                 key={profileSection.id}
                 section={profileSection}
@@ -193,7 +193,7 @@ const ProfilePage = (props: Props) => {
           }
 
           if (profileSection.section_type === 'featured_product') {
-            Section = (
+            return (
               <ProfileFeaturedProductsSection
                 key={profileSection.id}
                 section={profileSection}
@@ -204,7 +204,7 @@ const ProfilePage = (props: Props) => {
           }
 
           if (profileSection.section_type === 'custom_html') {
-            Section = (
+            return (
               <ProfileCustomHtmlSection
                 key={profileSection.id}
                 section={profileSection}
@@ -214,12 +214,8 @@ const ProfilePage = (props: Props) => {
             )
           }
 
-          return Section
+          return null
         })}
-
-        {profileSections.length > 0 && (
-          <ProfileSectionAdd position={profileSections.length} />
-        )}
       </ProfilePageLayout>
     </ProfilePageContext.Provider>
   )
