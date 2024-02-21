@@ -8,24 +8,39 @@ class PostsController < ApplicationController
   def create
     @post = @creator.posts.build(post_params)
 
-    if @post.save
-      render json: { message: "Post was successfully created.", data: { post: @post } }, status: :created
-    else
-      render json: { errors: @post.errors.full_messages }, status: :unprocessable_entity
+    respond_to do |format|
+      format.json do
+        if @post.save
+          render json: { message: "Post was successfully created.", data: { post: @post } }, status: :created
+        else
+          render json: { errors: @post.errors.full_messages }, status: :unprocessable_entity
+        end
+      end
     end
   end
 
   def update
-    if @post.update(post_params)
-      render json: { message: "Post was successfully updated.", data: { post: @post } }
-    else
-      render json: { errors: @post.errors.full_messages }, status: :unprocessable_entity
+    respond_to do |format|
+      format.json do
+        if @post.update(post_params)
+          render json: { message: "Post was successfully updated.", data: { post: @post } }
+        else
+          render json: { errors: @post.errors.full_messages }, status: :unprocessable_entity
+        end
+      end
     end
   end
 
   def destroy
-    @post.destroy
-    render json: { message: "Post was successfully destroyed." }
+    respond_to do |format|
+      format.json do
+        if @post.destroy
+          render json: { message: "Post was successfully destroyed." }
+        else
+          render json: { errors: @post.errors.full_messages }, status: :unprocessable_entity
+        end
+      end
+    end
   end
 
   private

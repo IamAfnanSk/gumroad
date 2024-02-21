@@ -87,8 +87,9 @@ const SettingsProfile = ({ creator }: Props) => {
     data: z.infer<typeof CreatorUpdateSchema>
   ) => {
     if (
-      !form.formState.isDirty ||
-      !Object.keys(form.formState.touchedFields).length
+      (!form.formState.isDirty ||
+        !Object.keys(form.formState.touchedFields).length) &&
+      !avatarRef.current?.files?.length
     )
       return
 
@@ -209,7 +210,12 @@ const SettingsProfile = ({ creator }: Props) => {
                 render={() => (
                   <FormItem>
                     <FormLabel>Avatar</FormLabel>
-                    <Input ref={avatarRef} id="avatar" type="file" />
+                    <Input
+                      ref={avatarRef}
+                      accept="image/png, image/jpeg, image/jpg"
+                      id="avatar"
+                      type="file"
+                    />
                   </FormItem>
                 )}
               />

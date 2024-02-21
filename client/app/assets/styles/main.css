@@ -7,17 +7,14 @@
     --background: 60 15% 95%;
     --foreground: 0 0% 0%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 0, 0%, 47%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 47.4% 11.2%;
-
-    --border: var(--foreground);
-    --input: var(--foreground);
+    --popover: 60 15% 95%;
+    --popover-foreground: 0 0% 0%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222.2 47.4% 11.2%;
+    --card-foreground: 0 0% 0%;
 
     --primary: 0 0% 0%;
     --primary-foreground: 0 0% 100%;
@@ -31,47 +28,40 @@
     --destructive: 7 76% 49%;
     --destructive-foreground: 0 0% 100%;
 
-    --ring: var(--foreground);
+    --border: 0 0% 0%;
+
+    --input: 0 0% 100%;
+
+    --ring: 0 0% 0%;
 
     --radius: 0.3rem;
 
     --font-sans: 'Mabry Pro';
   }
 
-  .dark {
-    --background: 60 1% 14%;
-    --foreground: 0 0% 87%;
-
-    --muted: 223 47% 11%;
-    --muted-foreground: 215.4 16.3% 56.9%;
-
-    --popover: 224 71% 4%;
-    --popover-foreground: 215 20.2% 65.1%;
-
-    --border: var(--foreground);
-    --input: var(--foreground);
-
-    --card: 224 71% 4%;
-    --card-foreground: 213 31% 91%;
-
-    --primary: 0 0% 87%;
-    --primary-foreground: 0 0% 0%;
-
-    --secondary: 0 0% 0%;
-    --secondary-foreground: 0 0% 87%;
-
-    --accent: 312 100% 78%;
-    --accent-foreground: 0 0% 0%;
-
-    --destructive: 7 76% 49%;
-    --destructive-foreground: 0 0% 100%;
-
-    --ring: 216 34% 17%;
-
-    --radius: 0.3rem;
-
-    --font-sans: 'Mabry Pro';
-  }
+  /*.dark {*/
+  /*  --background: 60 1% 14%;*/
+  /*  --foreground: 0 0% 87%;*/
+  /*  --muted: 223 47% 11%;*/
+  /*  --muted-foreground: 215.4 16.3% 56.9%;*/
+  /*  --popover: 224 71% 4%;*/
+  /*  --popover-foreground: 215 20.2% 65.1%;*/
+  /*  --border: var(--foreground);*/
+  /*  --input: var(--foreground);*/
+  /*  --card: 224 71% 4%;*/
+  /*  --card-foreground: 213 31% 91%;*/
+  /*  --primary: 0 0% 87%;*/
+  /*  --primary-foreground: 0 0% 0%;*/
+  /*  --secondary: 0 0% 0%;*/
+  /*  --secondary-foreground: 0 0% 87%;*/
+  /*  --accent: 312 100% 78%;*/
+  /*  --accent-foreground: 0 0% 0%;*/
+  /*  --destructive: 7 76% 49%;*/
+  /*  --destructive-foreground: 0 0% 100%;*/
+  /*  --ring: 216 34% 17%;*/
+  /*  --radius: 0.3rem;*/
+  /*  --font-sans: 'Mabry Pro';*/
+  /*}*/
 }
 
 @font-face {

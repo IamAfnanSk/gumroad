@@ -2,20 +2,13 @@ import * as React from 'react'
 import { useContext } from 'react'
 import { ProfilePageContext } from '@/contexts/ProfilePageContext'
 import { useDebouncedCallback } from 'use-debounce'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger
-} from '@/components/ui/popover'
-import { Button } from '@/components/ui/button'
-import { FaPencil } from 'react-icons/fa6'
 import { ProfileSectionProps } from '@/components/Profile/types'
 import { useProfileSectionUpdate } from '@/hooks/useProfileSectionUpdate'
-import { ProfileDeleteDialog } from '@/components/Profile/ProfileDeleteDialog'
 import { CodeMirrorEditor } from '@/components/CodeMirror/CodeMirrorEditor'
 import * as DOMPurify from 'dompurify'
 import ReactHtmlParser from 'react-html-parser'
 import { ViewUpdate } from '@codemirror/view'
+import { ProfileSectionEditPopover } from '@/components/Profile/ProfileSectionEditPopover'
 
 const ProfileCustomHtmlSection = ({
   section,
@@ -56,22 +49,7 @@ const ProfileCustomHtmlSection = ({
 
   return (
     <div className="relative w-full border-t border-border">
-      {profilePageContext.creatorIsOwner && (
-        <div className="absolute z-10 left-4 top-2">
-          <Popover>
-            <PopoverTrigger>
-              <Button className="p-3" asChild size={'icon'}>
-                <FaPencil />
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="p-0 w-72">
-              <div className="flex flex-col">
-                <ProfileDeleteDialog sectionId={section.id || 0} />
-              </div>
-            </PopoverContent>
-          </Popover>
-        </div>
-      )}
+      <ProfileSectionEditPopover sectionId={section.id || 0} />
 
       {profilePageContext.creatorIsOwner && (
         <div className="profile-container">

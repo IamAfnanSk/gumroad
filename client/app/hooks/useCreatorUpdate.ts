@@ -37,6 +37,8 @@ const useCreatorUpdate = () => {
 
     try {
       setLoading(true)
+      setErrors(null)
+      setData(null)
 
       const response = await axios.put(
         `/creators/${creatorId}.json`,

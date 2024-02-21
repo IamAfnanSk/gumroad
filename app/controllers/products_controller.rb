@@ -8,24 +8,39 @@ class ProductsController < ApplicationController
   def create
     @product = @creator.products.build(product_params)
 
-    if @product.save
-      render json: { message: "Product was successfully created.", data: { product: @product } }, status: :created
-    else
-      render json: { errors: @product.errors.full_messages }, status: :unprocessable_entity
+    respond_to do |format|
+      format.json do
+        if @product.save
+          render json: { message: "Product was successfully created.", data: { product: @product } }, status: :created
+        else
+          render json: { errors: @product.errors.full_messages }, status: :unprocessable_entity
+        end
+      end
     end
   end
 
   def update
-    if @product.update(product_params)
-      render json: { message: "Product was successfully updated.", data: { product: @product } }
-    else
-      render json: { errors: @product.errors.full_messages }, status: :unprocessable_entity
+    respond_to do |format|
+      format.json do
+        if @product.update(product_params)
+          render json: { message: "Product was successfully updated.", data: { product: @product } }
+        else
+          render json: { errors: @product.errors.full_messages }, status: :unprocessable_entity
+        end
+      end
     end
   end
 
   def destroy
-    @product.destroy
-    render json: { message: "Product was successfully destroyed." }
+    respond_to do |format|
+      format.json do
+        if @product.destroy
+          render json: { message: "Product was successfully destroyed." }
+        else
+          render json: { errors: @product.errors.full_messages }, status: :unprocessable_entity
+        end
+      end
+    end
   end
 
   private

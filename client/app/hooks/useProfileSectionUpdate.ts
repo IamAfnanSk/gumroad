@@ -60,6 +60,8 @@ const useProfileSectionUpdate = () => {
 
     try {
       setLoading(true)
+      setErrors(null)
+      setData(null)
 
       const response = await axios.put(
         `/profiles/${id}/update_section.json`,

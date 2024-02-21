@@ -26,52 +26,71 @@ class ProfilesController < ApplicationController
   def update_section_positions
     @section = @creator.page_sections.find(params[:id])
 
-    if update_section_positions_params[:where_to_move] == "down"
-      @section.move_lower
-    elsif update_section_positions_params[:where_to_move] == "up"
-      @section.move_higher
-    end
+    respond_to do |format|
+      format.json do
+        if update_section_positions_params[:where_to_move] == "down"
+          @section.move_lower
+        elsif update_section_positions_params[:where_to_move] == "up"
+          @section.move_higher
+        end
 
-    render json: { message: "Section position updated successfully",
-                   data: { idPositionMapping: compute_position_data } }
+        if @section.errors.any?
+          render_errors(@section.errors.full_messages)
+        else
+          render json: { message: "Section position updated successfully",
+                         data: { idPositionMapping: compute_position_data } }
+        end
+      end
+    end
   end
 
   def add_section
     @section = @creator.page_sections.new(section_params_for_db)
 
-    if @section.save
-      render json: { message: "Section added successfully",
-                     data: { profileSection: compute_section_data(@section),
-                             idPositionMapping: compute_position_data } }
-    else
-      render_errors(@section.errors.full_messages)
+    respond_to do |format|
+      format.json do
+        if @section.save
+          render json: { message: "Section added successfully",
+                         data: { profileSection: compute_section_data(@section),
+                                 idPositionMapping: compute_position_data } }
+        else
+          render_errors(@section.errors.full_messages)
+        end
+      end
     end
   end
 
   def update_section
     @section = @creator.page_sections.find(params[:id])
 
-    if @section.update(section_params_for_db)
-      handle_each_section_type_on_update
+    respond_to do |format|
+      format.json do
+        if @section.update(section_params_for_db)
+          handle_each_section_type_on_update
 
-      @section.reload
-
-      render json: { message: "Section updated successfully",
-                     data: { carouselImages: @section.image_carousel? ? @section.carousel_images_data : [],
-                             featuredProduct: @section.featured_product.present? ? compute_product_data(@section.featured_product) : nil } }
-    else
-      render_errors(@section.errors.full_messages)
+          @section.reload
+          render json: { message: "Section updated successfully",
+                         data: { carouselImages: @section.image_carousel? ? @section.carousel_images_data : [],
+                                 featuredProduct: @section.featured_product.present? ? compute_product_data(@section.featured_product) : nil } }
+        else
+          render_errors(@section.errors.full_messages)
+        end
+      end
     end
   end
 
   def delete_section
     @section = @creator.page_sections.find(params[:id])
 
-    if @section.destroy
-      render json: { message: "Section deleted successfully",
-                     data: { idPositionMapping: compute_position_data, deletedSectionId: params[:id].to_i } }
-    else
-      render_errors(@section.errors.full_messages)
+    respond_to do |format|
+      format.json do
+        if @section.destroy
+          render json: { message: "Section deleted successfully",
+                         data: { idPositionMapping: compute_position_data, deletedSectionId: params[:id].to_i } }
+        else
+          render_errors(@section.errors.full_messages)
+        end
+      end
     end
   end
 
@@ -95,9 +114,9 @@ class ProfilesController < ApplicationController
     attach_new_images(params[:section][:carousel_images])
   end
 
-  def purge_unused_images(existing_carousel_image_ids)
+  def purge_unused_images(existing_image_ids)
     @section.carousel_images.each do |image|
-      existing_carousel_image_ids.include?(image.id.to_s) ? next : image.purge
+      image.purge unless existing_image_ids.include?(image.id.to_s)
     end
   end
 
@@ -146,9 +165,9 @@ class ProfilesController < ApplicationController
       :show_filters,
       :add_new_products_by_default,
       :raw_html,
-      { carousel_images: [] },
 
       # non active record fields
+      { carousel_images: [] },
       { existing_carousel_image_ids: [] },
       :product_ids,
       :post_ids

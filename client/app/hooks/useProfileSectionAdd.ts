@@ -36,6 +36,8 @@ const useProfileSectionAdd = () => {
 
     try {
       setLoading(true)
+      setErrors(null)
+      setData(null)
 
       const response = await axios.post(
         `/profiles/add_section.json`,

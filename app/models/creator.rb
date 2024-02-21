@@ -2,8 +2,10 @@
 
 class Creator < ApplicationRecord
   include LowercaseAttributes
+  include ImageContentTypeValidator
 
   lowercase_attribute :username
+  validates_image_content_type :avatar
 
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
@@ -19,16 +21,4 @@ class Creator < ApplicationRecord
             format: { with: /\A[a-zA-Z0-9_]{1,15}\z/, message: "should be a valid twitter handle without @" }, allow_blank: true
   validates :email, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }
   validates :username, presence: true, uniqueness: true
-  validate :avatar_format
-
-  private
-
-  def avatar_format
-    return unless avatar.attached?
-
-    acceptable_types = %w[image/jpeg image/png image/jpg]
-    return if acceptable_types.include?(avatar.blob.content_type)
-
-    errors.add(:avatar, "must be a JPEG or PNG")
-  end
 end

@@ -11,7 +11,7 @@ const ProductCard = ({ product }: Props) => {
   return (
     <div
       onClick={() => toast('Product page is WIP 🚧')}
-      className="border border-border rounded-[var(--radius)]  cursor-pointer hover:shadow-[0.3rem_0.3rem_0] active:shadow-none transition-all ease-out delay-100"
+      className="border border-border rounded-lg  cursor-pointer hover:shadow-[0.3rem_0.3rem_0] active:shadow-none transition-all ease-out delay-100"
     >
       <div className="aspect-w-3 aspect-h-3">
         <img

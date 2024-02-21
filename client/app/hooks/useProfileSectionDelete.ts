@@ -32,6 +32,8 @@ const useProfileSectionDelete = () => {
 
     try {
       setLoading(true)
+      setErrors(null)
+      setData(null)
 
       const response = await axios.delete(
         `/profiles/${sectionId}/delete_section.json`,
