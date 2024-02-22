@@ -27,6 +27,9 @@ import {
 } from '@/components/ui/popover'
 import { gumroadTheme } from '@/components/Profile/gumroadTheme'
 import { Label } from '@/components/ui/label'
+import axios from 'axios'
+import { useCsrfToken } from '@/hooks/useCsrfToken'
+import { toast } from 'sonner'
 
 const navLinks: NavLink[] = [
   { label: 'Settings', path: '' },
@@ -52,9 +55,10 @@ const CreatorUpdateSchema = z.object({
 
 type Props = {
   creator: Partial<Creator>
+  creatorHasPostsAndProducts: boolean
 }
 
-const SettingsProfile = ({ creator }: Props) => {
+const SettingsProfile = ({ creator, creatorHasPostsAndProducts }: Props) => {
   const {
     updateCreator,
     data: updateCreatorData,
@@ -63,6 +67,8 @@ const SettingsProfile = ({ creator }: Props) => {
   } = useCreatorUpdate()
 
   const avatarRef = React.useRef<HTMLInputElement>(null)
+
+  const csrfToken = useCsrfToken()
 
   const [avatarUrl, setAvatarUrl] = React.useState<string | null>(
     creator.avatar_url || null
@@ -146,6 +152,43 @@ const SettingsProfile = ({ creator }: Props) => {
       setIsThemeDirty(false)
     }
   }, [updateCreatorData, updateCreatorErrors, updateCreatorLoading])
+
+  const handleLoadSampleProductsAndPosts = async () => {
+    const errorMessage = `Error loading dummy data`
+    const responseErrors: string[] = []
+
+    try {
+      const response = await axios.post(
+        `/creators/add_dummy_posts_and_products.json`,
+        {},
+        {
+          headers: {
+            'X-Csrf-Token': csrfToken
+          }
+        }
+      )
+
+      const responseData = response.data
+
+      if (response.status === 200 && responseData) {
+        toast.success(responseData.message)
+      } else {
+        responseErrors.push(...(responseData.errors || [errorMessage]))
+      }
+    } catch (error) {
+      // @ts-expect-error error is unknown
+      if (error.response?.data?.errors?.length) {
+        // @ts-expect-error error is unknown
+        responseErrors.push(...error.response.data.errors)
+      } else {
+        responseErrors.push(errorMessage)
+      }
+    } finally {
+      if (responseErrors.length) {
+        toast.error(responseErrors.join(', '))
+      }
+    }
+  }
 
   return (
     <DashboardPageLayout
@@ -259,35 +302,62 @@ const SettingsProfile = ({ creator }: Props) => {
             )}
           </form>
         </Form>
+
+        {!creatorHasPostsAndProducts && (
+          <div className="mt-10">
+            <Button
+              onClick={handleLoadSampleProductsAndPosts}
+              className=""
+              variant={'primary'}
+            >
+              * Load sample products and posts
+            </Button>
+
+            <p className="mt-4">
+              Click this button to load some dummy products and posts to your
+              account
+            </p>
+          </div>
+        )}
       </div>
 
       <div className="dashboard-container">
         <h1 className="text-2xl mb-8">Theme</h1>
 
         <div className="w-full flex-col md:flex-row flex items-start justify-between">
-          <div className="w-full md:w-2/3 grid grid-cols-3 gap-4">
-            {Object.keys(theme).map((key, index) => {
-              return (
-                <div key={index}>
-                  <Label
-                    htmlFor={key}
-                    className="block text-sm font-medium mb-2 dark:text-white"
-                  >
-                    {key.substring(2)} color
-                  </Label>
-                  <Input
-                    type="color"
-                    value={theme[key]}
-                    className="p-1 h-10 w-14 block bg-white border border-gray-200 cursor-pointer rounded-lg disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700"
-                    id={key}
-                    onChange={(e) => {
-                      setTheme({ ...theme, [key]: e.target.value })
-                      setIsThemeDirty(true)
-                    }}
-                  />
-                </div>
-              )
-            })}
+          <div className="w-full md:w-2/3">
+            <div className="grid grid-cols-3 gap-4">
+              {Object.keys(theme).map((key, index) => {
+                return (
+                  <div key={index}>
+                    <Label
+                      htmlFor={key}
+                      className="block text-sm font-medium mb-2 dark:text-white"
+                    >
+                      {key.substring(2)} color
+                    </Label>
+                    <Input
+                      type="color"
+                      value={theme[key]}
+                      className="p-1 h-10 w-14 block bg-white border border-gray-200 cursor-pointer rounded-lg disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700"
+                      id={key}
+                      onChange={(e) => {
+                        setTheme({ ...theme, [key]: e.target.value })
+                        setIsThemeDirty(true)
+                      }}
+                    />
+                  </div>
+                )
+              })}
+            </div>
+
+            <Button
+              onClick={() => setTheme(gumroadTheme)}
+              className="mt-10"
+              variant={'destructive'}
+            >
+              Reset
+            </Button>
           </div>
 
           <div className="inline-flex w-full md:w-1/3 theme-preview flex-col p-4 bg-background text-foreground border border-border gap-5">
@@ -303,9 +373,7 @@ const SettingsProfile = ({ creator }: Props) => {
 
             <Button variant={'accent'}>Accent Button</Button>
 
-            <Button className={'bg-destructive text-destructive-foreground'}>
-              Destructive Button
-            </Button>
+            <Button variant={'destructive'}>Destructive Button</Button>
 
             <div className="bg-muted text-muted-foreground border border-border rounded-lg p-2">
               Muted

@@ -172,54 +172,60 @@ const ProfileProductsSection = ({ section, children }: ProfileSectionProps) => {
                   </Label>
                 </div>
 
-                <div className="flex flex-col gap-1 mt-4">
-                  {profilePageContext.products?.map((product) => {
-                    return (
-                      <div
-                        key={product.id}
-                        className="flex items-center justify-between border border-border py-3 px-4 rounded"
-                      >
-                        <Label htmlFor={`product-${product.id}`}>
-                          {product.name}
-                        </Label>
-
-                        <Checkbox
-                          id={`product-${product.id}`}
-                          checked={selectedProductIds.includes(product.id || 0)}
-                          onCheckedChange={() => {
-                            if (selectedProductIds.includes(product.id || 0)) {
-                              setSelectedProductIds(
-                                selectedProductIds.filter(
-                                  (id) => id !== product.id
-                                )
-                              )
-                            } else {
-                              setSelectedProductIds([
-                                ...(selectedProductIds || []),
-                                product.id || 0
-                              ])
-                            }
-                          }}
-                        />
-                      </div>
-                    )
-                  })}
-
-                  {profilePageContext.products?.length === 0 && (
-                    <div>
-                      <p>
-                        Nothing to select here, please create some products from{' '}
-                        <a
-                          className="border-b border-dashed"
-                          href={urlBuilder('/products', 'app')}
+                {(profilePageContext.posts?.length || 0) > 0 && (
+                  <div className="max-h-96 overflow-y-auto flex flex-col gap-1 mt-4">
+                    {profilePageContext.products?.map((product) => {
+                      return (
+                        <div
+                          key={product.id}
+                          className="flex items-center justify-between border border-border py-3 px-4 rounded"
                         >
-                          dashboard
-                        </a>{' '}
-                        to see them here
-                      </p>
-                    </div>
-                  )}
-                </div>
+                          <Label htmlFor={`product-${product.id}`}>
+                            {product.name}
+                          </Label>
+
+                          <Checkbox
+                            id={`product-${product.id}`}
+                            checked={selectedProductIds.includes(
+                              product.id || 0
+                            )}
+                            onCheckedChange={() => {
+                              if (
+                                selectedProductIds.includes(product.id || 0)
+                              ) {
+                                setSelectedProductIds(
+                                  selectedProductIds.filter(
+                                    (id) => id !== product.id
+                                  )
+                                )
+                              } else {
+                                setSelectedProductIds([
+                                  ...(selectedProductIds || []),
+                                  product.id || 0
+                                ])
+                              }
+                            }}
+                          />
+                        </div>
+                      )
+                    })}
+                  </div>
+                )}
+
+                {profilePageContext.products?.length === 0 && (
+                  <div className="mt-4">
+                    <p>
+                      Nothing to select here, please create some products from{' '}
+                      <a
+                        className="border-b border-dashed"
+                        href={urlBuilder('/settings/profile', 'app')}
+                      >
+                        dashboard
+                      </a>{' '}
+                      to see them here
+                    </p>
+                  </div>
+                )}
               </>
             )
           }

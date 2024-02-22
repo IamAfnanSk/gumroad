@@ -140,37 +140,43 @@ const ProfilePostsSection = ({ section, children }: ProfileSectionProps) => {
             label: 'Posts',
             description: `${selectedPostIds.length} posts`,
             body: (
-              <div className="flex flex-col gap-1 mt-4">
-                {profilePageContext.posts?.map((post) => {
-                  return (
-                    <div
-                      key={post.id}
-                      className="flex items-center justify-between px-4 py-3 border rounded border-border"
-                    >
-                      <Label htmlFor={`post-${post.id}`}>{post.title}</Label>
+              <>
+                {(profilePageContext.posts?.length || 0) > 0 && (
+                  <div className="max-h-96 overflow-y-auto flex flex-col gap-1 mt-4">
+                    {profilePageContext.posts?.map((post) => {
+                      return (
+                        <div
+                          key={post.id}
+                          className="flex items-center justify-between px-4 py-3 border rounded border-border"
+                        >
+                          <Label htmlFor={`post-${post.id}`}>
+                            {post.title}
+                          </Label>
 
-                      <Checkbox
-                        id={`post-${post.id}`}
-                        checked={selectedPostIds.includes(post.id || 0)}
-                        onCheckedChange={() => {
-                          if (selectedPostIds.includes(post.id || 0)) {
-                            setSelectedPostIds(
-                              selectedPostIds.filter((id) => id !== post.id)
-                            )
-                          } else {
-                            setSelectedPostIds([
-                              ...(selectedPostIds || []),
-                              post.id || 0
-                            ])
-                          }
-                        }}
-                      />
-                    </div>
-                  )
-                })}
+                          <Checkbox
+                            id={`post-${post.id}`}
+                            checked={selectedPostIds.includes(post.id || 0)}
+                            onCheckedChange={() => {
+                              if (selectedPostIds.includes(post.id || 0)) {
+                                setSelectedPostIds(
+                                  selectedPostIds.filter((id) => id !== post.id)
+                                )
+                              } else {
+                                setSelectedPostIds([
+                                  ...(selectedPostIds || []),
+                                  post.id || 0
+                                ])
+                              }
+                            }}
+                          />
+                        </div>
+                      )
+                    })}
+                  </div>
+                )}
 
                 {profilePageContext.posts?.length === 0 && (
-                  <div>
+                  <div className="mt-4">
                     <p>
                       Nothing to select here, please create some posts from{' '}
                       <a
@@ -183,7 +189,7 @@ const ProfilePostsSection = ({ section, children }: ProfileSectionProps) => {
                     </p>
                   </div>
                 )}
-              </div>
+              </>
             )
           }
         ]}

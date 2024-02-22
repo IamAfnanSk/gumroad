@@ -1,17 +1,19 @@
 <h2 class="mt-12 text-2xl font-medium md:text-3xl">Login</h2>
 
 <%= form_for(resource, as: resource_name, url: session_path(resource_name), html: { class: "mt-5 space-y-4" }) do |f| %>
+  <%= render "devise/shared/error_messages", resource: resource %>
+
   <div class="field">
-    <%= react_component("Label", props: {htmlFor: 'creator-email', children: 'Email'}) %>
-    <%= react_component("Input", props: {type: 'email', required: true, autoComplete: 'email', authfocus: 'true', name: "creator[email]", id: 'creator-email'}) %>
+    <%= react_component("Label", props: { htmlFor: 'creator-email', children: 'Email' }) %>
+    <%= react_component("Input", props: { type: 'email', required: true, autoComplete: 'email', authfocus: 'true', name: "creator[email]", id: 'creator-email' }) %>
   </div>
 
   <div class="field">
-    <%= react_component("Label", props: {htmlFor: 'creator-email', children: 'Password'}) %>
-    <%= react_component("Input", props: {type: 'password', required: true, autoComplete: 'new-password', name: "creator[password]", id: 'creator-password'}) %>
+    <%= react_component("Label", props: { htmlFor: 'creator-email', children: 'Password' }) %>
+    <%= react_component("Input", props: { type: 'password', required: true, autoComplete: 'new-password', name: "creator[password]", id: 'creator-password' }) %>
   </div>
 
   <div class="actions">
-    <%= react_component("Button", props: {variant: 'primary', children: 'Login', type: 'submit', className: 'w-full'}) %>
+    <%= react_component("Button", props: { variant: 'primary', children: 'Login', type: 'submit', className: 'w-full' }) %>
   </div>
 <% end %>

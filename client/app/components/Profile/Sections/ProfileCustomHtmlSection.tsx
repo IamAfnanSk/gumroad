@@ -70,7 +70,7 @@ const ProfileCustomHtmlSection = ({
             <p className="font-medium mb-4">Preview</p>
           </>
         )}
-        {ReactHtmlParser(cleanHtml)}
+        <div className="prose">{ReactHtmlParser(cleanHtml)}</div>
       </div>
 
       {children}

@@ -14,7 +14,11 @@ Rails.application.routes.draw do
 
     get "/settings/profile", to: "settings#profile", as: :settings_profile
 
-    resources :creators, only: [:update], constraints: ->(request) { request.format == :json }
+    resources :creators, only: [:update], constraints: ->(request) { request.format == :json } do
+      collection do
+        post :add_dummy_posts_and_products, constraints: ->(request) { request.format == :json }
+      end
+    end
     resources :posts, only: %i[create update destroy], constraints: ->(request) { request.format == :json }
     resources :products, only: %i[create update destroy], constraints: ->(request) { request.format == :json }
 

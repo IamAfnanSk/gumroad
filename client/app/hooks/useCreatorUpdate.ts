@@ -56,7 +56,7 @@ const useCreatorUpdate = () => {
         },
         {
           headers: {
-            'Content-Type': 'multipart/form-data',
+            'Content-Type': avatar ? 'multipart/form-data' : 'application/json',
             'X-Csrf-Token': csrfToken
           }
         }

@@ -22,12 +22,12 @@
         </div>
 
         <div>
-          <% if current_page?(creator_session_path) || current_page?(new_creator_session_path) %>
+          <% if request.path == creator_session_path || request.path == new_creator_session_path %>
             <a href="<%= new_creator_registration_path %>" class="underline">
               Sign up
             </a>
           <% end %>
-          <% if current_page?(creator_registration_path) || current_page?(new_creator_registration_path) %>
+          <% if request.path == creator_registration_path || request.path == new_creator_registration_path %>
             <a href="<%= new_creator_session_path %>" class="underline">
               Login
             </a>

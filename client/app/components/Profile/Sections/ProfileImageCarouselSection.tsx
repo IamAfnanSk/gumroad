@@ -173,28 +173,32 @@ const ProfileImageCarouselSection = ({
             description: `${carouselImages.length} images`,
             body: (
               <>
-                {carouselImages.map(({ url, id }) => (
-                  <div key={id} className="flex items-center mb-4 gap-3">
-                    <img
-                      src={url}
-                      alt="Image"
-                      className="flex-1 object-contain h-20 border rounded-md border-border"
-                    />
-                    <Button
-                      className="shrink-0"
-                      size={'smallIcon'}
-                      onClick={() => {
-                        setCarouselImages((carouselImage) => {
-                          return carouselImage.filter(
-                            ({ id: compareId }) => compareId !== id
-                          )
-                        })
-                      }}
-                    >
-                      <FaTrash className="text-xs" />
-                    </Button>
+                {carouselImages.length > 0 && (
+                  <div className="max-h-96 overflow-y-auto">
+                    {carouselImages.map(({ url, id }) => (
+                      <div key={id} className="flex items-center mb-4 gap-3">
+                        <img
+                          src={url}
+                          alt="Image"
+                          className="flex-1 object-contain h-20 border rounded-md border-border"
+                        />
+                        <Button
+                          className="shrink-0"
+                          size={'smallIcon'}
+                          onClick={() => {
+                            setCarouselImages((carouselImage) => {
+                              return carouselImage.filter(
+                                ({ id: compareId }) => compareId !== id
+                              )
+                            })
+                          }}
+                        >
+                          <FaTrash className="text-xs" />
+                        </Button>
+                      </div>
+                    ))}
                   </div>
-                ))}
+                )}
 
                 <Input
                   ref={fileInputRef}

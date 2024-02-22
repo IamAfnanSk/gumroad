@@ -143,32 +143,34 @@ const ProfileFeaturedProductsSection = ({
             body: (
               <>
                 {(profilePageContext.products?.length || 0) > 0 && (
-                  <RadioGroup
-                    defaultValue={`${featuredProductId}`}
-                    onValueChange={(value) =>
-                      setFeaturedProductId(parseInt(value))
-                    }
-                    className={'mt-4'}
-                  >
-                    {profilePageContext.products?.map((product) => {
-                      return (
-                        <div
-                          key={product.id}
-                          className="flex items-center justify-between border border-border py-3 px-4 rounded"
-                        >
-                          <div className="flex w-full items-center justify-between">
-                            <Label htmlFor={`product-id-${product.id}`}>
-                              {product.name}
-                            </Label>
-                            <RadioGroupItem
-                              value={`${product.id}`}
-                              id={`product-id-${product.id}`}
-                            />
+                  <div className="max-h-96 overflow-y-auto">
+                    <RadioGroup
+                      defaultValue={`${featuredProductId}`}
+                      onValueChange={(value) =>
+                        setFeaturedProductId(parseInt(value))
+                      }
+                      className={'mt-4'}
+                    >
+                      {profilePageContext.products?.map((product) => {
+                        return (
+                          <div
+                            key={product.id}
+                            className="flex items-center justify-between border border-border py-3 px-4 rounded"
+                          >
+                            <div className="flex w-full items-center justify-between">
+                              <Label htmlFor={`product-id-${product.id}`}>
+                                {product.name}
+                              </Label>
+                              <RadioGroupItem
+                                value={`${product.id}`}
+                                id={`product-id-${product.id}`}
+                              />
+                            </div>
                           </div>
-                        </div>
-                      )
-                    })}
-                  </RadioGroup>
+                        )
+                      })}
+                    </RadioGroup>
+                  </div>
                 )}
 
                 {profilePageContext.products?.length === 0 && (
@@ -177,7 +179,7 @@ const ProfileFeaturedProductsSection = ({
                       Nothing to select here, please create some products from{' '}
                       <a
                         className="border-b border-dashed"
-                        href={urlBuilder('/products', 'app')}
+                        href={urlBuilder('/settings/profile', 'app')}
                       >
                         dashboard
                       </a>{' '}
