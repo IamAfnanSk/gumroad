@@ -114,7 +114,7 @@ const DashboardPageLayout = ({
           <PopoverTrigger className="flex items-center cursor-pointer text-primary-foreground px-5 py-4 w-full gap-4">
             <img
               className="w-6 h-6 border border-primary-foreground rounded-full"
-              src={creator?.avatar_url}
+              src={creator?.avatar_url || 'https://gravatar.com/avatar'}
               alt={`${creator?.username}'s avatar`}
             />
             <span className="flex-1 text-left">{creator?.username}</span>

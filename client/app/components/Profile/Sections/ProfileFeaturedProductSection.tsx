@@ -224,7 +224,10 @@ const ProfileFeaturedProductsSection = ({
                       <div className="py-4 px-5">${featuredProduct.price}</div>
                       <div className="border-l py-4 px-5 flex items-center gap-2">
                         <img
-                          src={featuredProduct.creator?.avatar_url}
+                          src={
+                            featuredProduct.creator?.avatar_url ||
+                            'https://gravatar.com/avatar'
+                          }
                           alt={featuredProduct.creator?.name}
                           className="w-6 h-6 rounded-full"
                         />
