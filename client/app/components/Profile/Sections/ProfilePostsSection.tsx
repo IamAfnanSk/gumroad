@@ -176,7 +176,7 @@ const ProfilePostsSection = ({ section, children }: ProfileSectionProps) => {
                 )}
 
                 {profilePageContext.posts?.length === 0 && (
-                  <div className="mt-4">
+                  <div>
                     <p>
                       Nothing to select here, please create some posts from{' '}
                       <a
