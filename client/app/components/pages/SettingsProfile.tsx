@@ -19,6 +19,14 @@ import { FaCircleXmark } from 'react-icons/fa6'
 import { DashboardPageLayout } from '@/components/layouts/DashboardPageLayout'
 import { useCreatorUpdate } from '@/hooks/useCreatorUpdate'
 import { MdOutlineSystemUpdateAlt } from 'react-icons/md'
+import { Button } from '@/components/ui/button'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger
+} from '@/components/ui/popover'
+import { gumroadTheme } from '@/components/Profile/gumroadTheme'
+import { Label } from '@/components/ui/label'
 
 const navLinks: NavLink[] = [
   { label: 'Settings', path: '' },
@@ -43,7 +51,7 @@ const CreatorUpdateSchema = z.object({
 })
 
 type Props = {
-  creator: Creator
+  creator: Partial<Creator>
 }
 
 const SettingsProfile = ({ creator }: Props) => {
@@ -64,6 +72,9 @@ const SettingsProfile = ({ creator }: Props) => {
     urlBuilder('', creator.username)
   )
 
+  const [theme, setTheme] = React.useState<Record<string, string>>({})
+  const [isThemeDirty, setIsThemeDirty] = React.useState<boolean>(false)
+
   const form = useForm<z.infer<typeof CreatorUpdateSchema>>({
     resolver: zodResolver(CreatorUpdateSchema),
     defaultValues: {
@@ -83,20 +94,44 @@ const SettingsProfile = ({ creator }: Props) => {
     return () => subscription.unsubscribe()
   }, [form.watch])
 
+  React.useEffect(() => {
+    try {
+      const themeData = creator.theme ? JSON.parse(creator.theme) : null
+      setTheme(themeData || gumroadTheme)
+      if (!themeData) setIsThemeDirty(true)
+    } catch (error) {
+      setTheme(gumroadTheme)
+      setIsThemeDirty(true)
+    }
+  }, [])
+
+  React.useEffect(() => {
+    const themeDivs = document.querySelectorAll('.theme-preview')
+    if (themeDivs.length) {
+      Object.entries(theme).forEach(([key, value]) => {
+        themeDivs.forEach((themeDiv) => {
+          ;(themeDiv as HTMLElement).style.setProperty(key, value)
+        })
+      })
+    }
+  }, [theme])
+
   const handleCreatorUpdate = async (
     data: z.infer<typeof CreatorUpdateSchema>
   ) => {
     if (
       (!form.formState.isDirty ||
         !Object.keys(form.formState.touchedFields).length) &&
-      !avatarRef.current?.files?.length
+      !avatarRef.current?.files?.length &&
+      !isThemeDirty
     )
       return
 
     await updateCreator({
       ...data,
-      creatorId: creator.id,
-      avatar: avatarRef.current?.files?.[0]
+      creatorId: creator.id || 0,
+      avatar: avatarRef.current?.files?.[0],
+      theme: JSON.stringify(theme)
     })
   }
 
@@ -107,6 +142,8 @@ const SettingsProfile = ({ creator }: Props) => {
       }
 
       form.reset({ ...form.getValues() })
+
+      setIsThemeDirty(false)
     }
   }, [updateCreatorData, updateCreatorErrors, updateCreatorLoading])
 
@@ -222,6 +259,74 @@ const SettingsProfile = ({ creator }: Props) => {
             )}
           </form>
         </Form>
+      </div>
+
+      <div className="dashboard-container">
+        <h1 className="text-2xl mb-8">Theme</h1>
+
+        <div className="w-full flex-col md:flex-row flex items-start justify-between">
+          <div className="w-full md:w-2/3 grid grid-cols-3 gap-4">
+            {Object.keys(theme).map((key, index) => {
+              return (
+                <div key={index}>
+                  <Label
+                    htmlFor={key}
+                    className="block text-sm font-medium mb-2 dark:text-white"
+                  >
+                    {key.substring(2)} color
+                  </Label>
+                  <Input
+                    type="color"
+                    value={theme[key]}
+                    className="p-1 h-10 w-14 block bg-white border border-gray-200 cursor-pointer rounded-lg disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700"
+                    id={key}
+                    onChange={(e) => {
+                      setTheme({ ...theme, [key]: e.target.value })
+                      setIsThemeDirty(true)
+                    }}
+                  />
+                </div>
+              )
+            })}
+          </div>
+
+          <div className="inline-flex w-full md:w-1/3 theme-preview flex-col p-4 bg-background text-foreground border border-border gap-5">
+            <p className="font-bold">Theme preview</p>
+
+            <Input placeholder="input" type="text" />
+
+            <Textarea placeholder="text area" />
+
+            <Button>Button</Button>
+
+            <Button variant={'primary'}>Primary Button</Button>
+
+            <Button variant={'accent'}>Accent Button</Button>
+
+            <Button className={'bg-destructive text-destructive-foreground'}>
+              Destructive Button
+            </Button>
+
+            <div className="bg-muted text-muted-foreground border border-border rounded-lg p-2">
+              Muted
+            </div>
+
+            <Popover open={true}>
+              <PopoverTrigger>
+                <Button asChild>
+                  <span>Popover toggle</span>
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent avoidCollisions={false} className="theme-preview">
+                <div>Popover content</div>
+              </PopoverContent>
+            </Popover>
+
+            <div className="border border-border rounded-lg p-2 mt-14">
+              Div with border and radius
+            </div>
+          </div>
+        </div>
       </div>
     </DashboardPageLayout>
   )

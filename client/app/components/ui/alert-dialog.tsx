@@ -109,7 +109,7 @@ const AlertDialogAction = React.forwardRef<
     className={cn(
       buttonVariants(),
       className,
-      'bg-destructive text-foreground'
+      'bg-destructive text-destructive-foreground'
     )}
     {...props}
   />

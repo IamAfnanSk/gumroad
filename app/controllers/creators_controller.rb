@@ -20,6 +20,6 @@ class CreatorsController < ApplicationController
   private
 
   def creator_params
-    params.require(:creator).permit(:name, :bio, :twitter_handle, :avatar, :username)
+    params.require(:creator).permit(:name, :bio, :twitter_handle, :avatar, :username, :theme)
   end
 end

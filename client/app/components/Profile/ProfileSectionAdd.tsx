@@ -1,8 +1,3 @@
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger
-} from '@/components/ui/popover'
 import { Button } from '@/components/ui/button'
 import {
   FaBoxOpen,
@@ -18,6 +13,14 @@ import { MdOutlineWysiwyg } from 'react-icons/md'
 import { ImEmbed } from 'react-icons/im'
 import { LuMails } from 'react-icons/lu'
 import { toast } from 'sonner'
+
+import {
+  Menubar,
+  MenubarContent,
+  MenubarItem,
+  MenubarMenu,
+  MenubarTrigger
+} from '@/components/ui/menubar'
 
 type Props = {
   position: number
@@ -83,16 +86,17 @@ const ProfileSectionAdd = ({ position }: Props) => {
 
   return (
     <div className="absolute z-10 transform -translate-x-1/2 left-1/2 -bottom-5 bg-background">
-      <Popover>
-        <PopoverTrigger>
-          <Button className="p-3" asChild size={'icon'}>
-            <FaPlus />
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="p-0 w-72">
-          <div className="flex flex-col">
+      <Menubar className="p-0 border-none">
+        <MenubarMenu>
+          <MenubarTrigger className="p-0 cursor-pointer focus:bg-accent focus:text-foreground data-[state=open]:bg-background data-[state=open]:text-foreground">
+            <Button className="p-3" asChild size={'icon'}>
+              <FaPlus />
+            </Button>
+          </MenubarTrigger>
+          <MenubarContent className="space-y-1">
             {profileSectionItems.map((item, index) => (
-              <div
+              <MenubarItem
+                className="focus:bg-input focus:text-foreground cursor-pointer"
                 key={index}
                 onClick={() => {
                   !item.isWIP
@@ -102,15 +106,16 @@ const ProfileSectionAdd = ({ position }: Props) => {
                       )
                     : toast('This feature is WIP 🚧')
                 }}
-                className={`flex cursor-pointer px-4 py-3 items-center gap-3 ${index === 0 ? '' : 'border-t border-border'}`}
               >
-                {item.icon}
-                <p className="">{item.title}</p>
-              </div>
+                <div className={`flex items-center gap-3`}>
+                  {item.icon}
+                  <p className="">{item.title}</p>
+                </div>
+              </MenubarItem>
             ))}
-          </div>
-        </PopoverContent>
-      </Popover>
+          </MenubarContent>
+        </MenubarMenu>
+      </Menubar>
     </div>
   )
 }

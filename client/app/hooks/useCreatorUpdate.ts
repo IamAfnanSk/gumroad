@@ -15,6 +15,7 @@ type UpdateCreatorProps = {
   username: string
   creatorId: number
   avatar?: File
+  theme?: string
 }
 
 const useCreatorUpdate = () => {
@@ -30,7 +31,8 @@ const useCreatorUpdate = () => {
     twitter_handle,
     username,
     creatorId,
-    avatar
+    avatar,
+    theme
   }: UpdateCreatorProps) => {
     const errorMessage = 'Error updating creator'
     const responseErrors: string[] = []
@@ -48,7 +50,8 @@ const useCreatorUpdate = () => {
             twitter_handle,
             name,
             username,
-            avatar
+            avatar,
+            theme
           }
         },
         {

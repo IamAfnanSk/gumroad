@@ -16,6 +16,7 @@ import { ProfileSectionPositionMover } from '@/components/Profile/ProfileSection
 import { ProfileImageCarouselSection } from '@/components/Profile/Sections/ProfileImageCarouselSection'
 import { ProfileFeaturedProductsSection } from '@/components/Profile/Sections/ProfileFeaturedProductSection'
 import { ProfileCustomHtmlSection } from '@/components/Profile/Sections/ProfileCustomHtmlSection'
+import { gumroadTheme } from '@/components/Profile/gumroadTheme'
 
 type Props = {
   profileSections?: Partial<ProfileSection>[]
@@ -43,6 +44,22 @@ const ProfilePage = (props: Props) => {
   const [profileSections, setProfileSections] = React.useState<
     Partial<ProfileSection>[]
   >(props.profileSections || [])
+
+  React.useEffect(() => {
+    try {
+      const themeData: Record<string, string> = props.creator?.theme
+        ? JSON.parse(props.creator.theme)
+        : gumroadTheme
+
+      const root = document.documentElement
+
+      Object.entries(themeData).forEach(([key, value]) => {
+        root.style.setProperty(key, value)
+      })
+    } catch (error) {
+      // ok
+    }
+  }, [])
 
   const handleDeleteProfileSection = async (sectionId: number) => {
     await deleteProfileSection({ sectionId })

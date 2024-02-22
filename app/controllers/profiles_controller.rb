@@ -185,7 +185,7 @@ class ProfilesController < ApplicationController
   # for subdomain requests
   def load_creator
     @creator = Creator.where(username: request.subdomain).select(:name, :bio, :twitter_handle, :username, :id,
-                                                                 :email).first
+                                                                 :email, :theme).first
   end
 
   # For json requests

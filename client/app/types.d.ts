@@ -11,6 +11,7 @@ export type Creator = {
   name: string
   bio: string
   twitter_handle: string
+  theme: string
 } & EntityCommon
 
 export type Product = {
