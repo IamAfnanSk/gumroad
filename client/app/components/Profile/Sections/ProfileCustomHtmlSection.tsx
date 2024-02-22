@@ -48,7 +48,7 @@ const ProfileCustomHtmlSection = ({
   })
 
   return (
-    <div className="relative w-full border-t border-border">
+    <div className="relative w-full border-t">
       <ProfileSectionEditPopover sectionId={section.id || 0} />
 
       {profilePageContext.creatorIsOwner && (

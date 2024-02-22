@@ -89,7 +89,7 @@ const ProfileSubscribeSection = ({
   }
 
   return (
-    <div className="border-t relative border-border w-full">
+    <div className="border-t relative w-full">
       <ProfileSectionEditPopover
         sectionId={section.id || 0}
         handleSectionUpdate={handleSectionUpdate}

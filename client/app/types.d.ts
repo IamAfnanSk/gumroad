@@ -20,6 +20,8 @@ export type Product = {
   name: string
   currency: string
   cover_image_url: string
+  description: string
+  creator?: Pick<Creator, 'username' | 'name' | 'avatar_url'>
 } & EntityCommon
 
 export type Post = {

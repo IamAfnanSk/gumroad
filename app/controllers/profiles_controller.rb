@@ -137,7 +137,12 @@ class ProfilesController < ApplicationController
 
   def compute_product_data(product)
     {
-      cover_image_url: product.cover_image.attached? ? rails_blob_url(product.cover_image, only_path: true) : nil
+      cover_image_url: product.cover_image.attached? ? rails_blob_url(product.cover_image, only_path: true) : nil,
+      creator: {
+        name: product.creator.name,
+        avatar_url: product.creator.avatar.attached? ? rails_blob_url(product.creator.avatar, only_path: true) : nil,
+        username: product.creator.username
+      }
     }.merge(product.attributes)
   end
 

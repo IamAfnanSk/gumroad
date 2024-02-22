@@ -47,7 +47,7 @@ class CreatorsController < ApplicationController
     Array.new(10) do
       post = Post.new
       post.title = Faker::Lorem.sentence
-      post.body = Faker::Lorem.paragraph
+      post.body = Faker::Lorem.paragraphs(number: 10).join("\n\n")
       post.creator = @creator
       post.save
     end
@@ -57,7 +57,7 @@ class CreatorsController < ApplicationController
     Array.new(10) do
       product = Product.new
       product.name = Faker::Commerce.product_name
-      product.description = Faker::Lorem.paragraph
+      product.description = Faker::Lorem.paragraphs(number: 15).join("\n\n")
       product.price = Faker::Commerce.price
       product.creator = @creator
       product.currency = "$"

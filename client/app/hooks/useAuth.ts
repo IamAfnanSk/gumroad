@@ -1,26 +1,35 @@
-// import * as React from 'react'
-//
-// type AuthLoginProps = {
-//   email: string
-//   password: string
-// }
-//
-// type AuthRegisterProps = AuthLoginProps & {
-//   username: string
-// }
-//
-// const useAuth = () => {
-//   const [errors, setErrors] = React.useState<string[] | null>(null)
-//   const [loading, setLoading] = React.useState<boolean>(false)
-//
-//   const login = ({}: AuthLoginProps) => {}
-//   const logout = () => {}
-//
-//   const register = () => {}
-//
-//   return {
-//     login,
-//     logout,
-//     register
-//   }
-// }
+import axios from 'axios'
+import { toast } from 'sonner'
+import { useCsrfToken } from '@/hooks/useCsrfToken'
+import { urlBuilder } from '@/lib/utils'
+
+const useAuth = () => {
+  const csrfToken = useCsrfToken()
+
+  const logout = async () => {
+    const errorMessage = 'Error logging out'
+
+    try {
+      const response = await axios.delete(`/creators/logout.json`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Csrf-Token': csrfToken
+        }
+      })
+
+      if (response.status === 204) {
+        location.href = urlBuilder('', '')
+      } else {
+        toast.error(errorMessage)
+      }
+    } catch (error: unknown) {
+      toast.error(errorMessage)
+    }
+  }
+
+  return {
+    logout
+  }
+}
+
+export { useAuth }

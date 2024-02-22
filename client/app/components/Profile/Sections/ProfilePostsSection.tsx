@@ -105,8 +105,12 @@ const ProfilePostsSection = ({ section, children }: ProfileSectionProps) => {
     return format(new Date(date), 'MMMM dd, yyyy')
   }
 
+  const selectedPosts = profilePageContext.posts?.filter((post) =>
+    selectedPostIds.includes(post.id || 0)
+  )
+
   return (
-    <div className="relative w-full border-t border-border">
+    <div className="relative w-full border-t">
       <ProfileSectionEditPopover
         sectionId={section.id || 0}
         handleSectionUpdate={handleSectionUpdate}
@@ -147,7 +151,7 @@ const ProfilePostsSection = ({ section, children }: ProfileSectionProps) => {
                       return (
                         <div
                           key={post.id}
-                          className="flex items-center justify-between px-4 py-3 border rounded border-border"
+                          className="flex items-center justify-between px-4 py-3 border rounded"
                         >
                           <Label htmlFor={`post-${post.id}`}>
                             {post.title}
@@ -196,16 +200,16 @@ const ProfilePostsSection = ({ section, children }: ProfileSectionProps) => {
       />
 
       <div
-        className={`${section.posts?.length ? '!pb-0' : ''} profile-container`}
+        className={`${selectedPosts?.length ? '!pb-0' : ''} profile-container`}
       >
         {showTitle && <h2 className="text-2xl">{title}</h2>}
 
-        <div className={section.posts?.length ? 'mt-10' : ''}>
-          {section.posts?.map((post) => {
+        <div className={selectedPosts?.length ? 'mt-10' : ''}>
+          {selectedPosts?.map((post) => {
             return (
               <div
                 onClick={() => toast('Post page is WIP 🚧')}
-                className="w-full py-8 mx-auto border-t cursor-pointer border-border"
+                className="w-full py-8 mx-auto border-t cursor-pointer"
                 key={post.id}
               >
                 <div className="flex items-center justify-between">
@@ -224,7 +228,7 @@ const ProfilePostsSection = ({ section, children }: ProfileSectionProps) => {
             )
           })}
 
-          {section.posts?.length === 0 && (
+          {selectedPosts?.length === 0 && (
             <div className="flex flex-col items-center justify-center">
               <BiNews className="text-4xl" />
               <p className="mt-2 text-lg">No posts to show</p>

@@ -114,8 +114,12 @@ const ProfileProductsSection = ({ section, children }: ProfileSectionProps) => {
     updateProfileSectionLoading
   ])
 
+  const selectedProducts = profilePageContext.products?.filter((product) =>
+    selectedProductIds.includes(product.id || 0)
+  )
+
   return (
-    <div className="border-t border-border w-full relative">
+    <div className="border-t w-full relative">
       <ProfileSectionEditPopover
         sectionId={section.id || 0}
         handleSectionUpdate={handleSectionUpdate}
@@ -178,7 +182,7 @@ const ProfileProductsSection = ({ section, children }: ProfileSectionProps) => {
                       return (
                         <div
                           key={product.id}
-                          className="flex items-center justify-between border border-border py-3 px-4 rounded"
+                          className="flex items-center justify-between border py-3 px-4 rounded"
                         >
                           <Label htmlFor={`product-${product.id}`}>
                             {product.name}
@@ -237,17 +241,17 @@ const ProfileProductsSection = ({ section, children }: ProfileSectionProps) => {
 
         <div className="flex flex-col">
           {showFilters && (
-            <div className="flex w-full px-4 rounded py-3 mt-4 border border-border gap-4 mb-5">
+            <div className="flex w-full px-4 rounded py-3 mt-4 border gap-4 mb-5">
               placeholder for filters
             </div>
           )}
 
           <div className="grid gap-4 flex-1 grid-cols-1 md:grid-cols-3">
-            {section.products?.map((product) => {
+            {selectedProducts?.map((product) => {
               return <ProductCard key={product.id} product={product} />
             })}
 
-            {section.products?.length === 0 && (
+            {selectedProducts?.length === 0 && (
               <div className="flex col-span-3 flex-col items-center justify-center">
                 <FaBoxArchive className="text-4xl" />
                 <p className="text-lg mt-2">No products to show</p>

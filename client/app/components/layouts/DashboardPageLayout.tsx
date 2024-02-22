@@ -1,13 +1,27 @@
 import * as React from 'react'
 import logo from '@/assets/images/logo-white.svg'
-import { FaGear, FaHouse, FaBoxArchive, FaEnvelope } from 'react-icons/fa6'
+import {
+  FaGear,
+  FaHouse,
+  FaBoxArchive,
+  FaEnvelope,
+  FaChevronDown,
+  FaChevronUp
+} from 'react-icons/fa6'
 import { IconType } from 'react-icons'
-import { NavLink } from '@/types'
+import { Creator, NavLink } from '@/types'
 import { isActivePath, urlBuilder } from '@/lib/utils'
 import { NavLinkItem } from '@/components/ui/nav-link'
 import { FiMenu } from 'react-icons/fi'
 import { IoClose } from 'react-icons/io5'
 import { Button } from '@/components/ui/button'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger
+} from '@/components/ui/popover'
+import { AiOutlineLogout, AiOutlineShop } from 'react-icons/ai'
+import { useAuth } from '@/hooks/useAuth'
 
 type Props = {
   children?: React.ReactNode
@@ -18,6 +32,7 @@ type Props = {
     icon: IconType
     onClick: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
   }
+  creator?: Partial<Creator>
 } & React.HTMLProps<HTMLDivElement>
 
 type SidebarItem = NavLink & {
@@ -54,9 +69,14 @@ const DashboardPageLayout = ({
   children,
   navLinks,
   headerCta,
-  title
+  title,
+  creator
 }: Props) => {
+  const { logout } = useAuth()
+
   const [isMenuOpen, setIsMenuOpen] = React.useState(false)
+
+  const [isAccountPopoverOpen, setIsAccountPopoverOpen] = React.useState(false)
 
   const SidebarNav = (items: SidebarItem[]) => (
     <>
@@ -85,6 +105,39 @@ const DashboardPageLayout = ({
       {SidebarNav(sidebarTopItems)}
       <div className="flex-1 border-t border-t-neutral-500"></div>
       {SidebarNav(sidebarBottomItems)}
+
+      <div className="border-t border-t-neutral-500">
+        <Popover
+          open={isAccountPopoverOpen}
+          onOpenChange={(isOpen) => setIsAccountPopoverOpen(isOpen)}
+        >
+          <PopoverTrigger className="flex items-center cursor-pointer text-primary-foreground px-5 py-4 w-full gap-4">
+            <img
+              className="w-6 h-6 border border-primary-foreground rounded-full"
+              src={creator?.avatar_url}
+              alt={`${creator?.username}'s avatar`}
+            />
+            <span className="flex-1 text-left">{creator?.username}</span>
+            {isAccountPopoverOpen ? <FaChevronUp /> : <FaChevronDown />}
+          </PopoverTrigger>
+          <PopoverContent className="max-w-none w-dvw md:max-w-48 p-2">
+            <a
+              href={urlBuilder('', creator?.username)}
+              className="flex items-center gap-2 px-2 py-1 hover:bg-input cursor-pointer"
+            >
+              <AiOutlineShop />
+              <p>Profile</p>
+            </a>
+            <button
+              onClick={logout}
+              className="flex w-full items-center gap-2 px-2 py-1 hover:bg-input cursor-pointer"
+            >
+              <AiOutlineLogout />
+              <p>Logout</p>
+            </button>
+          </PopoverContent>
+        </Popover>
+      </div>
     </>
   )
 

@@ -44,8 +44,6 @@ const ProfileImageCarouselSection = ({
     section.carousel_images || []
   )
 
-  const [showUploadButton, setShowUploadButton] = React.useState<boolean>(false)
-
   const fileInputRef = React.useRef<HTMLInputElement>(null)
 
   const handleSectionUpdate = async (isOpened: boolean) => {
@@ -112,8 +110,6 @@ const ProfileImageCarouselSection = ({
       if (fileInputRef.current) {
         fileInputRef.current.value = ''
       }
-
-      setShowUploadButton(false)
     }
 
     if (
@@ -128,8 +124,6 @@ const ProfileImageCarouselSection = ({
       if (fileInputRef.current) {
         fileInputRef.current.value = ''
       }
-
-      setShowUploadButton(false)
     }
   }, [
     updateProfileSectionData,
@@ -138,7 +132,7 @@ const ProfileImageCarouselSection = ({
   ])
 
   return (
-    <div className="relative w-full border-t border-border">
+    <div className="relative w-full border-t">
       <ProfileSectionEditPopover
         sectionId={section.id || 0}
         handleSectionUpdate={handleSectionUpdate}
@@ -180,7 +174,7 @@ const ProfileImageCarouselSection = ({
                         <img
                           src={url}
                           alt="Image"
-                          className="flex-1 object-contain h-20 border rounded-md border-border"
+                          className="flex-1 object-contain h-20 border rounded-md"
                         />
                         <Button
                           className="shrink-0"
@@ -206,18 +200,8 @@ const ProfileImageCarouselSection = ({
                   type={'file'}
                   multiple
                   accept="image/png, image/jpeg, image/jpg"
-                  onChange={() =>
-                    setShowUploadButton(!!fileInputRef.current?.files?.length)
-                  }
+                  onChange={() => handleSectionUpdate(false)}
                 />
-                {showUploadButton && (
-                  <Button
-                    onClick={() => handleSectionUpdate(false)}
-                    className={'w-full mt-2'}
-                  >
-                    Upload
-                  </Button>
-                )}
               </>
             )
           }

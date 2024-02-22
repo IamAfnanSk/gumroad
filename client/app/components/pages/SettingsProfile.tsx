@@ -199,6 +199,7 @@ const SettingsProfile = ({ creator, creatorHasPostsAndProducts }: Props) => {
         onClick: () => form.handleSubmit(handleCreatorUpdate)()
       }}
       title="Settings"
+      creator={creator}
     >
       <div className="dashboard-container">
         <h1 className="text-2xl mb-8">Profile</h1>
@@ -352,7 +353,10 @@ const SettingsProfile = ({ creator, creatorHasPostsAndProducts }: Props) => {
             </div>
 
             <Button
-              onClick={() => setTheme(gumroadTheme)}
+              onClick={() => {
+                setTheme(gumroadTheme)
+                setIsThemeDirty(true)
+              }}
               className="mt-10"
               variant={'destructive'}
             >
@@ -360,7 +364,7 @@ const SettingsProfile = ({ creator, creatorHasPostsAndProducts }: Props) => {
             </Button>
           </div>
 
-          <div className="inline-flex w-full md:w-1/3 theme-preview flex-col p-4 bg-background text-foreground border border-border gap-5">
+          <div className="inline-flex w-full md:w-1/3 theme-preview flex-col p-4 bg-background text-foreground border gap-5">
             <p className="font-bold">Theme preview</p>
 
             <Input placeholder="input" type="text" />
@@ -375,7 +379,7 @@ const SettingsProfile = ({ creator, creatorHasPostsAndProducts }: Props) => {
 
             <Button variant={'destructive'}>Destructive Button</Button>
 
-            <div className="bg-muted text-muted-foreground border border-border rounded-lg p-2">
+            <div className="bg-muted text-muted-foreground border rounded-lg p-2">
               Muted
             </div>
 
@@ -390,7 +394,7 @@ const SettingsProfile = ({ creator, creatorHasPostsAndProducts }: Props) => {
               </PopoverContent>
             </Popover>
 
-            <div className="border border-border rounded-lg p-2 mt-14">
+            <div className="border rounded-lg p-2 mt-14">
               Div with border and radius
             </div>
           </div>

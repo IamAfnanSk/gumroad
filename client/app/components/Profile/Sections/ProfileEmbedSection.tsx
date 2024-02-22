@@ -100,7 +100,7 @@ const ProfileEmbedSection = ({ section, children }: ProfileSectionProps) => {
   ])
 
   return (
-    <div className="relative w-full border-t border-border">
+    <div className="relative w-full border-t">
       <ProfileSectionEditPopover
         handleSectionUpdate={handleSectionUpdate}
         sectionId={section.id || 0}

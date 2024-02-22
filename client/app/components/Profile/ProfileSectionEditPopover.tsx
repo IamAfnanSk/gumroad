@@ -1,4 +1,4 @@
-import { FaChevronLeft, FaChevronRight, FaPencil } from 'react-icons/fa6'
+import { FaChevronLeft, FaChevronRight } from 'react-icons/fa6'
 import { Button } from '@/components/ui/button'
 import * as React from 'react'
 import {
@@ -8,6 +8,7 @@ import {
 } from '@/components/ui/popover'
 import { ProfileDeleteDialog } from '@/components/Profile/ProfileDeleteDialog'
 import { ProfilePageContext } from '@/contexts/ProfilePageContext'
+import { BsThreeDots } from 'react-icons/bs'
 
 export type ProfileSectionsEditPopoverTabName =
   | 'name'
@@ -52,7 +53,7 @@ const ProfileSectionEditPopover = ({
           <Popover onOpenChange={handleSectionUpdate}>
             <PopoverTrigger>
               <Button className="p-3" asChild size={'icon'}>
-                <FaPencil />
+                <BsThreeDots />
               </Button>
             </PopoverTrigger>
             <PopoverContent className="p-0 w-72">
@@ -67,7 +68,7 @@ const ProfileSectionEditPopover = ({
                             tab.name as ProfileSectionsEditPopoverTabName
                           )
                         }
-                        className={`${index !== 0 ? 'border-border border-t' : ''} flex items-center justify-between px-4 py-3 cursor-pointer`}
+                        className={`${index !== 0 ? 'border-t' : ''} flex items-center justify-between px-4 py-3 cursor-pointer`}
                       >
                         <p className="font-medium">{tab.label}</p>
 
@@ -82,7 +83,7 @@ const ProfileSectionEditPopover = ({
                   })}
 
                   <ProfileDeleteDialog
-                    alertDialogTriggerClassName={`${(popoverTabsData?.length || 0) > 0 ? 'border-t border-border' : ''}`}
+                    alertDialogTriggerClassName={`${(popoverTabsData?.length || 0) > 0 ? 'border-t' : ''}`}
                     sectionId={sectionId}
                   />
                 </div>

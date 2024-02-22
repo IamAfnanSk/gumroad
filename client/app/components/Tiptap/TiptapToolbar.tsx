@@ -40,7 +40,7 @@ function Toolbar({ editor }: ToolbarProps) {
   const isCursorOverLink = editor.getAttributes('link').href
 
   return (
-    <div className={'rounded border-border border'}>
+    <div className={'rounded border'}>
       <div className="flex flex-wrap items-center">
         <div
           className={classNames('tiptap-toolbar-icon', {

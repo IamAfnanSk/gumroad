@@ -2,12 +2,15 @@ import * as React from 'react'
 import logo from '@/assets/images/logo.svg'
 import { urlBuilder } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
+import { useAuth } from '@/hooks/useAuth'
 
 type Props = {
   currentCreatorUsername?: string
 } & React.HTMLProps<HTMLDivElement>
 
 const HomePage = ({ currentCreatorUsername }: Props) => {
+  const { logout } = useAuth()
+
   return (
     <div className="container-margins">
       <header className="flex items-center justify-between">
@@ -20,6 +23,9 @@ const HomePage = ({ currentCreatorUsername }: Props) => {
             <>
               <a href={urlBuilder('/settings/profile', 'app')}>Settings</a>
               <a href={urlBuilder('', currentCreatorUsername)}>Profile</a>
+              <Button onClick={logout} variant={'destructive'} type="submit">
+                Logout
+              </Button>
             </>
           ) : (
             <a href={urlBuilder('/creators/login', 'app')}>

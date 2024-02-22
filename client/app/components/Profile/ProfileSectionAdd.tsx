@@ -88,7 +88,7 @@ const ProfileSectionAdd = ({ position }: Props) => {
     <div className="absolute z-10 transform -translate-x-1/2 left-1/2 -bottom-5 bg-background">
       <Menubar className="p-0 border-none">
         <MenubarMenu>
-          <MenubarTrigger className="p-0 cursor-pointer focus:bg-accent focus:text-foreground data-[state=open]:bg-background data-[state=open]:text-foreground">
+          <MenubarTrigger className="p-0 cursor-pointer focus:bg-background focus:foreground data-[state=open]:bg-background data-[state=open]:text-foreground">
             <Button className="p-3" asChild size={'icon'}>
               <FaPlus />
             </Button>

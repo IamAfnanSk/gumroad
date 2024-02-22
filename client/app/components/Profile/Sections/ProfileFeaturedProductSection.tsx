@@ -1,15 +1,15 @@
 import * as React from 'react'
-import { FaBoxArchive } from 'react-icons/fa6'
+import { FaBoxArchive, FaStar } from 'react-icons/fa6'
 import { Input } from '@/components/ui/input'
 import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
 import { ProfilePageContext } from '@/contexts/ProfilePageContext'
-import { ProductCard } from '@/components/ProductCard'
 import { ProfileSectionProps } from '@/components/Profile/types'
 import { useProfileSectionUpdate } from '@/hooks/useProfileSectionUpdate'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { ProfileSectionEditPopover } from '@/components/Profile/ProfileSectionEditPopover'
 import { urlBuilder } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
 
 const ProfileFeaturedProductsSection = ({
   section,
@@ -107,8 +107,12 @@ const ProfileFeaturedProductsSection = ({
     updateProfileSectionLoading
   ])
 
+  const featuredProduct = profilePageContext.products?.find(
+    (product) => product.id === featuredProductId
+  )
+
   return (
-    <div className="border-t border-border w-full relative">
+    <div className="border-t w-full relative">
       <ProfileSectionEditPopover
         sectionId={section.id || 0}
         handleSectionUpdate={handleSectionUpdate}
@@ -155,7 +159,7 @@ const ProfileFeaturedProductsSection = ({
                         return (
                           <div
                             key={product.id}
-                            className="flex items-center justify-between border border-border py-3 px-4 rounded"
+                            className="flex items-center justify-between border py-3 px-4 rounded"
                           >
                             <div className="flex w-full items-center justify-between">
                               <Label htmlFor={`product-id-${product.id}`}>
@@ -197,12 +201,77 @@ const ProfileFeaturedProductsSection = ({
         {showTitle && <h2 className="text-2xl mb-4">{title}</h2>}
 
         <div className="flex justify-center items-center">
-          <div className="w-72">
-            {section.featured_product ? (
-              <ProductCard
-                key={section.featured_product.id}
-                product={section.featured_product}
-              />
+          <div className="w-full">
+            {featuredProduct ? (
+              <div className="w-full border">
+                <div className="aspect-w-16 aspect-h-7">
+                  <img
+                    src={featuredProduct.cover_image_url}
+                    className="w-full h-full object-cover"
+                    alt="Product"
+                  />
+                </div>
+                <div className="grid md:grid-cols-3 border-t">
+                  <div className="md:col-span-2">
+                    <div className="border-b">
+                      <h3 className="text-3xl py-4 px-5 mt-2">
+                        {featuredProduct.name}
+                      </h3>
+                    </div>
+                    <div className="flex items-center border-b">
+                      <div className="py-4 px-5">${featuredProduct.price}</div>
+                      <div className="border-l py-4 px-5 flex items-center gap-2">
+                        <img
+                          src={featuredProduct.creator?.avatar_url}
+                          alt={featuredProduct.creator?.name}
+                          className="w-6 h-6 rounded-full"
+                        />
+
+                        <a
+                          className="border-b"
+                          href={urlBuilder(
+                            '',
+                            featuredProduct.creator?.username
+                          )}
+                        >
+                          {featuredProduct.creator?.name}
+                        </a>
+                      </div>
+                      <div className="border-l py-4 px-5">
+                        <div className="flex-1 flex items-center gap-4">
+                          <div className="flex items-center gap-2">
+                            <FaStar />
+                            <FaStar />
+                            <FaStar />
+                            <FaStar />
+                            <FaStar />
+                          </div>
+                          <p>2 ratings</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="py-4 px-5">
+                      <p className="text-base">{featuredProduct.description}</p>
+                    </div>
+                  </div>
+                  <div className="border-t md:border-t-0 md:border-l md:col-span-1">
+                    <div className="py-4 px-5">
+                      <Button variant="primary" className="w-full">
+                        Add to cart
+                      </Button>
+
+                      <div className="border rounded mt-4 p-2">
+                        <p>
+                          lorem ipsum dolor sit amet, consectetur adipiscing
+                          elit, sed do eiusmod tempor incididunt ut labore et
+                          dolore magna aliqua.
+                        </p>
+                      </div>
+                    </div>
+                    <div className="py-4 px-5 border-t">Ratings</div>
+                  </div>
+                </div>
+              </div>
             ) : (
               <div className="flex col-span-3 flex-col items-center justify-center">
                 <FaBoxArchive className="text-4xl" />
@@ -211,10 +280,6 @@ const ProfileFeaturedProductsSection = ({
             )}
           </div>
         </div>
-
-        <p className="text-xs mt-4">
-          * To save time I just reused the product card for featured product too
-        </p>
       </div>
 
       {children}

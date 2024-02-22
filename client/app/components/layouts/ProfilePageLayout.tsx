@@ -7,6 +7,14 @@ import { ProfileSectionAdd } from '@/components/Profile/ProfileSectionAdd'
 import { NavLink } from '@/types'
 import { NavLinkItem } from '@/components/ui/nav-link'
 import { useEmailSubscriber } from '@/hooks/useEmailSubscriber'
+import { FaPencil } from 'react-icons/fa6'
+import { urlBuilder } from '@/lib/utils'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger
+} from '@/components/ui/tooltip'
 
 type Props = {
   children?: React.ReactNode
@@ -44,16 +52,34 @@ const ProfilePageLayout = ({ children }: Props) => {
   return (
     <>
       <header className="flex flex-col px-0 py-0 mx-auto md:flex-row md:items-center md:py-6 md:px-16 max-w-7xl">
+        <a
+          href={urlBuilder('/settings/profile', 'app')}
+          className="absolute top-5 left-5"
+        >
+          <TooltipProvider delayDuration={0}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button className="p-4" size={'smallIcon'}>
+                  <FaPencil />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side={'right'}>
+                <p>Edit profile</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </a>
+
         <div className="flex items-center gap-3 px-3 py-4 md:flex-1 md:p-0">
           <img
-            className="w-8 h-8 border rounded-full border-border"
+            className="w-8 h-8 border rounded-full"
             src={creatorAvatarUrl}
             alt={`${creatorName}'s avatar`}
           />
           <p className="text-lg">{creatorName}</p>
         </div>
 
-        <div className="flex items-center gap-3 px-3 py-4 border-t md:border-none border-border md:p-0">
+        <div className="flex items-center gap-3 px-3 py-4 border-t md:border-none md:p-0">
           <Input
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -67,7 +93,7 @@ const ProfilePageLayout = ({ children }: Props) => {
         </div>
       </header>
 
-      <header className="border-t border-border relative">
+      <header className="border-t relative">
         <div className="profile-container">
           <p className="text-4xl">{profilePageContext.creator?.bio}</p>
 
@@ -87,7 +113,7 @@ const ProfilePageLayout = ({ children }: Props) => {
         <p className="text-center mb-10">Not implemented</p>
       )}
 
-      <footer className="border-t border-border">
+      <footer className="border-t">
         <div className="flex items-center gap-2 profile-container">
           <p className="text-sm">Powered by</p>
           <img src={logo} alt="Gumroad" className="w-24 " />
