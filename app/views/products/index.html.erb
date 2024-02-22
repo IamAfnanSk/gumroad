@@ -1,0 +1,1 @@
+<%= react_component('ProductsPage', props: { creator: @creator.attributes.merge(avatar_url: @creator.avatar.attached? ? url_for(@creator.avatar) : '') }) %>

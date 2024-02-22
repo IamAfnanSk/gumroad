@@ -105,9 +105,11 @@ const ProfilePostsSection = ({ section, children }: ProfileSectionProps) => {
     return format(new Date(date), 'MMMM dd, yyyy')
   }
 
-  const selectedPosts = profilePageContext.posts?.filter((post) =>
-    selectedPostIds.includes(post.id || 0)
-  )
+  const selectedPosts = profilePageContext.creatorIsOwner
+    ? profilePageContext.posts?.filter((post) =>
+        selectedPostIds.includes(post.id || 0)
+      )
+    : section.posts
 
   return (
     <div className="relative w-full border-t">

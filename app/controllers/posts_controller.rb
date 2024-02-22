@@ -1,9 +1,11 @@
 # frozen_string_literal: true
 
 class PostsController < ApplicationController
-  before_action :authenticate_creator!, only: %i[create update destroy]
-  before_action :set_creator, only: %i[create update destroy]
+  before_action :authenticate_creator!, only: %i[create update destroy index]
+  before_action :set_creator, only: %i[create update destroy index]
   before_action :set_post, only: %i[create update destroy]
+
+  def index; end
 
   def create
     @post = @creator.posts.build(post_params)

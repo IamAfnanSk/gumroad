@@ -107,9 +107,11 @@ const ProfileFeaturedProductsSection = ({
     updateProfileSectionLoading
   ])
 
-  const featuredProduct = profilePageContext.products?.find(
-    (product) => product.id === featuredProductId
-  )
+  const featuredProduct = profilePageContext.creatorIsOwner
+    ? profilePageContext.products?.find(
+        (product) => product.id === featuredProductId
+      )
+    : section.featured_product
 
   return (
     <div className="border-t w-full relative">

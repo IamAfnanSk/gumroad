@@ -48,12 +48,12 @@ const sidebarTopItems: SidebarItem[] = [
   {
     label: 'Products',
     icon: FaBoxArchive,
-    path: ''
+    path: '/products'
   },
   {
     label: 'Emails',
     icon: FaEnvelope,
-    path: ''
+    path: '/posts'
   }
 ]
 
@@ -184,7 +184,7 @@ const DashboardPageLayout = ({
         </div>
 
         <header
-          className={`flex flex-col md:py-[3.25rem] start dashboard-container md:pb-8`}
+          className={`flex flex-col md:py-[3.25rem] start dashboard-container ${navLinks?.length ? 'md:pb-[1.98rem]' : 'md:pb-[2.85rem]'}`}
         >
           <div className="flex items-center justify-between">
             <h2 className="text-4xl py-[0.19rem] hidden md:block">{title}</h2>

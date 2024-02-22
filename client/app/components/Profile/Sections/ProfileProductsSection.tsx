@@ -114,9 +114,11 @@ const ProfileProductsSection = ({ section, children }: ProfileSectionProps) => {
     updateProfileSectionLoading
   ])
 
-  const selectedProducts = profilePageContext.products?.filter((product) =>
-    selectedProductIds.includes(product.id || 0)
-  )
+  const selectedProducts = profilePageContext.creatorIsOwner
+    ? profilePageContext.products?.filter((product) =>
+        selectedProductIds.includes(product.id || 0)
+      )
+    : section.products
 
   return (
     <div className="border-t w-full relative">
@@ -176,7 +178,7 @@ const ProfileProductsSection = ({ section, children }: ProfileSectionProps) => {
                   </Label>
                 </div>
 
-                {(profilePageContext.posts?.length || 0) > 0 && (
+                {(profilePageContext.products?.length || 0) > 0 && (
                   <div className="max-h-96 overflow-y-auto flex flex-col gap-1 mt-4">
                     {profilePageContext.products?.map((product) => {
                       return (

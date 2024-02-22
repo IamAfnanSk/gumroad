@@ -58,7 +58,10 @@ type Props = {
   creatorHasPostsAndProducts: boolean
 }
 
-const SettingsProfile = ({ creator, creatorHasPostsAndProducts }: Props) => {
+const SettingsProfilePage = ({
+  creator,
+  creatorHasPostsAndProducts
+}: Props) => {
   const {
     updateCreator,
     data: updateCreatorData,
@@ -322,7 +325,7 @@ const SettingsProfile = ({ creator, creatorHasPostsAndProducts }: Props) => {
         )}
       </div>
 
-      <div className="dashboard-container">
+      <div className="dashboard-container pt-0">
         <h1 className="text-2xl mb-8">Theme</h1>
 
         <div className="w-full flex-col md:flex-row flex items-start justify-between">
@@ -404,4 +407,4 @@ const SettingsProfile = ({ creator, creatorHasPostsAndProducts }: Props) => {
   )
 }
 
-export { SettingsProfile }
+export { SettingsProfilePage }

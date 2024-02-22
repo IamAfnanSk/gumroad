@@ -6,13 +6,15 @@ require_relative "../lib/constraints/app_subdomain_constraint"
 Rails.application.routes.draw do
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
-  constraints(AppSubDomainConstraint.new) do
-    devise_for :creators, only: %i[sessions registrations], path_names: {
-      sign_in: "login", sign_out: "logout",
-      sign_up: "signup"
-    }
+  devise_for :creators, only: %i[sessions registrations], path_names: {
+    sign_in: "login", sign_out: "logout",
+    sign_up: "signup"
+  }
 
+  constraints(AppSubDomainConstraint.new) do
     get "/settings/profile", to: "settings#profile", as: :settings_profile
+    get "/posts", to: "posts#index"
+    get "/products", to: "products#index"
 
     resources :creators, only: [:update], constraints: ->(request) { request.format == :json } do
       collection do

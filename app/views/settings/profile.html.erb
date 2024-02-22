@@ -1,1 +1,1 @@
-<%= react_component('SettingsProfile', props: { creator: @creator.attributes.merge(avatar_url: @creator.avatar.attached? ? url_for(@creator.avatar) : ''), creatorHasPostsAndProducts: @has_posts_and_products }) %>
+<%= react_component('SettingsProfilePage', props: { creator: @creator.attributes.merge(avatar_url: @creator.avatar.attached? ? url_for(@creator.avatar) : ''), creatorHasPostsAndProducts: @has_posts_and_products }) %>

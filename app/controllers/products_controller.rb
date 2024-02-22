@@ -1,9 +1,11 @@
 # app/controllers/products_controller.rb
 
 class ProductsController < ApplicationController
-  before_action :authenticate_creator!, only: %i[create update destroy]
-  before_action :set_creator, only: %i[create update destroy]
+  before_action :authenticate_creator!, only: %i[create update destroy index]
+  before_action :set_creator, only: %i[create update destroy index]
   before_action :set_product, only: %i[create update destroy]
+
+  def index; end
 
   def create
     @product = @creator.products.build(product_params)

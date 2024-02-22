@@ -9,8 +9,10 @@ import { Label } from '@/components/ui/label'
 import { RailsFlashes } from '@/components/RailsFlashes'
 
 import { HomePage } from '@/components/pages/HomePage'
-import { SettingsProfile } from '@/components/pages/SettingsProfile'
+import { SettingsProfilePage } from '@/components/pages/SettingsProfilePage'
 import { ProfilePage } from '@/components/pages/ProfilePage'
+import { ProductsPage } from '@/components/pages/ProductsPage'
+import { PostsPage } from '@/components/pages/PostsPage'
 
 ReactOnRails.register({
   RailsFlashes,
@@ -18,6 +20,8 @@ ReactOnRails.register({
   Input,
   Label,
   HomePage,
-  SettingsProfile,
-  ProfilePage
+  SettingsProfilePage,
+  ProfilePage,
+  ProductsPage,
+  PostsPage
 })
