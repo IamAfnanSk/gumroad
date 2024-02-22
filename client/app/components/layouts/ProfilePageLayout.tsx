@@ -52,23 +52,25 @@ const ProfilePageLayout = ({ children }: Props) => {
   return (
     <>
       <header className="flex flex-col px-0 py-0 mx-auto md:flex-row md:items-center md:py-6 md:px-16 max-w-7xl">
-        <a
-          href={urlBuilder('/settings/profile', 'app')}
-          className="absolute top-5 left-5"
-        >
-          <TooltipProvider delayDuration={0}>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button className="p-4" size={'smallIcon'}>
-                  <FaPencil />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent side={'right'}>
-                <p>Edit profile</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        </a>
+        {profilePageContext.creatorIsOwner && (
+          <a
+            href={urlBuilder('/settings/profile', 'app')}
+            className="absolute top-5 left-5"
+          >
+            <TooltipProvider delayDuration={0}>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button className="p-4" size={'smallIcon'}>
+                    <FaPencil />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side={'right'}>
+                  <p>Edit profile</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </a>
+        )}
 
         <div className="flex items-center gap-3 px-3 py-4 md:flex-1 md:p-0">
           <img
