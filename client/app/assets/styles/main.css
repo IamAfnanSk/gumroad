@@ -253,3 +253,7 @@
     @apply p-4 md:p-16;
   }
 }
+
+.cm-layer.cm-selectionLayer {
+  @apply w-full;
+}
