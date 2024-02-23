@@ -53,7 +53,7 @@ const ProfileSectionEditPopover = ({
       {profilePageContext.creatorIsOwner && (
         <div className="absolute z-10 left-4 top-2">
           <Popover onOpenChange={handleSectionUpdate}>
-            <PopoverTrigger disabled={disabled}>
+            <PopoverTrigger>
               <Button className="p-3" asChild size={'icon'}>
                 <BsThreeDots />
               </Button>

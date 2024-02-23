@@ -64,13 +64,14 @@ const useApiRequest = () => {
           ...headers
         },
         onUploadProgress: (progressEvent) => {
-          // update uploadProgress up till 2 decimal places only
           setUploadProgress(
             parseFloat(((progressEvent.progress || 0) * 100).toFixed(2))
           )
         },
         onDownloadProgress: (progressEvent) => {
-          parseFloat(((progressEvent.progress || 0) * 100).toFixed(2))
+          setDownloadProgress(
+            parseFloat(((progressEvent.progress || 0) * 100).toFixed(2))
+          )
         },
         cancelToken: source.token
       })
@@ -103,9 +104,6 @@ const useApiRequest = () => {
         toast.error(responseErrors.join(', '))
         setErrors(responseErrors)
       }
-
-      setUploadProgress(0)
-      setDownloadProgress(0)
     }
   }
 

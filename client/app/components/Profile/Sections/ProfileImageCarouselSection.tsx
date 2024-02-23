@@ -49,7 +49,7 @@ const ProfileImageCarouselSection = ({
   const fileInputRef = React.useRef<HTMLInputElement>(null)
 
   const handleSectionUpdate = async (isOpened: boolean) => {
-    if (isOpened) {
+    if (isOpened || updateProfileSectionLoading) {
       return
     }
 
