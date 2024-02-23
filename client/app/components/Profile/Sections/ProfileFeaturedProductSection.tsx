@@ -215,7 +215,7 @@ const ProfileFeaturedProductsSection = ({
                         {featuredProduct.name}
                       </h3>
                     </div>
-                    <div className="flex items-center border-b">
+                    <div className="flex-wrap md:flex-nowrap flex items-center border-b">
                       <div className="py-4 px-5">${featuredProduct.price}</div>
                       <div className="border-l py-4 px-5 flex items-center gap-2">
                         <img
@@ -237,7 +237,7 @@ const ProfileFeaturedProductsSection = ({
                           {featuredProduct.creator?.name}
                         </a>
                       </div>
-                      <div className="border-l py-4 px-5">
+                      <div className="md:border-l md:border-t-0 border-t w-full md:w-max py-4 px-5">
                         <div className="flex-1 flex items-center gap-4">
                           <div className="flex items-center gap-2">
                             <FaStar />
