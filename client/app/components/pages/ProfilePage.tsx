@@ -9,8 +9,6 @@ import { Creator, Post, Product, ProfileSection } from '@/types'
 import { ProfileProductsSection } from '@/components/Profile/Sections/ProfileProductsSection'
 import { ProfileSubscribeSection } from '@/components/Profile/Sections/ProfileSubscribeSection'
 import { ProfileEmbedSection } from '@/components/Profile/Sections/ProfileEmbedSection'
-import { useProfileSectionAdd } from '@/hooks/useProfileSectionAdd'
-import { useProfileSectionDelete } from '@/hooks/useProfileSectionDelete'
 import { ProfileSectionAdd } from '@/components/Profile/ProfileSectionAdd'
 import { ProfileSectionPositionMover } from '@/components/Profile/ProfileSectionPositionMover'
 import { ProfileImageCarouselSection } from '@/components/Profile/Sections/ProfileImageCarouselSection'
@@ -27,20 +25,6 @@ type Props = {
 } & React.HTMLAttributes<HTMLDivElement>
 
 const ProfilePage = (props: Props) => {
-  const {
-    addProfileSection,
-    errors: addProfileErrors,
-    data: addProfileData,
-    loading: addProfileLoading
-  } = useProfileSectionAdd()
-
-  const {
-    deleteProfileSection,
-    errors: deleteProfileErrors,
-    data: deleteProfileData,
-    loading: deleteProfileLoading
-  } = useProfileSectionDelete()
-
   const [profileSections, setProfileSections] = React.useState<
     Partial<ProfileSection>[]
   >(props.profileSections || [])
@@ -61,59 +45,6 @@ const ProfilePage = (props: Props) => {
     }
   }, [])
 
-  const handleDeleteProfileSection = async (sectionId: number) => {
-    await deleteProfileSection({ sectionId })
-  }
-
-  const handleAddProfileSection = async (
-    sectionType: string,
-    position: number
-  ) => {
-    await addProfileSection({ sectionType, position })
-  }
-
-  React.useEffect(() => {
-    if (!deleteProfileLoading && !deleteProfileErrors && deleteProfileData) {
-      const sectionIdPositionMap =
-        deleteProfileData.data?.idPositionMapping || {}
-
-      const sectionId = deleteProfileData.data?.deletedSectionId || 0
-
-      setProfileSections((profileSections) => {
-        return profileSections
-          .filter((profileSection) => profileSection.id !== sectionId)
-          .map((profileSection) => {
-            return {
-              ...profileSection,
-              position: sectionIdPositionMap[profileSection.id || 0]
-            }
-          })
-      })
-    }
-  }, [deleteProfileData, deleteProfileErrors, deleteProfileLoading])
-
-  React.useEffect(() => {
-    if (!addProfileLoading && !addProfileErrors && addProfileData) {
-      const sectionIdPositionMap = addProfileData.data?.idPositionMapping || {}
-      const newSection = addProfileData.data?.profileSection || {}
-
-      setProfileSections((profileSections) => {
-        const updatedSections = profileSections.map<Partial<ProfileSection>>(
-          (profileSection) => {
-            return {
-              ...profileSection,
-              position: sectionIdPositionMap[profileSection.id || 0]
-            }
-          }
-        )
-
-        updatedSections.push(newSection)
-
-        return updatedSections
-      })
-    }
-  }, [addProfileData, addProfileErrors, addProfileLoading])
-
   const sortedProfileSections = profileSections.sort(
     (a, b) => (a.position || 0) - (b.position || 0)
   )
@@ -123,9 +54,7 @@ const ProfilePage = (props: Props) => {
       value={{
         ...props,
         profileSections,
-        setProfileSections,
-        handleAddProfileSection,
-        handleDeleteProfileSection
+        setProfileSections
       }}
     >
       <ProfilePageLayout>

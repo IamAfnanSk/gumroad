@@ -11,7 +11,8 @@ import { ProfileSectionEditPopover } from '@/components/Profile/ProfileSectionEd
 const ProfileWysiwygSection = ({ section, children }: ProfileSectionProps) => {
   const profilePageContext = useContext(ProfilePageContext)
 
-  const { updateProfileSection } = useProfileSectionUpdate()
+  const { updateProfileSection, loading: updateProfileSectionLoading } =
+    useProfileSectionUpdate()
 
   if (!profilePageContext) {
     throw new Error(
@@ -32,7 +33,7 @@ const ProfileWysiwygSection = ({ section, children }: ProfileSectionProps) => {
   const debouncedHandleOnUpdate = useDebouncedCallback(
     async (editor: Editor) => {
       await updateProfileSection({
-        id: section.id,
+        sectionId: section.id || 0,
         json_content: JSON.stringify(editor.getJSON())
       })
     },
@@ -45,7 +46,10 @@ const ProfileWysiwygSection = ({ section, children }: ProfileSectionProps) => {
 
   return (
     <div className="relative w-full border-t">
-      <ProfileSectionEditPopover sectionId={section.id || 0} />
+      <ProfileSectionEditPopover
+        disabled={updateProfileSectionLoading}
+        sectionId={section.id || 0}
+      />
 
       <div className="profile-container">
         <Tiptap

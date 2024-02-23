@@ -60,7 +60,7 @@ const ProfileProductsSection = ({ section, children }: ProfileSectionProps) => {
     }
 
     await updateProfileSection({
-      id: section.id,
+      sectionId: section.id || 0,
       title,
       show_title: showTitle,
       show_filters: showFilters,
@@ -123,6 +123,7 @@ const ProfileProductsSection = ({ section, children }: ProfileSectionProps) => {
   return (
     <div className="border-t w-full relative">
       <ProfileSectionEditPopover
+        disabled={updateProfileSectionLoading}
         sectionId={section.id || 0}
         handleSectionUpdate={handleSectionUpdate}
         popoverTabsData={[
@@ -133,6 +134,7 @@ const ProfileProductsSection = ({ section, children }: ProfileSectionProps) => {
             body: (
               <>
                 <Input
+                  disabled={updateProfileSectionLoading}
                   name="title"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
@@ -141,6 +143,7 @@ const ProfileProductsSection = ({ section, children }: ProfileSectionProps) => {
 
                 <div className="flex items-center gap-4 mt-4">
                   <Switch
+                    disabled={updateProfileSectionLoading}
                     checked={showTitle}
                     onCheckedChange={() => setShowTitle(!showTitle)}
                     id="show_title"
@@ -158,6 +161,7 @@ const ProfileProductsSection = ({ section, children }: ProfileSectionProps) => {
               <>
                 <div className="flex items-center gap-4">
                   <Switch
+                    disabled={updateProfileSectionLoading}
                     checked={showFilters}
                     onCheckedChange={() => setShowFilters(!showFilters)}
                     id="show_filters"
@@ -167,6 +171,7 @@ const ProfileProductsSection = ({ section, children }: ProfileSectionProps) => {
 
                 <div className="flex items-center gap-4 mt-4">
                   <Switch
+                    disabled={updateProfileSectionLoading}
                     checked={addNewProductsByDefault}
                     onCheckedChange={() =>
                       setAddNewProductsByDefault(!addNewProductsByDefault)
@@ -191,6 +196,7 @@ const ProfileProductsSection = ({ section, children }: ProfileSectionProps) => {
                           </Label>
 
                           <Checkbox
+                            disabled={updateProfileSectionLoading}
                             id={`product-${product.id}`}
                             checked={selectedProductIds.includes(
                               product.id || 0

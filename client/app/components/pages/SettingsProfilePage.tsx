@@ -27,9 +27,10 @@ import {
 } from '@/components/ui/popover'
 import { gumroadTheme } from '@/components/Profile/gumroadTheme'
 import { Label } from '@/components/ui/label'
-import axios from 'axios'
 import { useCsrfToken } from '@/hooks/useCsrfToken'
-import { toast } from 'sonner'
+import { useApiRequest } from '@/hooks/useApiRequest'
+import { Loader2 } from 'lucide-react'
+import { Progress } from '@/components/ui/progress'
 
 const navLinks: NavLink[] = [
   { label: 'Settings', path: '' },
@@ -66,15 +67,24 @@ const SettingsProfilePage = ({
     updateCreator,
     data: updateCreatorData,
     errors: updateCreatorErrors,
-    loading: updateCreatorLoading
+    loading: updateCreatorLoading,
+    uploadProgress: updateCreatorUploadProgress
   } = useCreatorUpdate()
+
+  const {
+    data: loadDummyDataData,
+    loading: loadDummyDataLoading,
+    sendRequest
+  } = useApiRequest()
+
+  const isLoading = updateCreatorLoading || loadDummyDataLoading
 
   const avatarRef = React.useRef<HTMLInputElement>(null)
 
   const csrfToken = useCsrfToken()
 
   const [avatarUrl, setAvatarUrl] = React.useState<string | null>(
-    creator.avatar_url || null
+    creator.avatar_url || 'https://gravatar.com/avatar'
   )
 
   const [profileUrl, setProfileUrl] = React.useState<string>(
@@ -159,40 +169,16 @@ const SettingsProfilePage = ({
   }, [updateCreatorData, updateCreatorErrors, updateCreatorLoading])
 
   const handleLoadSampleProductsAndPosts = async () => {
-    const errorMessage = `Error loading dummy data`
-    const responseErrors: string[] = []
+    const fallbackErrorMessage = `Error loading dummy data`
 
-    try {
-      const response = await axios.post(
-        `/creators/add_dummy_posts_and_products.json`,
-        {},
-        {
-          headers: {
-            'X-Csrf-Token': csrfToken
-          }
-        }
-      )
-
-      const responseData = response.data
-
-      if (response.status === 200 && responseData) {
-        toast.success(responseData.message)
-      } else {
-        responseErrors.push(...(responseData.errors || [errorMessage]))
-      }
-    } catch (error) {
-      // @ts-expect-error error is unknown
-      if (error.response?.data?.errors?.length) {
-        // @ts-expect-error error is unknown
-        responseErrors.push(...error.response.data.errors)
-      } else {
-        responseErrors.push(errorMessage)
-      }
-    } finally {
-      if (responseErrors.length) {
-        toast.error(responseErrors.join(', '))
-      }
-    }
+    await sendRequest({
+      url: `/creators/add_dummy_posts_and_products.json`,
+      method: 'post',
+      headers: {
+        'X-Csrf-Token': csrfToken
+      },
+      fallbackErrorMessage
+    })
   }
 
   return (
@@ -201,7 +187,8 @@ const SettingsProfilePage = ({
       headerCta={{
         label: 'Update settings',
         icon: MdOutlineSystemUpdateAlt,
-        onClick: () => form.handleSubmit(handleCreatorUpdate)()
+        onClick: () => form.handleSubmit(handleCreatorUpdate)(),
+        disabled: isLoading
       }}
       title="Settings"
       creator={creator}
@@ -212,6 +199,7 @@ const SettingsProfilePage = ({
         <Form {...form}>
           <form className="w-full md:w-2/3 space-y-6">
             <FormField
+              disabled={isLoading}
               control={form.control}
               name="username"
               render={({ field }) => (
@@ -237,6 +225,7 @@ const SettingsProfilePage = ({
             />
 
             <FormField
+              disabled={isLoading}
               control={form.control}
               name="name"
               render={({ field }) => (
@@ -251,6 +240,7 @@ const SettingsProfilePage = ({
             />
 
             <FormField
+              disabled={isLoading}
               control={form.control}
               name="twitter_handle"
               render={({ field }) => (
@@ -265,6 +255,7 @@ const SettingsProfilePage = ({
             />
 
             <FormField
+              disabled={isLoading}
               control={form.control}
               name="bio"
               render={({ field }) => (
@@ -291,36 +282,52 @@ const SettingsProfilePage = ({
                 />
               </div>
             ) : (
-              <FormField
-                name="avatar"
-                render={() => (
-                  <FormItem>
-                    <FormLabel>Avatar</FormLabel>
-                    <Input
-                      ref={avatarRef}
-                      accept="image/png, image/jpeg, image/jpg"
-                      id="avatar"
-                      type="file"
-                    />
-                  </FormItem>
+              <>
+                <FormField
+                  disabled={isLoading}
+                  name="avatar"
+                  render={() => (
+                    <FormItem>
+                      <FormLabel>Avatar</FormLabel>
+                      <Input
+                        ref={avatarRef}
+                        accept="image/png, image/jpeg, image/jpg"
+                        id="avatar"
+                        type="file"
+                      />
+                    </FormItem>
+                  )}
+                />
+
+                {updateCreatorLoading && updateCreatorUploadProgress && (
+                  <div className="mt-4">
+                    <Progress value={updateCreatorUploadProgress} max={100} />
+
+                    <p className="text-xs mt-2">
+                      {updateCreatorUploadProgress}% uploaded
+                    </p>
+                  </div>
                 )}
-              />
+              </>
             )}
           </form>
         </Form>
 
-        {!creatorHasPostsAndProducts && (
+        {!creatorHasPostsAndProducts && !loadDummyDataData && (
           <div className="mt-10">
             <Button
+              disabled={isLoading}
               onClick={handleLoadSampleProductsAndPosts}
-              className=""
               variant={'primary'}
             >
-              * Load sample products and posts
+              {loadDummyDataLoading && (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              )}
+              Load sample products and posts
             </Button>
 
             <p className="mt-4">
-              Click this button to load some dummy products and posts to your
+              * Click this button to load some dummy products and posts to your
               account
             </p>
           </div>
@@ -343,6 +350,7 @@ const SettingsProfilePage = ({
                       {key.substring(2)} color
                     </Label>
                     <Input
+                      disabled={isLoading}
                       type="color"
                       value={theme[key]}
                       className="p-1 h-10 w-14 block bg-white border border-gray-200 cursor-pointer rounded-lg disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700"
@@ -362,9 +370,11 @@ const SettingsProfilePage = ({
                 setTheme(gumroadTheme)
                 setIsThemeDirty(true)
               }}
+              disabled={isLoading}
               className="mt-10"
               variant={'destructive'}
             >
+              {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Reset
             </Button>
           </div>

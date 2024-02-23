@@ -55,7 +55,7 @@ const ProfilePostsSection = ({ section, children }: ProfileSectionProps) => {
     }
 
     await updateProfileSection({
-      id: section.id,
+      sectionId: section.id || 0,
       title,
       show_title: showTitle,
       post_ids: selectedPostIds
@@ -114,6 +114,7 @@ const ProfilePostsSection = ({ section, children }: ProfileSectionProps) => {
   return (
     <div className="relative w-full border-t">
       <ProfileSectionEditPopover
+        disabled={updateProfileSectionLoading}
         sectionId={section.id || 0}
         handleSectionUpdate={handleSectionUpdate}
         popoverTabsData={[
@@ -124,6 +125,7 @@ const ProfilePostsSection = ({ section, children }: ProfileSectionProps) => {
             body: (
               <>
                 <Input
+                  disabled={updateProfileSectionLoading}
                   name="title"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
@@ -132,6 +134,7 @@ const ProfilePostsSection = ({ section, children }: ProfileSectionProps) => {
 
                 <div className="flex items-center gap-4 mt-4">
                   <Switch
+                    disabled={updateProfileSectionLoading}
                     checked={showTitle}
                     onCheckedChange={() => setShowTitle(!showTitle)}
                     id="show_title"
@@ -160,6 +163,7 @@ const ProfilePostsSection = ({ section, children }: ProfileSectionProps) => {
                           </Label>
 
                           <Checkbox
+                            disabled={updateProfileSectionLoading}
                             id={`post-${post.id}`}
                             checked={selectedPostIds.includes(post.id || 0)}
                             onCheckedChange={() => {

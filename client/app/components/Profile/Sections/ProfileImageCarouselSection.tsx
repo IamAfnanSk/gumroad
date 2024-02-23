@@ -16,6 +16,7 @@ import { ProfileSectionProps } from '@/components/Profile/types'
 import { useProfileSectionUpdate } from '@/hooks/useProfileSectionUpdate'
 import { CarouselImage } from '@/types'
 import { ProfileSectionEditPopover } from '@/components/Profile/ProfileSectionEditPopover'
+import { Progress } from '@/components/ui/progress'
 
 const ProfileImageCarouselSection = ({
   section,
@@ -27,7 +28,8 @@ const ProfileImageCarouselSection = ({
     updateProfileSection,
     data: updateProfileSectionData,
     errors: updateProfileSectionErrors,
-    loading: updateProfileSectionLoading
+    loading: updateProfileSectionLoading,
+    uploadProgress: updateProfileSectionUploadProgress
   } = useProfileSectionUpdate()
 
   if (!profilePageContext) {
@@ -76,7 +78,7 @@ const ProfileImageCarouselSection = ({
     })
 
     await updateProfileSection({
-      id: section.id,
+      sectionId: section.id || 0,
       formData
     })
   }
@@ -134,6 +136,7 @@ const ProfileImageCarouselSection = ({
   return (
     <div className="relative w-full border-t">
       <ProfileSectionEditPopover
+        disabled={updateProfileSectionLoading}
         sectionId={section.id || 0}
         handleSectionUpdate={handleSectionUpdate}
         popoverTabsData={[
@@ -144,6 +147,7 @@ const ProfileImageCarouselSection = ({
             body: (
               <>
                 <Input
+                  disabled={updateProfileSectionLoading}
                   name="title"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
@@ -152,6 +156,7 @@ const ProfileImageCarouselSection = ({
 
                 <div className="flex items-center gap-4 mt-4">
                   <Switch
+                    disabled={updateProfileSectionLoading}
                     checked={showTitle}
                     onCheckedChange={() => setShowTitle(!showTitle)}
                     id="show_title"
@@ -177,6 +182,7 @@ const ProfileImageCarouselSection = ({
                           className="flex-1 object-contain h-20 border rounded-md"
                         />
                         <Button
+                          disabled={updateProfileSectionLoading}
                           className="shrink-0"
                           size={'smallIcon'}
                           onClick={() => {
@@ -195,6 +201,7 @@ const ProfileImageCarouselSection = ({
                 )}
 
                 <Input
+                  disabled={updateProfileSectionLoading}
                   ref={fileInputRef}
                   name="images"
                   type={'file'}
@@ -202,6 +209,21 @@ const ProfileImageCarouselSection = ({
                   accept="image/png, image/jpeg, image/jpg"
                   onChange={() => handleSectionUpdate(false)}
                 />
+
+                {updateProfileSectionLoading &&
+                  updateProfileSectionUploadProgress && (
+                    <div className="mt-4">
+                      <Progress
+                        value={updateProfileSectionUploadProgress}
+                        max={100}
+                      />
+
+                      <p className="text-xs mt-2">
+                        {updateProfileSectionUploadProgress}% uploaded (keep
+                        open)
+                      </p>
+                    </div>
+                  )}
               </>
             )
           }

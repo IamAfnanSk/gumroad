@@ -52,7 +52,7 @@ const ProfileEmbedSection = ({ section, children }: ProfileSectionProps) => {
     }
 
     await updateProfileSection({
-      id: section.id,
+      sectionId: section.id || 0,
       title,
       show_title: showTitle,
       embed_url: embedUrl,
@@ -102,6 +102,7 @@ const ProfileEmbedSection = ({ section, children }: ProfileSectionProps) => {
   return (
     <div className="relative w-full border-t">
       <ProfileSectionEditPopover
+        disabled={updateProfileSectionLoading}
         handleSectionUpdate={handleSectionUpdate}
         sectionId={section.id || 0}
         popoverTabsData={[
@@ -112,6 +113,7 @@ const ProfileEmbedSection = ({ section, children }: ProfileSectionProps) => {
             body: (
               <>
                 <Input
+                  disabled={updateProfileSectionLoading}
                   name="title"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
@@ -120,6 +122,7 @@ const ProfileEmbedSection = ({ section, children }: ProfileSectionProps) => {
 
                 <div className="flex items-center gap-4 mt-4">
                   <Switch
+                    disabled={updateProfileSectionLoading}
                     checked={showTitle}
                     onCheckedChange={() => setShowTitle(!showTitle)}
                     id="show_title"
@@ -140,6 +143,7 @@ const ProfileEmbedSection = ({ section, children }: ProfileSectionProps) => {
                     Any valid embed url, e.g. youtube, vimeo, etc
                   </p>
                   <Input
+                    disabled={updateProfileSectionLoading}
                     name="embedUrl"
                     value={embedUrl}
                     onChange={(e) => setEmbedUrl(e.target.value)}
@@ -155,6 +159,7 @@ const ProfileEmbedSection = ({ section, children }: ProfileSectionProps) => {
                   </p>
 
                   <Input
+                    disabled={updateProfileSectionLoading}
                     name="embedHeight"
                     value={embedHeight}
                     onChange={(e) => setEmbedHeight(e.target.value)}

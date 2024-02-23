@@ -43,7 +43,7 @@ const ProfileSubscribeSection = ({
     }
 
     await updateProfileSection({
-      id: section.id,
+      sectionId: section.id || 0,
       title,
       show_title: showTitle
     })
@@ -91,6 +91,7 @@ const ProfileSubscribeSection = ({
   return (
     <div className="border-t relative w-full">
       <ProfileSectionEditPopover
+        disabled={updateProfileSectionLoading}
         sectionId={section.id || 0}
         handleSectionUpdate={handleSectionUpdate}
         popoverTabsData={[
@@ -100,6 +101,7 @@ const ProfileSubscribeSection = ({
             body: (
               <>
                 <Input
+                  disabled={updateProfileSectionLoading}
                   name="title"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
@@ -108,6 +110,7 @@ const ProfileSubscribeSection = ({
 
                 <div className="flex items-center gap-4 mt-4">
                   <Switch
+                    disabled={updateProfileSectionLoading}
                     checked={showTitle}
                     onCheckedChange={() => setShowTitle(!showTitle)}
                     id="show_title"
