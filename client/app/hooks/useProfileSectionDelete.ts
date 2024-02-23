@@ -1,7 +1,4 @@
-import * as React from 'react'
-import axios from 'axios'
-import { toast } from 'sonner'
-import { useCsrfToken } from '@/hooks/useCsrfToken'
+import { useApiRequest } from '@/hooks/useApiRequest'
 
 type DeleteProfileSectionResponseData = {
   message?: string
@@ -17,64 +14,33 @@ type DeleteProfileSectionProps = {
 }
 
 const useProfileSectionDelete = () => {
-  const csrfToken = useCsrfToken()
-
-  const [data, setData] =
-    React.useState<DeleteProfileSectionResponseData | null>(null)
-  const [errors, setErrors] = React.useState<string[] | null>(null)
-  const [loading, setLoading] = React.useState<boolean>(false)
+  const {
+    data,
+    errors,
+    loading,
+    downloadProgress,
+    uploadProgress,
+    sendRequest
+  } = useApiRequest()
 
   const deleteProfileSection = async ({
     sectionId
   }: DeleteProfileSectionProps) => {
-    const errorMessage = `Error deleting section`
-    const responseErrors: string[] = []
+    const fallbackErrorMessage = `Error deleting section`
 
-    try {
-      setLoading(true)
-      setErrors(null)
-      setData(null)
-
-      const response = await axios.delete(
-        `/profiles/${sectionId}/delete_section.json`,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Csrf-Token': csrfToken
-          }
-        }
-      )
-
-      const responseData = response.data as DeleteProfileSectionResponseData
-
-      if (response.status === 200 && responseData) {
-        toast.success(responseData.message)
-        setData(responseData)
-      } else {
-        responseErrors.push(...(responseData.errors || [errorMessage]))
-      }
-    } catch (error) {
-      // @ts-expect-error error is unknown
-      if (error.response?.data?.errors?.length) {
-        // @ts-expect-error error is unknown
-        responseErrors.push(...error.response.data.errors)
-      } else {
-        responseErrors.push(errorMessage)
-      }
-    } finally {
-      setLoading(false)
-
-      if (responseErrors.length) {
-        toast.error(responseErrors.join(', '))
-        setErrors(responseErrors)
-      }
-    }
+    await sendRequest({
+      url: `/profiles/${sectionId}/delete_section.json`,
+      method: 'delete',
+      fallbackErrorMessage
+    })
   }
 
   return {
-    data,
+    data: data as DeleteProfileSectionResponseData | null,
     errors,
     loading,
+    downloadProgress,
+    uploadProgress,
     deleteProfileSection
   }
 }

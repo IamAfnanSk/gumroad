@@ -28,12 +28,14 @@ type Props = {
     body: React.ReactNode
   }[]
   sectionId: number
+  disabled?: boolean
 }
 
 const ProfileSectionEditPopover = ({
   handleSectionUpdate,
   popoverTabsData,
-  sectionId
+  sectionId,
+  disabled
 }: Props) => {
   const profilePageContext = React.useContext(ProfilePageContext)
 
@@ -51,7 +53,7 @@ const ProfileSectionEditPopover = ({
       {profilePageContext.creatorIsOwner && (
         <div className="absolute z-10 left-4 top-2">
           <Popover onOpenChange={handleSectionUpdate}>
-            <PopoverTrigger>
+            <PopoverTrigger disabled={disabled}>
               <Button className="p-3" asChild size={'icon'}>
                 <BsThreeDots />
               </Button>
@@ -62,6 +64,7 @@ const ProfileSectionEditPopover = ({
                   {popoverTabsData?.map((tab, index) => {
                     return (
                       <button
+                        disabled={disabled}
                         key={index}
                         onClick={() =>
                           setPopoverTab(
@@ -85,6 +88,7 @@ const ProfileSectionEditPopover = ({
                   <ProfileDeleteDialog
                     alertDialogTriggerClassName={`${(popoverTabsData?.length || 0) > 0 ? 'border-t' : ''}`}
                     sectionId={sectionId}
+                    disabled={disabled}
                   />
                 </div>
               )}
@@ -95,6 +99,7 @@ const ProfileSectionEditPopover = ({
                     <div key={index} className="px-4 py-3">
                       <div className="grid items-center grid-cols-10 pt-3 pb-5">
                         <button
+                          disabled={disabled}
                           onClick={() => setPopoverTab('home')}
                           className="col-span-1"
                         >

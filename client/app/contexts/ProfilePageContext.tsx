@@ -10,8 +10,6 @@ export type ProfilePageContextProps = {
   posts?: Partial<Post>[]
   products?: Partial<Product>[]
   creatorIsOwner?: boolean
-  handleDeleteProfileSection: (sectionId: number) => void
-  handleAddProfileSection: (sectionType: string, position: number) => void
 }
 
 export const ProfilePageContext = React.createContext<

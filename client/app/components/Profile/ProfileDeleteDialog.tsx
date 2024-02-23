@@ -13,17 +13,27 @@ import {
 import { FaTrash } from 'react-icons/fa6'
 import { ProfilePageContext } from '@/contexts/ProfilePageContext'
 import classNames from 'classnames'
+import { useProfileSectionDelete } from '@/hooks/useProfileSectionDelete'
 
 type Props = {
   sectionId: number
   alertDialogTriggerClassName?: string
+  disabled?: boolean
 }
 
 const ProfileDeleteDialog = ({
   sectionId,
-  alertDialogTriggerClassName
+  alertDialogTriggerClassName,
+  disabled
 }: Props) => {
   const profilePageContext = React.useContext(ProfilePageContext)
+
+  const {
+    deleteProfileSection,
+    errors: deleteProfileErrors,
+    data: deleteProfileData,
+    loading: deleteProfileLoading
+  } = useProfileSectionDelete()
 
   if (!profilePageContext) {
     throw new Error(
@@ -31,9 +41,36 @@ const ProfileDeleteDialog = ({
     )
   }
 
+  React.useEffect(() => {
+    if (!deleteProfileLoading && !deleteProfileErrors && deleteProfileData) {
+      const sectionIdPositionMap =
+        deleteProfileData.data?.idPositionMapping || {}
+
+      const sectionId = deleteProfileData.data?.deletedSectionId || 0
+
+      profilePageContext.setProfileSections((profileSections) => {
+        return profileSections
+          .filter((profileSection) => profileSection.id !== sectionId)
+          .map((profileSection) => {
+            return {
+              ...profileSection,
+              position: sectionIdPositionMap[profileSection.id || 0]
+            }
+          })
+      })
+    }
+  }, [deleteProfileData, deleteProfileErrors, deleteProfileLoading])
+
+  const handleDeleteProfileSection = async (sectionId: number) => {
+    await deleteProfileSection({ sectionId })
+  }
+
+  const isLoading = deleteProfileLoading || disabled
+
   return (
     <AlertDialog>
       <AlertDialogTrigger
+        disabled={isLoading}
         className={classNames(
           'flex items-center justify-between px-4 py-3 cursor-pointer text-destructive',
           alertDialogTriggerClassName
@@ -53,11 +90,10 @@ const ProfileDeleteDialog = ({
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogCancel disabled={isLoading}>Cancel</AlertDialogCancel>
           <AlertDialogAction
-            onClick={() =>
-              profilePageContext?.handleDeleteProfileSection(sectionId)
-            }
+            disabled={isLoading}
+            onClick={() => handleDeleteProfileSection(sectionId)}
           >
             Continue
           </AlertDialogAction>

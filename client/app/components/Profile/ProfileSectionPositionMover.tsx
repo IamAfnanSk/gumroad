@@ -2,10 +2,8 @@ import * as React from 'react'
 import { Button } from '@/components/ui/button'
 import { FaArrowUp } from 'react-icons/fa'
 import { FaArrowDown } from 'react-icons/fa6'
-import axios from 'axios'
-import { toast } from 'sonner'
-import { useCsrfToken } from '@/hooks/useCsrfToken'
 import { ProfilePageContext } from '@/contexts/ProfilePageContext'
+import { useProfileSectionPositionUpdate } from '@/hooks/useProfileSectionPositionUpdate'
 
 type Props = {
   sectionId: number
@@ -13,8 +11,14 @@ type Props = {
 }
 
 const ProfileSectionPositionMover = ({ sectionId, position }: Props) => {
-  const csrfToken = useCsrfToken()
   const profilePageContext = React.useContext(ProfilePageContext)
+
+  const {
+    data: updateProfileSectionPositionData,
+    errors: updateProfileSectionPositionErrors,
+    loading: updateProfileSectionPositionLoading,
+    updateProfileSectionPosition
+  } = useProfileSectionPositionUpdate()
 
   if (!profilePageContext) {
     throw new Error(
@@ -23,54 +27,35 @@ const ProfileSectionPositionMover = ({ sectionId, position }: Props) => {
   }
 
   const handleMoveSection = async (direction: 'up' | 'down') => {
-    const errorMessage = `Error updating position`
-    const responseErrors: string[] = []
-
-    try {
-      const response = await axios.put(
-        `/profiles/${sectionId}/update_section_positions.json`,
-        {
-          section: {
-            where_to_move: direction
-          }
-        },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Csrf-Token': csrfToken
-          }
-        }
-      )
-
-      if (response.status === 200) {
-        profilePageContext.setProfileSections((profileSections) => {
-          return profileSections.map((profileSection) => {
-            const idPositionMapping = response.data.data.idPositionMapping
-
-            return {
-              ...profileSection,
-              position: idPositionMapping[profileSection.id || 0]
-            }
-          })
-        })
-        toast.success(response.data.message)
-      } else {
-        responseErrors.push(...(response.data.errors || [errorMessage]))
-      }
-    } catch (error) {
-      // @ts-expect-error error is unknown
-      if (error.response?.data?.errors?.length) {
-        // @ts-expect-error error is unknown
-        responseErrors.push(...error.response.data.errors)
-      } else {
-        responseErrors.push(errorMessage)
-      }
-    } finally {
-      if (responseErrors.length) {
-        toast.error(responseErrors.join(', '))
-      }
-    }
+    await updateProfileSectionPosition({
+      sectionId,
+      direction
+    })
   }
+
+  React.useEffect(() => {
+    if (
+      !updateProfileSectionPositionLoading &&
+      !updateProfileSectionPositionErrors &&
+      updateProfileSectionPositionData
+    ) {
+      profilePageContext.setProfileSections((profileSections) => {
+        return profileSections.map((profileSection) => {
+          const idPositionMapping =
+            updateProfileSectionPositionData.data?.idPositionMapping || {}
+
+          return {
+            ...profileSection,
+            position: idPositionMapping[profileSection.id || 0]
+          }
+        })
+      })
+    }
+  }, [
+    updateProfileSectionPositionData,
+    updateProfileSectionPositionErrors,
+    updateProfileSectionPositionLoading
+  ])
 
   if (!profilePageContext.creatorIsOwner) {
     return null

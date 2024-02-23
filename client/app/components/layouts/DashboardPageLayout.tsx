@@ -22,6 +22,7 @@ import {
 } from '@/components/ui/popover'
 import { AiOutlineLogout, AiOutlineShop } from 'react-icons/ai'
 import { useAuth } from '@/hooks/useAuth'
+import { Loader2 } from 'lucide-react'
 
 type Props = {
   children?: React.ReactNode
@@ -31,6 +32,7 @@ type Props = {
     label: string
     icon: IconType
     onClick: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
+    disabled?: boolean
   }
   creator?: Partial<Creator>
 } & React.HTMLProps<HTMLDivElement>
@@ -107,10 +109,7 @@ const DashboardPageLayout = ({
       {SidebarNav(sidebarBottomItems)}
 
       <div className="border-t border-t-neutral-500">
-        <Popover
-          open={isAccountPopoverOpen}
-          onOpenChange={(isOpen) => setIsAccountPopoverOpen(isOpen)}
-        >
+        <Popover onOpenChange={(isOpen) => setIsAccountPopoverOpen(isOpen)}>
           <PopoverTrigger className="flex items-center cursor-pointer text-primary-foreground px-5 py-4 w-full gap-4">
             <img
               className="w-6 h-6 border border-primary-foreground rounded-full"
@@ -194,7 +193,11 @@ const DashboardPageLayout = ({
                 className="w-full md:w-max mb-4 md:mb-0"
                 variant={'accent'}
                 onClick={headerCta.onClick}
+                disabled={headerCta.disabled}
               >
+                {headerCta.disabled && (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                )}
                 <headerCta.icon className="text-xl mr-2" />
                 <p>{headerCta.label}</p>
               </Button>

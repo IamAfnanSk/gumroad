@@ -21,6 +21,8 @@ import {
   MenubarMenu,
   MenubarTrigger
 } from '@/components/ui/menubar'
+import { ProfileSection } from '@/types'
+import { useProfileSectionAdd } from '@/hooks/useProfileSectionAdd'
 
 type Props = {
   position: number
@@ -74,10 +76,46 @@ const profileSectionItems = [
 const ProfileSectionAdd = ({ position }: Props) => {
   const profilePageContext = React.useContext(ProfilePageContext)
 
+  const {
+    addProfileSection,
+    errors: addProfileErrors,
+    data: addProfileData,
+    loading: addProfileLoading
+  } = useProfileSectionAdd()
+
   if (!profilePageContext) {
     throw new Error(
       'ProfilePageContext should be used inside ProfilePageContext.Provider'
     )
+  }
+
+  React.useEffect(() => {
+    if (!addProfileLoading && !addProfileErrors && addProfileData) {
+      const sectionIdPositionMap = addProfileData.data?.idPositionMapping || {}
+      const newSection = addProfileData.data?.profileSection || {}
+
+      profilePageContext.setProfileSections((profileSections) => {
+        const updatedSections = profileSections.map<Partial<ProfileSection>>(
+          (profileSection) => {
+            return {
+              ...profileSection,
+              position: sectionIdPositionMap[profileSection.id || 0]
+            }
+          }
+        )
+
+        updatedSections.push(newSection)
+
+        return updatedSections
+      })
+    }
+  }, [addProfileData, addProfileErrors, addProfileLoading])
+
+  const handleAddProfileSection = async (
+    sectionType: string,
+    position: number
+  ) => {
+    await addProfileSection({ sectionType, position })
   }
 
   if (!profilePageContext.creatorIsOwner) {
@@ -88,7 +126,10 @@ const ProfileSectionAdd = ({ position }: Props) => {
     <div className="absolute z-10 transform -translate-x-1/2 left-1/2 -bottom-5 bg-background">
       <Menubar className="p-0 border-none">
         <MenubarMenu>
-          <MenubarTrigger className="p-0 cursor-pointer focus:bg-background focus:foreground data-[state=open]:bg-background data-[state=open]:text-foreground">
+          <MenubarTrigger
+            disabled={addProfileLoading}
+            className="p-0 cursor-pointer focus:bg-background focus:foreground data-[state=open]:bg-background data-[state=open]:text-foreground"
+          >
             <Button className="p-3" asChild size={'icon'}>
               <FaPlus />
             </Button>
@@ -100,12 +141,10 @@ const ProfileSectionAdd = ({ position }: Props) => {
                 key={index}
                 onClick={() => {
                   !item.isWIP
-                    ? profilePageContext?.handleAddProfileSection(
-                        item.type,
-                        position
-                      )
+                    ? handleAddProfileSection(item.type, position)
                     : toast('This feature is WIP 🚧')
                 }}
+                disabled={addProfileLoading}
               >
                 <div className={`flex items-center gap-3`}>
                   {item.icon}

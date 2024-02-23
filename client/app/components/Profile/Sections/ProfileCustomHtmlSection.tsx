@@ -16,7 +16,8 @@ const ProfileCustomHtmlSection = ({
 }: ProfileSectionProps) => {
   const profilePageContext = useContext(ProfilePageContext)
 
-  const { updateProfileSection } = useProfileSectionUpdate()
+  const { updateProfileSection, loading: updateProfileSectionLoading } =
+    useProfileSectionUpdate()
 
   if (!profilePageContext) {
     throw new Error(
@@ -29,7 +30,7 @@ const ProfileCustomHtmlSection = ({
   const debouncedHandleOnUpdate = useDebouncedCallback(
     async (update: ViewUpdate) => {
       await updateProfileSection({
-        id: section.id,
+        sectionId: section.id || 0,
         raw_html: update.state.doc.toString()
       })
     },
@@ -49,7 +50,10 @@ const ProfileCustomHtmlSection = ({
 
   return (
     <div className="relative w-full border-t">
-      <ProfileSectionEditPopover sectionId={section.id || 0} />
+      <ProfileSectionEditPopover
+        disabled={updateProfileSectionLoading}
+        sectionId={section.id || 0}
+      />
 
       {profilePageContext.creatorIsOwner && (
         <div className="profile-container">

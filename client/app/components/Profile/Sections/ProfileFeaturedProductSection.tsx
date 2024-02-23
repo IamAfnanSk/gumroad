@@ -53,10 +53,10 @@ const ProfileFeaturedProductsSection = ({
     }
 
     await updateProfileSection({
-      id: section.id,
+      sectionId: section.id || 0,
       title,
       show_title: showTitle,
-      ...(featuredProductId ? { featured_product_id: featuredProductId } : {})
+      featured_product_id: featuredProductId || undefined
     })
   }
 
@@ -73,17 +73,8 @@ const ProfileFeaturedProductsSection = ({
               ...oldSection,
               title,
               show_title: showTitle,
-              ...(featuredProductId
-                ? {
-                    featured_product_id: featuredProductId
-                  }
-                : {}),
-              ...(updateProfileSectionData.data?.featuredProduct
-                ? {
-                    featured_product:
-                      updateProfileSectionData.data?.featuredProduct
-                  }
-                : {})
+              featured_product_id: featuredProductId || undefined,
+              featured_product: updateProfileSectionData.data?.featuredProduct
             }
           }
 
@@ -116,6 +107,7 @@ const ProfileFeaturedProductsSection = ({
   return (
     <div className="border-t w-full relative">
       <ProfileSectionEditPopover
+        disabled={updateProfileSectionLoading}
         sectionId={section.id || 0}
         handleSectionUpdate={handleSectionUpdate}
         popoverTabsData={[
@@ -126,6 +118,7 @@ const ProfileFeaturedProductsSection = ({
             body: (
               <>
                 <Input
+                  disabled={updateProfileSectionLoading}
                   name="title"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
@@ -134,6 +127,7 @@ const ProfileFeaturedProductsSection = ({
 
                 <div className="flex items-center gap-4 mt-4">
                   <Switch
+                    disabled={updateProfileSectionLoading}
                     checked={showTitle}
                     onCheckedChange={() => setShowTitle(!showTitle)}
                     id="show_title"
@@ -151,6 +145,7 @@ const ProfileFeaturedProductsSection = ({
                 {(profilePageContext.products?.length || 0) > 0 && (
                   <div className="max-h-96 overflow-y-auto">
                     <RadioGroup
+                      disabled={updateProfileSectionLoading}
                       defaultValue={`${featuredProductId}`}
                       onValueChange={(value) =>
                         setFeaturedProductId(parseInt(value))

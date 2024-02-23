@@ -1,8 +1,5 @@
-import * as React from 'react'
 import { ProfileSection } from '@/types'
-import axios from 'axios'
-import { toast } from 'sonner'
-import { useCsrfToken } from '@/hooks/useCsrfToken'
+import { useApiRequest } from '@/hooks/useApiRequest'
 
 type AddProfileSectionResponseData = {
   message?: string
@@ -19,72 +16,40 @@ type AddProfileSectionProps = {
 }
 
 const useProfileSectionAdd = () => {
-  const csrfToken = useCsrfToken()
-
-  const [data, setData] = React.useState<AddProfileSectionResponseData | null>(
-    null
-  )
-  const [errors, setErrors] = React.useState<string[] | null>(null)
-  const [loading, setLoading] = React.useState<boolean>(false)
+  const {
+    data,
+    errors,
+    loading,
+    downloadProgress,
+    uploadProgress,
+    sendRequest
+  } = useApiRequest()
 
   const addProfileSection = async ({
     sectionType,
     position
   }: AddProfileSectionProps) => {
-    const errorMessage = `Error adding a new ${sectionType} section`
-    const responseErrors: string[] = []
+    const fallbackErrorMessage = `Error adding a new ${sectionType} section`
 
-    try {
-      setLoading(true)
-      setErrors(null)
-      setData(null)
-
-      const response = await axios.post(
-        `/profiles/add_section.json`,
-        {
-          section: {
-            section_type: sectionType,
-            position
-          }
-        },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Csrf-Token': csrfToken
-          }
+    await sendRequest({
+      url: `/profiles/add_section.json`,
+      method: 'post',
+      data: {
+        section: {
+          section_type: sectionType,
+          position
         }
-      )
-
-      const responseData = response.data as AddProfileSectionResponseData
-
-      if (response.status === 200 && responseData) {
-        toast.success(responseData.message)
-        setData(responseData)
-      } else {
-        responseErrors.push(...(responseData.errors || [errorMessage]))
-      }
-    } catch (error) {
-      // @ts-expect-error error is unknown
-      if (error.response?.data?.errors?.length) {
-        // @ts-expect-error error is unknown
-        responseErrors.push(...error.response.data.errors)
-      } else {
-        responseErrors.push(errorMessage)
-      }
-    } finally {
-      setLoading(false)
-
-      if (responseErrors.length) {
-        toast.error(responseErrors.join(', '))
-        setErrors(responseErrors)
-      }
-    }
+      },
+      fallbackErrorMessage
+    })
   }
 
   return {
-    data,
+    data: data as AddProfileSectionResponseData | null,
     errors,
     loading,
+    downloadProgress,
+    uploadProgress,
     addProfileSection
   }
 }

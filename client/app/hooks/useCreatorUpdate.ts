@@ -1,7 +1,4 @@
-import * as React from 'react'
-import axios from 'axios'
-import { toast } from 'sonner'
-import { useCsrfToken } from '@/hooks/useCsrfToken'
+import { useApiRequest } from '@/hooks/useApiRequest'
 
 type UpdateCreatorResponseData = {
   message?: string
@@ -19,11 +16,14 @@ type UpdateCreatorProps = {
 }
 
 const useCreatorUpdate = () => {
-  const csrfToken = useCsrfToken()
-
-  const [data, setData] = React.useState<UpdateCreatorResponseData | null>(null)
-  const [errors, setErrors] = React.useState<string[] | null>(null)
-  const [loading, setLoading] = React.useState<boolean>(false)
+  const {
+    data,
+    errors,
+    loading,
+    sendRequest,
+    downloadProgress,
+    uploadProgress
+  } = useApiRequest()
 
   const updateCreator = async ({
     name,
@@ -34,64 +34,34 @@ const useCreatorUpdate = () => {
     avatar,
     theme
   }: UpdateCreatorProps) => {
-    const errorMessage = 'Error updating creator'
-    const responseErrors: string[] = []
+    const fallbackErrorMessage = 'Error updating creator'
 
-    try {
-      setLoading(true)
-      setErrors(null)
-      setData(null)
-
-      const response = await axios.put(
-        `/creators/${creatorId}.json`,
-        {
-          creator: {
-            bio,
-            twitter_handle,
-            name,
-            username,
-            avatar,
-            theme
-          }
-        },
-        {
-          headers: {
-            'Content-Type': avatar ? 'multipart/form-data' : 'application/json',
-            'X-Csrf-Token': csrfToken
-          }
+    await sendRequest({
+      url: `/creators/${creatorId}.json`,
+      method: 'put',
+      data: {
+        creator: {
+          bio,
+          twitter_handle,
+          name,
+          username,
+          avatar,
+          theme
         }
-      )
-
-      const responseData = response.data as UpdateCreatorResponseData
-
-      if (response.status === 200 && responseData) {
-        toast.success(responseData.message)
-        setData(responseData)
-      } else {
-        responseErrors.push(...(responseData.errors || [errorMessage]))
-      }
-    } catch (error: unknown) {
-      // @ts-expect-error error is unknown
-      if (error.response?.data?.errors?.length) {
-        // @ts-expect-error error is unknown
-        responseErrors.push(...error.response.data.errors)
-      } else {
-        responseErrors.push(errorMessage)
-      }
-    } finally {
-      setLoading(false)
-
-      if (responseErrors.length) {
-        toast.error(responseErrors.join(', '))
-        setErrors(responseErrors)
-      }
-    }
+      },
+      headers: {
+        'Content-Type': avatar ? 'multipart/form-data' : 'application/json'
+      },
+      fallbackErrorMessage
+    })
   }
 
   return {
-    data,
+    data: data as UpdateCreatorResponseData | null,
     errors,
     loading,
+    downloadProgress,
+    uploadProgress,
     updateCreator
   }
 }
