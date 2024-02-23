@@ -129,8 +129,10 @@ const SettingsProfilePage = ({
     data: z.infer<typeof CreatorUpdateSchema>
   ) => {
     if (
-      (!form.formState.isDirty ||
-        !Object.keys(form.formState.touchedFields).length) &&
+      !(
+        form.formState.isDirty ||
+        Object.keys(form.formState.touchedFields).length
+      ) &&
       !avatarRef.current?.files?.length &&
       !isThemeDirty
     )
