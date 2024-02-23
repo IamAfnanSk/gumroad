@@ -219,7 +219,8 @@ const ProfileImageCarouselSection = ({
                       />
 
                       <p className="text-xs mt-2">
-                        {updateProfileSectionUploadProgress}% uploaded
+                        {updateProfileSectionUploadProgress}% uploaded (keep
+                        open)
                       </p>
                     </div>
                   )}
