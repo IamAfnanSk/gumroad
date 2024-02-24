@@ -20,5 +20,6 @@ class Creator < ApplicationRecord
   validates :twitter_handle,
             format: { with: /\A[a-zA-Z0-9_]{1,15}\z/, message: "should be a valid twitter handle without @" }, allow_blank: true
   validates :email, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }
-  validates :username, presence: true, uniqueness: true
+  validates :username, presence: true, uniqueness: true,
+                       format: { with: /\A[a-z0-9]([a-z0-9\-]{0,61}[a-z0-9])?\z/i, message: "is invalid" }
 end
