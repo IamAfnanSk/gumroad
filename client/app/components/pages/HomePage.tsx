@@ -37,6 +37,7 @@ const HomePage = ({ currentCreatorUsername }: Props) => {
 
       <div className="mt-10 text-center">
         <p className="text-xl md:text-3xl">Gumroad website builder</p>
+        <p className="text-xl md:text-3xl">Login to continue</p>
         <p className="mt-2">
           by{' '}
           <a className="border-b border-dotted" href="https://afnan.dev">
