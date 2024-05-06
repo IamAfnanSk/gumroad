@@ -3,9 +3,9 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import logo from '@/assets/images/logo.svg'
 import { ProfilePageContext } from '@/contexts/ProfilePageContext'
-import { ProfileSectionAdd } from '@/components/Profile/ProfileSectionAdd'
-import { NavLink } from '@/types'
-import { NavLinkItem } from '@/components/ui/nav-link'
+// import { ProfileSectionAdd } from '@/components/Profile/ProfileSectionAdd'
+// import { NavLink } from '@/types'
+// import { NavLinkItem } from '@/components/ui/nav-link'
 import { useEmailSubscriber } from '@/hooks/useEmailSubscriber'
 import { FaPencil } from 'react-icons/fa6'
 import { urlBuilder } from '@/lib/utils'
@@ -20,11 +20,11 @@ type Props = {
   children?: React.ReactNode
 } & React.HTMLAttributes<HTMLDivElement>
 
-const links: NavLink[] = [
-  { path: '/products', label: 'Products' },
-  { path: '/posts', label: 'Posts' },
-  { path: '/', label: 'About' }
-]
+// const links: NavLink[] = [
+//   { path: '/products', label: 'Products' },
+//   { path: '/posts', label: 'Posts' },
+//   { path: '/', label: 'About' }
+// ]
 
 const ProfilePageLayout = ({ children }: Props) => {
   const profilePageContext = React.useContext(ProfilePageContext)
@@ -47,7 +47,7 @@ const ProfilePageLayout = ({ children }: Props) => {
   const creatorName = profilePageContext.creator?.name || 'User'
 
   // TODO: use route from backend
-  const isImplemented = location.pathname === '/'
+  // const isImplemented = location.pathname === '/'
 
   return (
     <>
@@ -95,25 +95,25 @@ const ProfilePageLayout = ({ children }: Props) => {
         </div>
       </header>
 
-      <header className="border-t relative">
+      <header className="relative border-t">
         <div className="profile-container">
           <p className="text-4xl">{profilePageContext.creator?.bio}</p>
 
-          <div className="flex items-center gap-5 mt-4">
+          {/* <div className="flex items-center gap-5 mt-4">
             {links.map((link, index) => (
               <NavLinkItem key={index} link={link} />
             ))}
-          </div>
+          </div> */}
         </div>
 
-        {isImplemented && <ProfileSectionAdd position={1} />}
+        {/* {isImplemented && <ProfileSectionAdd position={1} />} */}
       </header>
 
-      {isImplemented ? (
-        <main className="relative">{children}</main>
-      ) : (
-        <p className="text-center mb-10">Not implemented</p>
-      )}
+      {/* {isImplemented ? ( */}
+      <main className="relative">{children}</main>
+      {/* ) : (
+        <p className="mb-10 text-center">Not implemented</p>
+      )} */}
 
       <footer className="border-t">
         <div className="flex items-center gap-2 profile-container">
